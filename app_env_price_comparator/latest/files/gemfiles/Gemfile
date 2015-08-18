@@ -1,0 +1,74 @@
+source 'https://rubygems.org'
+
+ruby '2.2.2'
+
+gem 'rails', '~> 4.2.3'
+
+# Assets
+gem 'sass', '~> 3.4.15'
+gem 'sass-rails', '5.0.3'
+gem 'uglifier', '>= 2.7.1'
+gem 'coffee-rails', '~> 4.1.0'
+
+gem 'pg', '0.18.1'
+gem 'jquery-rails', '3.1.0'
+gem 'jquery-ui-rails', '4.2.1'
+gem 'devise', '3.5.1'
+gem 'bootstrap-sass', '3.1.1.0'
+gem 'will_paginate-bootstrap', '1.0.0'
+gem 'bootstrap-slider-rails'
+gem 'autoprefixer-rails', '5.2.1.1'
+gem 'paperclip', '4.3.0'
+gem 'paperclip-meta', '1.2.0'
+gem 'aws-sdk-v1', '~> 1.64.0'
+gem 'figaro', '1.1.1'
+gem 'elasticsearch', '1.0.12'
+gem 'typhoeus', '0.7.2'
+gem 'mustache', '1.0.2'
+gem 'jbuilder', '2.3.1'
+gem 'faraday', '~> 0.9.1'
+gem 'mobvious', '~> 0.3.2'
+
+gem 'sdoc', '~> 0.4.1', group: :doc
+
+# Feed parser
+gem 'redis', '3.2.1', require: ["redis", "redis/connection/hiredis"]
+gem 'hiredis', '0.6.0'
+gem 'nokogiri', '1.6.6.2'
+gem 'smarter_csv', '1.0.19'
+gem 'resque', '1.25.2'
+gem 'resque-web', '0.0.6', require: 'resque_web'
+gem 'resque-pool', '0.5.0'
+gem 'resque-scheduler', '4.0.0'
+gem 'foreman', '0.77.0'
+
+# Application Server
+gem 'unicorn', '4.9.0'
+
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
+group :development, :test do
+  gem 'rspec-rails', '3.3.2'
+  gem 'guard-rspec', '~> 4.6.0'
+  gem 'guard-livereload', '~> 2.4', require: false
+  gem 'factory_girl_rails', '4.5.0'
+  gem 'capybara', '2.4.4'
+  gem 'poltergeist', git: 'https://github.com/teampoltergeist/poltergeist.git', branch: 'master' # we need a fix for failing poltergeist in production jenkins, when version > 1.6.0 is available, use that one
+  gem 'pry'
+  gem 'pry-remote'
+  gem 'quiet_assets'
+  gem 'database_cleaner', '~> 1.4.1'
+  gem 'unicorn-rails'
+  gem 'rack_session_access', '0.1.1'
+  gem 'vcr', git: 'https://github.com/vcr/vcr.git', branch: 'master' # we need a fix for faraday which will be in 2.9.4
+  # gem 'rack-mini-profiler', require: false
+end
+
+group :test do
+  gem 'elasticsearch-extensions'
+  gem 'simplecov', :require => false
+  gem 'fuubar'
+end

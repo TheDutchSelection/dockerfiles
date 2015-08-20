@@ -153,9 +153,16 @@ create_heartbeat_destination_settings () {
   echo "$heartbeat_destinations"
 }
 
+copy_watchdog_scripts () {
+  cp usr/local/bin/"$WATCHDOG_SWITCH_METHOD"_watchdog_up.sh usr/local/bin/watchdog_up.sh
+}
+
 echo "copy pcp.conf and pgpool.conf files..."
 cp -p /etc/pgpool/pcp_template.conf /etc/pgpool/pcp.conf
 cp -p /etc/pgpool/pgpool_template.conf /etc/pgpool/pgpool.conf
+
+echo "copy watchdog_up.sh and watchdog_down.sh scripts using $WATCHDOG_SWITCH_METHOD method..."
+copy_watchdog_scripts
 
 pcp_username_password=$(create_pcp_username_password)
 backend_settings=$(create_backend_settings)
@@ -182,5 +189,4 @@ perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpo
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-#exec pgpool -c -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n
-sleep 9999999999999
+exec pgpool -c -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n

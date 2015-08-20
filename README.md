@@ -1,2 +1,2 @@
 # Public Dockerfiles
-This are all The Dutch Selection public dockerfiles.
+These are the The Dutch Selection public dockerfiles.

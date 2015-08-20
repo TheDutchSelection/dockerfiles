@@ -28,8 +28,6 @@
 # WATCHDOG_AUTHKEY (ie. "bgerseawfsmkf", should be the same for all pgpools)
 #
 # OTHER:
-# If you need to run the extensions against the postgresql databases, these are in /tmp/sql. There is also a psql
-# client in the container.
 
 FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
@@ -62,10 +60,9 @@ RUN \
   cd /tmp/pgpool-II-3.4.3/src/sql/pgpool-recovery && \
   make && \
   make install && \
-  cp -R /tmp/pgpool-II-3.4.3/src/sql /tmp/sql && \
   mkdir -p /etc/pgpool && \
   mkdir -p /var/run/pgpool && \
-  rm -rf /tmp/pgpool-II-3.4.3*
+  rm -rf /tmp/*
 
 ADD files/pcp_template.conf /etc/pgpool/
 ADD files/pgpool_template.conf /etc/pgpool/
@@ -83,6 +80,6 @@ EXPOSE 9694
 EXPOSE 9898
 EXPOSE 9999
 
-USER pgpool
+#USER pgpool
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

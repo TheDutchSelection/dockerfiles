@@ -5,7 +5,7 @@ trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres" SIG
 
 # description: init the data directory and create the superuser
 init_data_directory_and_create_superuser() {
-  # if data directory exist, we asume the superuser is also already created
+  # if data directory exist, we asume the superuser is also already created and the pgpool sql has been applied
   if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
     echo "initializing $DATA_DIRECTORY..."
     mkdir -p "$DATA_DIRECTORY"
@@ -34,9 +34,25 @@ EOF
       DROP DATABASE template1;
       CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UNICODE';
       UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';
+EOF
+
+    if [[ "$USE_WITH_PGPOOL" == "1" ]]; then
+      echo "applying pgpool-regclass sql to template1"
+      psql -f /usr/local/share/pgpool-II/pgpool-regclass/pgpool-regclass.sql template1
+
+      echo "applying insert_lock sql to template1"
+      psql -f /usr/local/share/pgpool-II/insert_lock.sql template1
+
+      echo "applying pgpool-recovery sql to template1"
+      psql -f /usr/local/share/pgpool-II/pgpool-recovery/pgpool-recovery.sql template1
+    fi
+
+    echo "vacuum freeze template1..."
+    psql -q <<-EOF
       \c template1
       VACUUM FREEZE;
 EOF
+
   fi
 }
 
@@ -58,8 +74,6 @@ else
 fi
 
 init_data_directory_and_create_superuser &
-
-sleep 5
 
 echo "starting postgresql..."
 /usr/lib/postgresql/9.4/bin/postgres -c config_file=/etc/postgresql/9.4/main/postgresql.conf &

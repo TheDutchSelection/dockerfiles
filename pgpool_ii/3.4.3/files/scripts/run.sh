@@ -33,7 +33,8 @@ create_pcp_username_password () {
   if [[ -z "$PCP_USERNAME" || -z "$PCP_USERNAME" ]]; then
     local username_password=""
   else
-    local username_password="$PCP_USERNAME"":""$PCP_PASSWORD"
+    local pcp_password_md5=$(/usr/local/bin/pg_md5 "$PCP_PASSWORD")
+    local username_password="$PCP_USERNAME"":""$pcp_password_md5"
   fi
 
   echo "$username_password"

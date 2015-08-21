@@ -22,7 +22,7 @@
 # OPTIONAL ENVS:
 # HETZNER_WEBSERVICE_PASSWORD (ie. "hetzner_api_password", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # HETZNER_WEBSERVICE_USERNAME (ie. "hetzner_api_user", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
-# PCP_PASSWORD (ie. "faer3wgrsear4regtds", needs to be a md5 hash)
+# PCP_PASSWORD (ie. "faer3wgrsear4regtds")
 # PCP_USERNAME (ie. "pcp_user")
 # WATCHDOG_AUTHKEY (ie. "bgerseawfsmkf", should be the same for all pgpools)
 #

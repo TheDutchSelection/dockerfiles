@@ -182,7 +182,7 @@ sed -i "s/##health_check_user_password##/$HEALTH_CHECK_USER_PASSWORD/g" /etc/pgp
 sed -i "s/##recovery_user##/$RECOVERY_USER/g" /etc/pgpool/pgpool.conf
 sed -i "s/##recovery_user_password##/$RECOVERY_USER_PASSWORD/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_trusted_servers##/$WATCHDOG_TRUSTED_SERVERS/g" /etc/pgpool/pgpool.conf
-sed -i "s/##watchdog_hostname##/$WATCHDOG_HOSTNAME/g" /etc/pgpool/pgpool.conf
+sed -i "s/##watchdog_hostname##/$HOST_IP/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_authkey##/$WATCHDOG_AUTHKEY/g" /etc/pgpool/pgpool.conf
 sed -i "s/##delegate_ip##/$DELEGATE_IP/g" /etc/pgpool/pgpool.conf
 perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpool/pgpool.conf

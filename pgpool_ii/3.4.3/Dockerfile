@@ -16,7 +16,6 @@
 # POSTGRESQL_[TYPE]_[APP_ID]_HOST_FLAG (ie. "ALLOW_TO_FAILOVER", "ALLOW_TO_FAILOVER" or "DISALLOW_TO_FAILOVER")
 # RECOVERY_USER (ie. "recoverer", user should exist in postgresql)
 # RECOVERY_USER_PASSWORD (ie "abcdabcd1234")
-# WATCHDOG_HOSTNAME (ie. "example.com")
 # WATCHDOG_SWITCH_METHOD (ie. "hetzner")
 # WATCHDOG_TRUSTED_SERVERS (ie. "123.123.123.123,234.234.234.234", to check if this pgpool is online)
 #

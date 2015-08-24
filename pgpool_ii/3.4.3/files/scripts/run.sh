@@ -171,9 +171,6 @@ escaped_backend_settings=$(escape_string "$backend_settings")
 heartbeat_destination_settings=$(create_heartbeat_destination_settings)
 escaped_heartbeat_destination_settings=$(escape_string "$heartbeat_destination_settings")
 
-echo "escaped_backend_settings: $escaped_backend_settings"
-echo "escaped_heartbeat_destination_settings: $escaped_heartbeat_destination_settings"
-
 echo "set values to pcp.conf file..."
 sed -i "s/##pcp_username_password##/$pcp_username_password/g" /etc/pgpool/pcp.conf
 
@@ -190,4 +187,4 @@ perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpo
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-exec pgpool -c -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n
+exec pgpool --clear-cache -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n

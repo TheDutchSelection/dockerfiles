@@ -80,6 +80,6 @@ EXPOSE 9694
 EXPOSE 9898
 EXPOSE 9999
 
-#USER pgpool
+USER pgpool
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

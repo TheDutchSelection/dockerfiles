@@ -15,6 +15,12 @@ heartbeat_destination_port##number## = ##host_port##
 heartbeat_device##number## = ''
 EOM
 
+read -r -d '' pgpool_other_pgpool_setting_base << EOM || true
+other_pgpool_hostname##number## = '##host_ip##'
+other_pgpool_port##number## = 9999
+other_wd_port##number## = 9000
+EOM
+
 # $1: string
 escape_string () {
   set -e
@@ -123,7 +129,7 @@ create_heartbeat_destination_settings () {
     if [[ "$env" == *"_HOST_PRIVATE_IP="* && "$env" == "PGPOOL_"* ]]; then
       local host_var=$(echo "$env" | awk -F'=' '{print $1}')
       local host=$(echo "$env" | awk -F'=' '{print $2}')
-      local port_var=${host_var/_PRIVATE_IP/_PORT}
+      local port_var=${host_var/_PRIVATE_IP/_PORT_PEER}
       eval port=\$$port_var
     # we want the PGPOOL_[TYPE]_[APP_ID]_HOST_PUBLIC_IP=10.0.4.1 ones
     elif [[ "$env" == *"_HOST_PUBLIC_IP="* && "$env" == "PGPOOL_"* ]]; then
@@ -135,7 +141,7 @@ create_heartbeat_destination_settings () {
         # we want all PUBLIC_IPS for the specified availability zones
         local host_var=$(echo "$env" | awk -F'=' '{print $1}')
         local host=$(echo "$env" | awk -F'=' '{print $2}')
-        local port_var=${host_var/_PUBLIC_IP/_PORT}
+        local port_var=${host_var/_PUBLIC_IP/_PORT_PEER}
         eval port=\$$port_var
       fi
     fi
@@ -154,6 +160,46 @@ create_heartbeat_destination_settings () {
   echo "$heartbeat_destinations"
 }
 
+create_other_pgpool_settings () {
+  set -e
+  local envs=$(env)
+  local envs=$(echo "$envs" | sort)
+
+  local other_pgpool_settings=""
+  local counter=0
+  while read -r env; do
+    local host=""
+    local other_pgpool_setting="$pgpool_other_pgpool_setting_base"
+    # we want the PGPOOL_[TYPE]_[APP_ID]_HOST_PRIVATE_IP=10.0.4.1 ones
+    if [[ "$env" == *"_HOST_PRIVATE_IP="* && "$env" == "PGPOOL_"* ]]; then
+      local host_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local host=$(echo "$env" | awk -F'=' '{print $2}')
+    # we want the PGPOOL_[TYPE]_[APP_ID]_HOST_PUBLIC_IP=10.0.4.1 ones
+    elif [[ "$env" == *"_HOST_PUBLIC_IP="* && "$env" == "PGPOOL_"* ]]; then
+      # check if we have a private ip available, then we don't want the public one
+      local temp_host_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local host_private_ip_var=${temp_host_var/_PUBLIC_IP/_PRIVATE_IP}
+      eval host_private_ip=\$$host_private_ip_var
+      if [[ -z "$host_private_ip" ]]; then
+        # we want all PUBLIC_IPS for the specified availability zones
+        local host_var=$(echo "$env" | awk -F'=' '{print $1}')
+        local host=$(echo "$env" | awk -F'=' '{print $2}')
+      fi
+    fi
+
+    if [[ ! -z "$host" ]]; then
+      # put other_pgpool_setting together
+      local other_pgpool_setting=${other_pgpool_setting//\#\#number\#\#/"$counter"}
+      local other_pgpool_setting=${other_pgpool_setting//\#\#host_ip\#\#/"$host"}
+
+      local other_pgpool_settings="$other_pgpool_settings"$'\n'"$other_pgpool_setting"$'\n'
+      local counter=$((counter + 1))
+    fi
+  done <<< "$envs"
+
+  echo "$other_pgpool_settings"
+}
+
 copy_watchdog_scripts () {
   cp /usr/local/bin/"$WATCHDOG_SWITCH_METHOD"_watchdog_up.sh /usr/local/bin/watchdog_up.sh
 }
@@ -170,6 +216,8 @@ backend_settings=$(create_backend_settings)
 escaped_backend_settings=$(escape_string "$backend_settings")
 heartbeat_destination_settings=$(create_heartbeat_destination_settings)
 escaped_heartbeat_destination_settings=$(escape_string "$heartbeat_destination_settings")
+other_pgpool_settings=$(create_other_pgpool_settings)
+escaped_other_pgpool_settings=$(escape_string "$other_pgpool_settings")
 
 echo "set values to pcp.conf file..."
 sed -i "s/##pcp_username_password##/$pcp_username_password/g" /etc/pgpool/pcp.conf
@@ -185,6 +233,7 @@ sed -i "s/##watchdog_authkey##/$WATCHDOG_AUTHKEY/g" /etc/pgpool/pgpool.conf
 sed -i "s/##delegate_ip##/$DELEGATE_IP/g" /etc/pgpool/pgpool.conf
 perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
+perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
 exec pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n

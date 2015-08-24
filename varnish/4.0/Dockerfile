@@ -16,7 +16,7 @@
 # To use commands like varnishtop with docker exec, you have to run "export TERM=xterm" in the container first.
 
 
-FROM thedutchselection/debian:7.8
+FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

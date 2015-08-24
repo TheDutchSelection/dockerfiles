@@ -200,6 +200,14 @@ create_other_pgpool_settings () {
   echo "$other_pgpool_settings"
 }
 
+create_log_directory () {
+  local log_directory="$DATA_DIRECTORY""log"
+
+  mkdir -p "$log_directory"
+
+  echo "$log_directory"
+}
+
 echo "copy pcp.conf and pgpool.conf files..."
 cp -p /etc/pgpool/pcp_template.conf /etc/pgpool/pcp.conf
 cp -p /etc/pgpool/pgpool_template.conf /etc/pgpool/pgpool.conf
@@ -211,6 +219,8 @@ heartbeat_destination_settings=$(create_heartbeat_destination_settings)
 escaped_heartbeat_destination_settings=$(escape_string "$heartbeat_destination_settings")
 other_pgpool_settings=$(create_other_pgpool_settings)
 escaped_other_pgpool_settings=$(escape_string "$other_pgpool_settings")
+log_directory=$(create_log_directory)
+escaped_log_directory=$(escape_string "$log_directory")
 
 echo "set values to pcp.conf file..."
 sed -i "s/##pcp_username_password##/$pcp_username_password/g" /etc/pgpool/pcp.conf
@@ -224,9 +234,10 @@ sed -i "s/##watchdog_trusted_servers##/$WATCHDOG_TRUSTED_SERVERS/g" /etc/pgpool/
 sed -i "s/##watchdog_hostname##/$HOST_IP/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_authkey##/$WATCHDOG_AUTHKEY/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_switch_method##/$WATCHDOG_SWITCH_METHOD/g" /etc/pgpool/pgpool.conf
+sed -i "s/##log_directory##/$escaped_log_directory/g" /etc/pgpool/pgpool.conf
 perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-exec pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n -d
+exec pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n

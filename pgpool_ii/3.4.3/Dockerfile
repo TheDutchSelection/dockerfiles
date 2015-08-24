@@ -38,6 +38,7 @@ RUN \
   apt-get install -yq postgresql-client-9.4 && \
   apt-get install -yq postgresql-server-dev-9.4 && \
   apt-get install -yq arping && \
+  apt-get install -yq net-tools && \
   apt-get install -yq libpq-dev && \
   useradd -m -u 9999 pgpool && \
   apt-get clean && \

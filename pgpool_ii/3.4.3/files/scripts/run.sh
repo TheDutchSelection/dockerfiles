@@ -187,4 +187,4 @@ perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpo
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-exec pgpool --clear-cache -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n
+exec pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n

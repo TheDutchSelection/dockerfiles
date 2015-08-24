@@ -155,7 +155,7 @@ create_heartbeat_destination_settings () {
 }
 
 copy_watchdog_scripts () {
-  cp /usr/local/bin/"$WATCHDOG_SWITCH_METHOD"_watchdog_up.sh usr/local/bin/watchdog_up.sh
+  cp /usr/local/bin/"$WATCHDOG_SWITCH_METHOD"_watchdog_up.sh /usr/local/bin/watchdog_up.sh
 }
 
 echo "copy pcp.conf and pgpool.conf files..."

@@ -74,6 +74,7 @@ RUN \
   chmod 640 /etc/pgpool/pgpool_template.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R pgpool:pgpool /etc/pgpool && \
+  chown -R pgpool:pgpool /var/run/pgpool && \
   chown pgpool:pgpool /usr/local/bin/*
 
 EXPOSE 9000

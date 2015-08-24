@@ -61,6 +61,7 @@ RUN \
   make install && \
   mkdir -p /etc/pgpool && \
   mkdir -p /var/run/pgpool && \
+  ln -s /bin/bash /sbin/bash && \
   rm -rf /tmp/*
 
 ADD files/pcp_template.conf /etc/pgpool/

@@ -200,16 +200,9 @@ create_other_pgpool_settings () {
   echo "$other_pgpool_settings"
 }
 
-copy_watchdog_scripts () {
-  cp /usr/local/bin/"$WATCHDOG_SWITCH_METHOD"_watchdog_up.sh /usr/local/bin/watchdog_up.sh
-}
-
 echo "copy pcp.conf and pgpool.conf files..."
 cp -p /etc/pgpool/pcp_template.conf /etc/pgpool/pcp.conf
 cp -p /etc/pgpool/pgpool_template.conf /etc/pgpool/pgpool.conf
-
-echo "copy watchdog_up.sh and watchdog_down.sh scripts using $WATCHDOG_SWITCH_METHOD method..."
-copy_watchdog_scripts
 
 pcp_username_password=$(create_pcp_username_password)
 backend_settings=$(create_backend_settings)
@@ -230,6 +223,7 @@ sed -i "s/##recovery_user_password##/$RECOVERY_USER_PASSWORD/g" /etc/pgpool/pgpo
 sed -i "s/##watchdog_trusted_servers##/$WATCHDOG_TRUSTED_SERVERS/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_hostname##/$HOST_IP/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_authkey##/$WATCHDOG_AUTHKEY/g" /etc/pgpool/pgpool.conf
+sed -i "s/##watchdog_switch_method##/$WATCHDOG_SWITCH_METHOD/g" /etc/pgpool/pgpool.conf
 perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w pgpool" SIGTERM
+
 read -r -d '' pgpool_backend_base << EOM || true
 backend_hostname##number## = '##host_ip##'
 backend_port##number## = ##host_port##
@@ -240,4 +242,7 @@ perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destinat
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-exec pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n
+/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n &
+
+# wait for the pid of this file to end
+wait $!

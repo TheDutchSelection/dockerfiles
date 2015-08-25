@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-trap "echo \"Sending SIGTERM to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -m s stop" SIGTERM
-trap "echo \"Sending SIGKILL to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -m f stop" SIGKILL
+trap "echo \"Sending SIGTERM to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -m s stop" SIGTERM
+trap "echo \"Sending SIGKILL to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -m f stop" SIGKILL
 
 read -r -d '' pgpool_backend_base << EOM || true
 backend_hostname##number## = '##host_ip##'
@@ -269,7 +269,7 @@ perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destinat
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -n &
+/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -n &
 
 # wait for the pid of this file to end
 wait $!

@@ -4,8 +4,6 @@ set -e
 trap "echo \"Sending SIGTERM to processes\"; /usr/local/bin/pgpool -m s" SIGTERM
 trap "echo \"Sending SIGKILL to processes\"; /usr/local/bin/pgpool -m f" SIGKILL
 
-pgpool [-f config_file][-F pcp_config_file] [-m {s[mart]|f[ast]|i[mmediate]}] stop
-
 read -r -d '' pgpool_backend_base << EOM || true
 backend_hostname##number## = '##host_ip##'
 backend_port##number## = ##host_port##

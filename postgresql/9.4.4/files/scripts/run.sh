@@ -3,6 +3,54 @@ set -e
 
 trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres" SIGTERM
 
+read -r -d '' authentication_setting_base << EOM || true
+##type##  ##database##  ##user##  ##address## ##auth_method##
+EOM
+
+# $1: string
+escape_string () {
+  set -e
+  local string_to_escape="$1"
+
+  partially_escaped_string=$(sed 's/\//\\\//g' <<< "$string_to_escape")
+  partially_escaped_string=$(sed ':a;N;$!ba;s/\n/\\n/g' <<< "$partially_escaped_string")
+  escaped_string=$(sed 's/\$/\\$/g' <<< "$partially_escaped_string")
+
+  echo "$escaped_string"
+}
+
+create_authentication_settings () {
+  set -e
+
+  local authentication_setting="$authentication_setting_base"
+
+  local authentication_setting_1=${authentication_setting//\#\#type\#\#/"host"}
+  local authentication_setting_1=${authentication_setting_1//\#\#database\#\#/"all"}
+  local authentication_setting_1=${authentication_setting_1//\#\#user\#\#/"all"}
+  local authentication_setting_1=${authentication_setting_1//\#\#address\#\#/"0.0.0.0/0"}
+  if [[ "$RUN_AS_DEVELOPMENT" == "1" ]]; then
+    local authentication_setting_1=${authentication_setting_1//\#\#auth_method\#\#/"trust"}
+  else
+    local authentication_setting_1=${authentication_setting_1//\#\#auth_method\#\#/"md5"}
+  fi
+
+  local authentication_setting_2=${authentication_setting_1//0\.0\.0\.0\/0/"::1/128"}
+
+  if [[ "$USE_WITH_PGPOOL" == "1" ]]; then
+    local authentication_setting_3=${authentication_setting//\#\#type\#\#/"host"}
+    local authentication_setting_3=${authentication_setting_3//\#\#database\#\#/"replication"}
+    local authentication_setting_3=${authentication_setting_3//\#\#user\#\#/"all"}
+    local authentication_setting_3=${authentication_setting_3//\#\#address\#\#/"0.0.0.0/0"}
+    local authentication_setting_3=${authentication_setting_3//\#\#auth_method\#\#/"md5"}
+
+    local authentication_setting_4=${authentication_setting_1//0\.0\.0\.0\/0/"::1/128"}
+  fi
+
+  local authentication_settings="$authentication_setting_1"$'\n'"$authentication_setting_2"$'\n'"$authentication_setting_3"$'\n'"$authentication_setting_4"$'\n'
+
+  echo "$authentication_settings"
+}
+
 # description: init the data directory and create the superuser
 init_data_directory_and_create_superuser() {
   # if data directory exist, we asume the superuser is also already created and the pgpool sql has been applied
@@ -63,15 +111,13 @@ echo "copy postgresql.conf file..."
 cp -p /etc/postgresql/9.4/main/postgresql_template.conf /etc/postgresql/9.4/main/postgresql.conf
 cp -p /etc/postgresql/9.4/main/pg_hba_template.conf /etc/postgresql/9.4/main/pg_hba.conf
 
-escaped_data_directory=${DATA_DIRECTORY//\//\\\/}
+escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
+authentication_settings=$(create_authentication_settings)
+escaped_authentication_settings=$(escape_string "$authentication_settings")
 
 echo "set values to postgresql.conf file..."
 sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/9.4/main/postgresql.conf
-if [[ "$RUN_AS_DEVELOPMENT" == "1" ]]; then
-  sed -i "s/##user_auth_method##/trust/g" /etc/postgresql/9.4/main/pg_hba.conf
-else
-  sed -i "s/##user_auth_method##/md5/g" /etc/postgresql/9.4/main/pg_hba.conf
-fi
+perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/9.4/main/pg_hba.conf
 
 init_data_directory_and_create_superuser &
 

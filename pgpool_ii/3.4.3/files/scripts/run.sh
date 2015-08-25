@@ -216,11 +216,6 @@ create_pool_passwd_file () {
   local envs=$(env)
   local envs=$(echo "$envs" | sort)
 
-  local pool_passwd_directory="/tmp/password"
-  local pool_passwd_file="$pool_passwd_directory""/pool_passwd"
-
-  mkdir -p "$pool_passwd_directory"
-
   while read -r env; do
     local user=""
     local password=""
@@ -237,13 +232,14 @@ create_pool_passwd_file () {
       /usr/local/bin/pg_md5 -m -u "$user" -f /etc/pgpool/pgpool.conf "$password"
     fi
   done <<< "$envs"
-
-  echo "$pool_passwd_file"
 }
 
 echo "copy pcp.conf and pgpool.conf files..."
 cp -p /etc/pgpool/pcp_template.conf /etc/pgpool/pcp.conf
 cp -p /etc/pgpool/pgpool_template.conf /etc/pgpool/pgpool.conf
+
+echo "creating pool_passwd file..."
+create_pool_passwd_file
 
 pcp_username_password=$(create_pcp_username_password)
 backend_settings=$(create_backend_settings)
@@ -254,8 +250,6 @@ other_pgpool_settings=$(create_other_pgpool_settings)
 escaped_other_pgpool_settings=$(escape_string "$other_pgpool_settings")
 log_directory=$(create_log_directory)
 escaped_log_directory=$(escape_string "$log_directory")
-pool_passwd_file=$(create_pool_passwd_file)
-escaped_pool_passwd_file=$(escape_string "$pool_passwd_file")
 
 echo "set values to pcp.conf file..."
 sed -i "s/##pcp_username_password##/$pcp_username_password/g" /etc/pgpool/pcp.conf
@@ -270,7 +264,6 @@ sed -i "s/##watchdog_hostname##/$HOST_IP/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_authkey##/$WATCHDOG_AUTHKEY/g" /etc/pgpool/pgpool.conf
 sed -i "s/##watchdog_switch_method##/$WATCHDOG_SWITCH_METHOD/g" /etc/pgpool/pgpool.conf
 sed -i "s/##log_directory##/$escaped_log_directory/g" /etc/pgpool/pgpool.conf
-sed -i "s/##pool_passwd_file##/$escaped_pool_passwd_file/g" /etc/pgpool/pgpool.conf
 perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf

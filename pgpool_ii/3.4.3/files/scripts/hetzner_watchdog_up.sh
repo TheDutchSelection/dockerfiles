@@ -13,7 +13,7 @@ counter=0
 while [[ "$counter" < 10 ]]; do
   switch_result=$(switch_ip)
   echo "$switch_result"
-  if [[ "$switch_result" == *"error"* ]]; then
+  if [[ "$switch_result" == *"error"* && "$switch_result" != *"FAILOVER_ALREADY_ROUTED"* ]]; then
     sleep 5
   else
     exit 0

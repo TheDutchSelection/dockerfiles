@@ -14,6 +14,8 @@
 # POSTGRESQL_[TYPE]_[APP_ID]_HOST_PORT (ie. "5432")
 # POSTGRESQL_[TYPE]_[APP_ID]_HOST_WEIGHT (ie. "1")
 # POSTGRESQL_[TYPE]_[APP_ID]_HOST_FLAG (ie. "ALLOW_TO_FAILOVER", "ALLOW_TO_FAILOVER" or "DISALLOW_TO_FAILOVER")
+# POSTGRESQL_USER_[ID] (ie. "user", all postgresql users need to be added)
+# POSTGRESQL_PASSWORD_[ID] (ie. "abcdabcd1234")
 # RECOVERY_USER (ie. "recoverer", user should exist in postgresql)
 # RECOVERY_USER_PASSWORD (ie "abcdabcd1234")
 # WATCHDOG_SWITCH_METHOD (ie. "hetzner")
@@ -69,11 +71,13 @@ RUN \
 
 ADD files/pcp_template.conf /etc/pgpool/
 ADD files/pgpool_template.conf /etc/pgpool/
+ADD files/pool_hba.conf /etc/pgpool/
 ADD files/scripts /usr/local/bin
 
 RUN \
   chmod 640 /etc/pgpool/pcp_template.conf && \
   chmod 640 /etc/pgpool/pgpool_template.conf && \
+  chmod 640 /etc/pgpool/pool_hba.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R pgpool:pgpool /etc/pgpool && \
   chown -R pgpool:pgpool /var/run/pgpool && \

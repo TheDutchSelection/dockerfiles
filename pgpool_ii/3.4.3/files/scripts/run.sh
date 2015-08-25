@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-trap "echo \"Sending SIGTERM to processes\"; /usr/local/bin/pgpool -m s" SIGTERM
-trap "echo \"Sending SIGKILL to processes\"; /usr/local/bin/pgpool -m f" SIGKILL
+trap "echo \"Sending SIGTERM to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -m s stop" SIGTERM
+trap "echo \"Sending SIGKILL to processes\"; /usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -m f stop" SIGKILL
 
 read -r -d '' pgpool_backend_base << EOM || true
 backend_hostname##number## = '##host_ip##'

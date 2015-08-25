@@ -2,12 +2,12 @@
 set -e
 
 switch_ip () {
-  result=$(curl -u \'"$HETZNER_WEBSERVICE_USERNAME"\':\'"$HETZNER_WEBSERVICE_PASSWORD"\' https://robot-ws.your-server.de/failover/"$DELEGATE_IP" -d active_server_ip="$HOST_IP")
+  result=$(curl -u \'"$HETZNER_WEBSERVICE_USERNAME"\':\'"$HETZNER_WEBSERVICE_PASSWORD"\' https://robot-ws.your-server.de/failover/"$SWITCHABLE_IP" -d active_server_ip="$HOST_IP")
 
   echo "$result"
 }
 
-echo "switching ip $DELEGATE_IP to server $HOST_IP ..."
+echo "switching ip $SWITCHABLE_IP to server $HOST_IP ..."
 
 counter=0
 while [[ "$counter" < 10 ]]; do

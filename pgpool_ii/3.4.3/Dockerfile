@@ -4,7 +4,7 @@
 #
 # REQUIRED ENVS:
 # DATA_DIRECTORY (ie. "/home/pgpool/data/")
-# DELEGATE_IP (ie. "123.123.123.123")
+# SWITCHABLE_IP (ie. "123.123.123.123")
 # HEALTH_CHECK_USER (ie. "health_checker", user should exist in postgresql)
 # HEALTH_CHECK_USER_PASSWORD (ie. "abcdabcd1234")
 # HOST_IP (ie. "123.123.123.1", ip of the host this is running on)
@@ -40,6 +40,7 @@ RUN \
   apt-get install -yq arping && \
   apt-get install -yq net-tools && \
   apt-get install -yq libpq-dev && \
+  apt-get install -yq curl && \
   useradd -m -u 9999 pgpool && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

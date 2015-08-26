@@ -65,6 +65,8 @@ init_data_directory_and_create_superuser() {
       inotifywait -q -e create /run/postgresql/ >> /dev/null
     done
 
+    sleep 2
+    
     if [[ ! -z "$SUPERUSER_USERNAME" ]]; then
       echo "creating superuser $SUPERUSER_USERNAME..."
       psql -q <<-EOF

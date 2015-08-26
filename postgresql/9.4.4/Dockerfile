@@ -3,9 +3,10 @@
 # DESCRIPTION: PostgreSQL image.
 #
 # REQUIRED ENVS:
-# DATA_DIRECTORY (ie. "/home/postgresql/data/")
+# DATA_DIRECTORY (ie. "/home/postgres/data/")
 #
 # OPTIONAL ENVS:
+# HOST_IP (ie. "123.123.123.1", ip of the host this is running on, if use_with_pgpool)
 # RUN_AS_DEVELOPMENT (ie. "1", if set the database will be insecure)
 # SUPERUSER_USERNAME (ie. "superuser")
 # SUPERUSER_PASSWORD (ie. "abcdabcd1234")

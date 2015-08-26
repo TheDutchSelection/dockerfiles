@@ -105,7 +105,7 @@ create_backend_settings () {
         local backend=${backend//\#\#host_ip\#\#/"$host"}
         local backend=${backend//\#\#host_port\#\#/"$port"}
         local backend=${backend//\#\#host_weight\#\#/"$weight"}
-        local backend=${backend//\#\#host_data_directory\#\#/"$data_directory"}
+        local backend=${backend//\#\#host_data_directory\#\#/"$BACKEND_DATA_DIRECTORY"}
         local backend=${backend//\#\#host_flag\#\#/"$flag"}
 
         local backends="$backends"$'\n'"$backend"$'\n'

@@ -3,6 +3,7 @@
 # DESCRIPTION: Pgpool-II image.
 #
 # REQUIRED ENVS:
+# BACKEND_DATA_DIRECTORY (ie. "/home/postgres/data/", this is the data directory on the postgresql container)
 # DATA_DIRECTORY (ie. "/home/pgpool/data/")
 # SWITCHABLE_IP (ie. "123.123.123.123")
 # HEALTH_CHECK_USER (ie. "health_checker", user should exist in postgresql)

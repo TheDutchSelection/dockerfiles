@@ -66,6 +66,7 @@ RUN \
   make install && \
   mkdir -p /etc/pgpool && \
   mkdir -p /var/run/pgpool && \
+  mkdir -p /var/log/pgpool && \
   ln -s /bin/bash /sbin/bash && \
   rm -rf /tmp/*
 
@@ -80,6 +81,7 @@ RUN \
   chmod 640 /etc/pgpool/pool_hba.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R pgpool:pgpool /etc/pgpool && \
+  chown -R pgpool:pgpool /var/log/pgpool && \
   chown -R pgpool:pgpool /var/run/pgpool && \
   chown pgpool:pgpool /usr/local/bin/*
 

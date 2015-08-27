@@ -45,6 +45,7 @@ RUN \
   apt-get install -yq net-tools && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq curl && \
+  apt-get install -yq nano && \
   apt-get install -yq libpgpool0 && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

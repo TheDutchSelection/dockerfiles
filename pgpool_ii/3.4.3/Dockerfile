@@ -82,6 +82,9 @@ RUN \
   chmod 640 /etc/pgpool/pgpool_template.conf && \
   chmod 640 /etc/pgpool/pool_hba.conf && \
   chmod +x /usr/local/bin/run.sh && \
+  chmod +x /usr/local/bin/copy_base_backup.sh && \
+  chmod +x /usr/local/bin/pgpool_recovery_pitr.sh && \
+  chmod +x /usr/local/bin/pgpool_remote_start && \
   chown -R postgres:postgres /etc/pgpool && \
   chown -R postgres:postgres /var/log/pgpool && \
   chown -R postgres:postgres /var/run/pgpool && \

@@ -66,7 +66,7 @@ init_data_directory_and_create_superuser() {
     done
 
     sleep 2
-    
+
     if [[ ! -z "$SUPERUSER_USERNAME" ]]; then
       echo "creating superuser $SUPERUSER_USERNAME..."
       psql -q <<-EOF
@@ -95,11 +95,6 @@ EOF
 
       echo "applying pgpool-recovery sql to template1"
       psql -f /usr/local/share/pgpool-II/pgpool-recovery/pgpool-recovery.sql template1
-
-      echo "copying pgpool recovery scripts..."
-      cp /usr/local/bin/copy_base_backup.sh "$DATA_DIRECTORY"
-      cp /usr/local/bin/pgpool_recovery_pitr.sh "$DATA_DIRECTORY"
-      cp /usr/local/bin/pgpool_remote_start.sh "$DATA_DIRECTORY"
     fi
 
     echo "vacuum freeze template1..."

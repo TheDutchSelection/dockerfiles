@@ -274,7 +274,7 @@ perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destinat
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
 echo "starting pgpool..."
-/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -n &
+/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -n -d &
 
 # wait for the pid of this file to end
 wait $!

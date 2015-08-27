@@ -38,6 +38,7 @@ RUN \
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
   echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
   apt-get update && \
+  useradd -m -u 5432 postgres && \
   apt-get install -yq postgresql-client-9.4 && \
   apt-get install -yq postgresql-server-dev-9.4 && \
   apt-get install -yq arping && \
@@ -45,7 +46,6 @@ RUN \
   apt-get install -yq libpq-dev && \
   apt-get install -yq curl && \
   apt-get install -yq libpgpool0 && \
-  useradd -m -u 5432 postgres && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

@@ -45,7 +45,7 @@ RUN \
   apt-get install -yq libpq-dev && \
   apt-get install -yq curl && \
   apt-get install -yq libpgpool0 && \
-  useradd -m -u 9999 pgpool && \
+  useradd -m -u 5432 postgres && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -81,16 +81,16 @@ RUN \
   chmod 640 /etc/pgpool/pgpool_template.conf && \
   chmod 640 /etc/pgpool/pool_hba.conf && \
   chmod +x /usr/local/bin/run.sh && \
-  chown -R pgpool:pgpool /etc/pgpool && \
-  chown -R pgpool:pgpool /var/log/pgpool && \
-  chown -R pgpool:pgpool /var/run/pgpool && \
-  chown pgpool:pgpool /usr/local/bin/*
+  chown -R postgres:postgres /etc/pgpool && \
+  chown -R postgres:postgres /var/log/pgpool && \
+  chown -R postgres:postgres /var/run/pgpool && \
+  chown postgres:postgres /usr/local/bin/*
 
 EXPOSE 9000
 EXPOSE 9694
 EXPOSE 9898
 EXPOSE 9999
 
-USER pgpool
+USER postgres
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

@@ -238,6 +238,11 @@ echo "copy pcp.conf and pgpool.conf files..."
 cp -p /etc/pgpool/pcp_template.conf /etc/pgpool/pcp.conf
 cp -p /etc/pgpool/pgpool_template.conf /etc/pgpool/pgpool.conf
 
+echo "copying pgpool recovery scripts to $BACKEND_DATA_DIRECTORY ..."
+cp /usr/local/bin/copy_base_backup.sh "$BACKEND_DATA_DIRECTORY"
+cp /usr/local/bin/pgpool_recovery_pitr.sh "$BACKEND_DATA_DIRECTORY"
+cp /usr/local/bin/pgpool_remote_start "$BACKEND_DATA_DIRECTORY"
+
 echo "creating pool_passwd file..."
 create_pool_passwd_file
 

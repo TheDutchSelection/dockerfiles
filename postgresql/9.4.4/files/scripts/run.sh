@@ -51,6 +51,31 @@ create_authentication_settings () {
   echo "$authentication_settings"
 }
 
+create_postgresql_conf () {
+  set -e
+
+  local escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
+
+  sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/postgresql.conf
+  if [[ ! -z "$AWS_S3_WALE_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_S3_WALE_SECRET_ACCESS_KEY" ]]; then
+    # set environment variables matching WAL-E preferences
+    AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
+    WALE_S3_PREFIX="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_PATH"
+    export "$AWS_ACCESS_KEY_ID"
+    export "$AWS_SECRET_ACCESS_KEY"
+    export "$WALE_S3_PREFIX"
+
+    local archive_mode="on"
+    local archive_command="wal-e wal-push %p"
+  else
+    local archive_mode="off"
+    local archive_command=""
+  fi
+  sed -i "s/##archive_mode##/$archive_mode/g" /etc/postgresql/postgresql.conf
+  sed -i "s/##archive_command##/$archive_command/g" /etc/postgresql/postgresql.conf
+}
+
 # description: init the data directory and create the superuser
 init_data_directory_and_create_superuser() {
   # if data directory exist, we asume the superuser is also already created and the pgpool sql has been applied
@@ -109,24 +134,24 @@ EOF
 # remove any existing postgresql pid
 rm -f /run/postgresql/*
 
-echo "copy postgresql.conf file..."
-cp -p /etc/postgresql/9.4/main/postgresql_template.conf /etc/postgresql/9.4/main/postgresql.conf
-cp -p /etc/postgresql/9.4/main/pg_hba_template.conf /etc/postgresql/9.4/main/pg_hba.conf
-
-escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
-authentication_settings=$(create_authentication_settings)
-escaped_authentication_settings=$(escape_string "$authentication_settings")
+echo "copy conf files.."
+cp -p /etc/postgresql/9.4/main/postgresql_template.conf /etc/postgresql/postgresql.conf
+cp -p /etc/postgresql/9.4/main/pg_hba_template.conf /etc/postgresql/pg_hba.conf
 
 echo "set values to postgresql.conf file..."
-sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/9.4/main/postgresql.conf
-perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/9.4/main/pg_hba.conf
+create_postgresql_conf
+
+echo "set values to pg_hba.conf..."
+authentication_settings=$(create_authentication_settings)
+escaped_authentication_settings=$(escape_string "$authentication_settings")
+perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/pg_hba.conf
 
 init_data_directory_and_create_superuser &
 
 sleep 2
 
 echo "starting postgresql..."
-/usr/lib/postgresql/9.4/bin/postgres -c config_file=/etc/postgresql/9.4/main/postgresql.conf &
+/usr/lib/postgresql/9.4/bin/postgres -c config_file=/etc/postgresql/postgresql.conf &
 
 # wait for the pid of this file to end
 wait $!

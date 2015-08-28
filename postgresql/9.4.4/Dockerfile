@@ -18,7 +18,7 @@
 #
 # OTHER:
 # PGPool II is also installed to be able to use the functions it comes with for Postgresql. PGPool itself is not to be
-# used from this image. The WAL-E variables activate archiving to S# (archiving will otherwise be off)
+# used from this image. The WAL-E variables activate archiving to S3 (archiving will otherwise be off)
 
 
 FROM thedutchselection/debian:8.1
@@ -35,6 +35,9 @@ RUN \
   apt-get install -yq postgresql-client-9.4 && \
   apt-get install -yq postgresql-contrib-9.4 && \
   apt-get install -yq postgresql-server-dev-9.4 && \
+  apt-get install -yq curl && \
+  apt-get install -yq lzop && \
+  apt-get install -yq pv && \
   apt-get install -yq python && \
   apt-get install -yq python-dev && \
   apt-get install -yq inotify-tools && \
@@ -65,6 +68,8 @@ RUN \
   curl -O https://bootstrap.pypa.io/get-pip.py && \
   python get-pip.py && \
   rm get-pip.py && \
+  pip install gevent==1.0.2 && \
+  pip install boto==2.38.0 && \
   pip install wal-e==0.8.1
 
 ADD files/pg_hba_template.conf /etc/postgresql/

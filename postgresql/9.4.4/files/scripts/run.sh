@@ -135,8 +135,8 @@ EOF
 rm -f /run/postgresql/*
 
 echo "copy conf files.."
-cp -p /etc/postgresql/9.4/main/postgresql_template.conf /etc/postgresql/postgresql.conf
-cp -p /etc/postgresql/9.4/main/pg_hba_template.conf /etc/postgresql/pg_hba.conf
+cp -p /etc/postgresql/postgresql_template.conf /etc/postgresql/postgresql.conf
+cp -p /etc/postgresql/pg_hba_template.conf /etc/postgresql/pg_hba.conf
 
 echo "set values to postgresql.conf file..."
 create_postgresql_conf

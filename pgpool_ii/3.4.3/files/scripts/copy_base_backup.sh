@@ -3,11 +3,10 @@ set -e
 
 data_directory=$1
 recovery_target=$2
-recovery_data_directory="/tmp"
 
-echo "psql select pgpool-recovery..."
+echo "pg_start_backup..."
 /usr/bin/psql -c "select pg_start_backup('pgpool-recovery')" postgres
-#echo "restore_command = '/usr/bin/ssh -T ""$HOST_IP"" \'mkdir -p /tmp/archive_log;docker run --volumes-from postgresql_master_data --rm -v /tmp/archive_log:/tmp/archive_log --entrypoint=\"cp ""$data_directory""archive_log/*" "/tmp/archive_log/\" thedutchselection/data:latest\';/usr/bin/scp ""$HOST_IP"":""$data_directory""archive_log/%f %p" > "$data_directory""recovery.conf"
-#/bin/tar -C "$data_directory" -zcf pgsql.tar.gz "$data_directory"
-#/usr/bin/psql -c 'select pg_stop_backup()' postgres
-#/usr/bin/scp pgsql.tar.gz $recovery_target:$recovery_data_directory
+echo "restore_command = 'wal-e wal-fetch %f %p'" > "$data_directory""recovery.conf"
+wal-e --s3-prefix="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP" backup-push "$data_directory"
+/usr/bin/psql -c 'select pg_stop_backup()' postgres
+rm "$data_directory""recovery.conf"

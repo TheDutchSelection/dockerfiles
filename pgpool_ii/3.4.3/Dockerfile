@@ -23,13 +23,18 @@
 # WATCHDOG_TRUSTED_SERVERS (ie. "123.123.123.123,234.234.234.234", to check if this pgpool is online)
 #
 # OPTIONAL ENVS:
+# AWS_S3_WALE_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3")
+# AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup")
+# AWS_S3_WALE_BUCKET_PATH (ie. "postgresql/[host]/" ending with a slash)
+# AWS_S3_WALE_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
 # HETZNER_WEBSERVICE_PASSWORD (ie. "hetzner_api_password", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # HETZNER_WEBSERVICE_USERNAME (ie. "hetzner_api_user", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # PCP_PASSWORD (ie. "faer3wgrsear4regtds")
 # PCP_USERNAME (ie. "pcp_user")
 # WATCHDOG_AUTHKEY (ie. "bgerseawfsmkf", should be the same for all pgpools)
 #
-# OTHER:
+# OTHER: The WAL-E variables make online recovery possible through S3. This is the only way of online recovery
+# implemented.
 
 FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
@@ -45,6 +50,10 @@ RUN \
   apt-get install -yq net-tools && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq curl && \
+  apt-get install -yq lzop && \
+  apt-get install -yq pv && \
+  apt-get install -yq python && \
+  apt-get install -yq python-dev && \
   apt-get install -yq nano && \
   apt-get install -yq libpgpool0 && \
   apt-get clean && \
@@ -89,6 +98,14 @@ RUN \
   chown -R postgres:postgres /var/log/pgpool && \
   chown -R postgres:postgres /var/run/pgpool && \
   chown postgres:postgres /usr/local/bin/*
+
+RUN \
+  curl -O https://bootstrap.pypa.io/get-pip.py && \
+  python get-pip.py && \
+  rm get-pip.py && \
+  pip install gevent==1.0.2 && \
+  pip install boto==2.38.0 && \
+  pip install wal-e==0.8.1
 
 EXPOSE 9000
 EXPOSE 9694

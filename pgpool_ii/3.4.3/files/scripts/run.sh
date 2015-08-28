@@ -273,8 +273,16 @@ perl -i -pe 's/##backend_settings##/'"${escaped_backend_settings}"'/g' /etc/pgpo
 perl -i -pe 's/##heartbeat_destination_settings##/'"${escaped_heartbeat_destination_settings}"'/g' /etc/pgpool/pgpool.conf
 perl -i -pe 's/##other_pgpool_settings##/'"${escaped_other_pgpool_settings}"'/g' /etc/pgpool/pgpool.conf
 
+if [[ ! -z "$AWS_S3_WALE_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_S3_WALE_SECRET_ACCESS_KEY" ]]; then
+  echo "setting wall-e variables..."
+  AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
+  AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
+  export "$AWS_ACCESS_KEY_ID"
+  export "$AWS_SECRET_ACCESS_KEY"
+fi
+
 echo "starting pgpool..."
-/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -n -d &
+/usr/local/bin/pgpool -f /etc/pgpool/pgpool.conf -F /etc/pgpool/pcp.conf -a /etc/pgpool/pool_hba.conf -n &
 
 # wait for the pid of this file to end
 wait $!

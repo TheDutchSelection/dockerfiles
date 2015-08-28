@@ -61,7 +61,7 @@ create_postgresql_conf () {
     # set environment variables matching WAL-E preferences
     AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
     AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
-    if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" =="/" ]]; then
+    if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" == "/" ]]; then
       WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP""\""
     else
       WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP""\""

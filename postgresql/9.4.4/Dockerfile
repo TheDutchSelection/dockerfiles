@@ -8,7 +8,7 @@
 # OPTIONAL ENVS:
 # AWS_S3_WALE_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3")
 # AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup")
-# AWS_S3_WALE_BUCKET_BASE_PATH (ie. "postgresql/[host]/" ending with a slash)
+# AWS_S3_WALE_BUCKET_BASE_PATH (ie. "postgresql/" ending with a slash)
 # AWS_S3_WALE_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
 # HOST_IP (ie. "123.123.123.1", ip of the host this is running on, if use_with_pgpool or WAL-E)
 # RUN_AS_DEVELOPMENT (ie. "1", if set the database will be insecure)

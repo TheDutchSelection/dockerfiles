@@ -25,7 +25,7 @@
 # OPTIONAL ENVS:
 # AWS_S3_WALE_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3")
 # AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup")
-# AWS_S3_WALE_BUCKET_PATH (ie. "postgresql/[host]/" ending with a slash)
+# AWS_S3_WALE_BUCKET_PATH (ie. "postgresql/" ending with a slash)
 # AWS_S3_WALE_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
 # HETZNER_WEBSERVICE_PASSWORD (ie. "hetzner_api_password", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # HETZNER_WEBSERVICE_USERNAME (ie. "hetzner_api_user", only needed if WATCHDOG_SWITCH_METHOD is hetzner)

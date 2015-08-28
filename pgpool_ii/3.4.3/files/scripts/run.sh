@@ -277,8 +277,8 @@ if [[ ! -z "$AWS_S3_WALE_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! 
   echo "setting wall-e variables..."
   AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
   AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
-  export "$AWS_ACCESS_KEY_ID"
-  export "$AWS_SECRET_ACCESS_KEY"
+  export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+  export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
 fi
 
 echo "starting pgpool..."

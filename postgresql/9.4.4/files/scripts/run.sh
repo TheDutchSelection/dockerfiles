@@ -65,10 +65,11 @@ create_postgresql_conf () {
       WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP""\""
     else
       WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP""\""
+      WALE_S3_PREFIX=\"s3://<bucketname>/<path>\"
     fi
-    export "$AWS_ACCESS_KEY_ID"
-    export "$AWS_SECRET_ACCESS_KEY"
-    export "$WALE_S3_PREFIX"
+    export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+    export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+    export WALE_S3_PREFIX="$WALE_S3_PREFIX"
 
     local archive_mode="on"
     local archive_command="wal-e wal-push %p"

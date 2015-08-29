@@ -75,8 +75,11 @@ create_postgresql_conf () {
     local archive_mode="off"
     local archive_command=""
   fi
+
+  escaped_archive_command=$(escape_string "$archive_command")
+
   sed -i "s/##archive_mode##/$archive_mode/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##archive_command##/$archive_command/g" /etc/postgresql/postgresql.conf
+  sed -i "s/##archive_command##/$escaped_archive_command/g" /etc/postgresql/postgresql.conf
 }
 
 # description: init the data directory and create the superuser

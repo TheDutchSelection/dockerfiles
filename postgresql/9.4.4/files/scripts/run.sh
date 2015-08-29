@@ -51,26 +51,30 @@ create_authentication_settings () {
   echo "$authentication_settings"
 }
 
+create_wale_prefix () {
+  set -e
+
+  if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" == "/" ]]; then
+    local wale_s3_prefix="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP"
+  else
+    local wale_s3_prefix"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP"
+  fi
+
+  echo "$wale_s3_prefix"
+}
+
 create_postgresql_conf () {
   set -e
 
   local escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
+  local archive_dummy_directory="$DATA_DIRECTORY""pg_xlog/dummy_archive/"
 
   sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/postgresql.conf
-  if [[ ! -z "$AWS_S3_WALE_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_S3_WALE_SECRET_ACCESS_KEY" ]]; then
-    # set environment variables matching WAL-E preferences
-    AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
-    AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
-    if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" == "/" ]]; then
-      local wale_s3_prefix="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP"
-    else
-      local wale_s3_prefix"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP"
-    fi
-    export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-    export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" ]]; then
+    local wale_s3_prefix=$(create_wale_prefix)
 
     local archive_mode="on"
-    local archive_command="wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p"
+    local archive_command="rm -f ""$archive_dummy_directory"" && wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p && ""mkdir -p ""$archive_dummy_directory"" && dd if=/dev/zero of=""$archive_dummy_directory""%f bs=1k count=1"
   else
     local archive_mode="off"
     local archive_command=""
@@ -137,6 +141,21 @@ EOF
   fi
 }
 
+periodically_backup () {
+  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
+    while true; do
+      sleep 45
+
+      local current_time=$(date +"%H:%M")
+      if [[ "$current_time" == "$BACKUP_EXECUTION_TIME" ]]; then
+        local wale_s3_prefix=$(create_wale_prefix)
+        wal-e --s3-prefix="$wale_s3_prefix" backup-push "$DATA_DIRECTORY"
+        wal-e delete --confirm retain 30
+      fi
+    done
+  fi
+}
+
 # remove any existing postgresql pid
 rm -f /run/postgresql/*
 
@@ -155,6 +174,11 @@ perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"
 init_data_directory_and_create_superuser &
 
 sleep 2
+
+if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
+  echo "start periodically backup at $BACKUP_EXECUTION_TIME""h..."
+  periodically_backup &
+fi
 
 echo "starting postgresql..."
 /usr/lib/postgresql/9.4/bin/postgres -c config_file=/etc/postgresql/postgresql.conf &

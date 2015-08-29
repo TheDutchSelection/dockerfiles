@@ -23,10 +23,10 @@
 # WATCHDOG_TRUSTED_SERVERS (ie. "123.123.123.123,234.234.234.234", to check if this pgpool is online)
 #
 # OPTIONAL ENVS:
-# AWS_S3_WALE_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3")
+# AWS_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3")
 # AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup")
 # AWS_S3_WALE_BUCKET_PATH (ie. "postgresql/" ending with a slash)
-# AWS_S3_WALE_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
+# AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
 # HETZNER_WEBSERVICE_PASSWORD (ie. "hetzner_api_password", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # HETZNER_WEBSERVICE_USERNAME (ie. "hetzner_api_user", only needed if WATCHDOG_SWITCH_METHOD is hetzner)
 # PCP_PASSWORD (ie. "faer3wgrsear4regtds")
@@ -34,7 +34,7 @@
 # WATCHDOG_AUTHKEY (ie. "bgerseawfsmkf", should be the same for all pgpools)
 #
 # OTHER: The WAL-E variables make online recovery possible through S3. This is the only way of online recovery
-# implemented.
+# implemented. So if the variables are left out, no online recovery is possible.
 
 FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

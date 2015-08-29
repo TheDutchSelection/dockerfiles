@@ -62,17 +62,15 @@ create_postgresql_conf () {
     AWS_ACCESS_KEY_ID="$AWS_S3_WALE_ACCESS_KEY_ID"
     AWS_SECRET_ACCESS_KEY="$AWS_S3_WALE_SECRET_ACCESS_KEY"
     if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" == "/" ]]; then
-      WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP""\""
+      local wale_s3_prefix="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP"
     else
-      WALE_S3_PREFIX="\"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP""\""
-      WALE_S3_PREFIX=\"s3://<bucketname>/<path>\"
+      local wale_s3_prefix"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP"
     fi
     export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
     export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
-    export WALE_S3_PREFIX="$WALE_S3_PREFIX"
 
     local archive_mode="on"
-    local archive_command="wal-e wal-push %p"
+    local archive_command="wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p"
   else
     local archive_mode="off"
     local archive_command=""

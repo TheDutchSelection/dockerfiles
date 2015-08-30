@@ -74,7 +74,7 @@ create_postgresql_conf () {
     local wale_s3_prefix=$(create_wale_prefix)
 
     local archive_mode="on"
-    local archive_command="rm -f ""$archive_dummy_directory"" \&\& wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p \&\& ""mkdir -p ""$archive_dummy_directory"" \&\& dd if=/dev/zero of=""$archive_dummy_directory""%f bs=1k count=1"
+    local archive_command="rm -rf ""$archive_dummy_directory"" \&\& wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p \&\& ""mkdir -p ""$archive_dummy_directory"" \&\& dd if=/dev/zero of=""$archive_dummy_directory""%f bs=1k count=1"
   else
     local archive_mode="off"
     local archive_command=""

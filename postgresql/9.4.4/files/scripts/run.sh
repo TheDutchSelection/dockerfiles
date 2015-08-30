@@ -14,7 +14,7 @@ escape_string () {
 
   partially_escaped_string=$(sed 's/\//\\\//g' <<< "$string_to_escape")
   partially_escaped_string=$(sed ':a;N;$!ba;s/\n/\\n/g' <<< "$partially_escaped_string")
-  partially_escaped_string=$(sed 's/\&/\\\&/g' <<< "$partially_escaped_string")
+  partially_escaped_string=$(sed 's/\&/\\\\\&/g' <<< "$partially_escaped_string")
   escaped_string=$(sed 's/\$/\\$/g' <<< "$partially_escaped_string")
 
   echo "$escaped_string"

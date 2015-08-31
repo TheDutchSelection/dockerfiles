@@ -1,7 +1,4 @@
 #! /bin/bash
 set -e
 
-recovery_target=$1
-recovery_data_directory=$2
-
-echo "fetch backup on lost node and start lost node..."
+echo "Bring the lost node up-to-date and make sure it runs, see the PostgreSQL docker file for instructions..."

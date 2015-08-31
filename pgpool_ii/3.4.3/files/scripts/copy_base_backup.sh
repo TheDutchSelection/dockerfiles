@@ -13,13 +13,5 @@ create_wale_prefix () {
   echo "$wale_s3_prefix"
 }
 
-/usr/bin/psql -c "select pg_start_backup('pgpool-recovery')" postgres
-
-echo "restore_command = 'wal-e wal-fetch %f %p'" > "$data_directory""recovery.conf"
-
 wale_s3_prefix=$(create_wale_prefix)
 wal-e --s3-prefix="$wale_s3_prefix" backup-push "$DATA_DIRECTORY"
-
-/usr/bin/psql -c 'select pg_stop_backup()' postgres
-
-rm "$DATA_DIRECTORY""recovery.conf"

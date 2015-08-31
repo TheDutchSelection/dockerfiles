@@ -150,7 +150,7 @@ periodically_backup () {
       if [[ "$current_time" == "$BACKUP_EXECUTION_TIME" ]]; then
         local wale_s3_prefix=$(create_wale_prefix)
         wal-e --s3-prefix="$wale_s3_prefix" backup-push "$DATA_DIRECTORY"
-        wal-e delete --confirm retain 30
+        wal-e --s3-prefix="$wale_s3_prefix" delete --confirm retain 30
       fi
     done
   fi

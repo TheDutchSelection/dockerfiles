@@ -22,7 +22,7 @@
 # used from this image. The WAL-E variables activate archiving to S3 (archiving will otherwise be off)
 #
 # Instructions for recovery using wale:
-# - Make sure PostgreSQL container is not running, "systemctl stop postgresql_master_restarter", "systemctl stop postgresql_master"
+# - Make sure PostgreSQL container is not running "systemctl stop postgresql_master"
 # - Throw away current data container "docker rm postgresql_master_data"
 # - Create new data container "systemctl start postgresql_master"
 # - Stop PostgreSQL again "systemctl stop postgresql_master"
@@ -96,10 +96,7 @@ RUN \
   chmod 644 /etc/postgresql/postgresql_template.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R postgres:postgres /etc/postgresql && \
-  chown -R postgres:postgres /usr/lib/postgresql/9.4/bin && \
   chown postgres:postgres /usr/local/bin/*
-
-ENV PATH /usr/lib/postgresql/9.4/bin;$PATH
 
 EXPOSE 5432
 

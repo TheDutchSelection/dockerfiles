@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres" SIGTERM
+trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres; exit 0" SIGTERM
 
 read -r -d '' authentication_setting_base << EOM || true
 ##type##  ##database##  ##user##  ##address## ##auth_method##

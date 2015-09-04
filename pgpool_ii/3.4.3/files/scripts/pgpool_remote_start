@@ -1,4 +1,19 @@
 #! /bin/bash
 set -e
 
-echo "Bring the lost node up-to-date and make sure it runs, see the PostgreSQL docker file for instructions..."
+recovery_target=$1
+
+echo "bring the lost node $recovery_target up-to-date and make sure it runs, see the PostgreSQL docker file for instructions..."
+
+echo "waiting for $recovery_target on port 5432 or 15432 to come up..."
+end_loop="false"
+while [[ ! "$end_loop" == "true" ]]; do
+  result_1=$(pg_isready -h $recovery_target -p 5432)
+  result_2=$(pg_isready -h $recovery_target -p 15432)
+  if [[ "$result_1" == *"accepting connections"* || $result_2" == *"accepting connections"* ]]; then
+    echo "$recovery_target is up!"
+    end_loop="true"
+  else
+    sleep 2
+  fi
+done

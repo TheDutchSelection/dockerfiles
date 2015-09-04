@@ -35,6 +35,14 @@
 #
 # OTHER: The WAL-E variables make online recovery possible through S3. This is the only way of online recovery
 # implemented. So if the variables are left out, no online recovery is possible.
+#
+# Instructions to bring back a lost node:
+# - Go inside a PGPool container "docker exec -it pgpool_ii bash".
+# - Check which node is lost (status 3): "pcp_node_info --verbose 10000 localhost 9898 [pcp_username] [pcp_password] 1".
+# - Make sure the postgresql container on the lost node is shut down.
+# - Bring the lost node back with "pcp_recovery_node -d 10000 localhost 9898 [pcp_username] [pcp_password] 1".
+# - You have to manually bring the postgresql container back after this, see PostgreSQL dockerfile for instructions.
+
 
 FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

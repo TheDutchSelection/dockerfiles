@@ -92,10 +92,11 @@ ADD files/scripts /usr/local/bin
 
 RUN \
   chmod 640 /etc/postgresql/pg_hba_template.conf && \
-  chmod 640 /etc/postgresql//pg_ident.conf && \
+  chmod 640 /etc/postgresql/pg_ident.conf && \
   chmod 644 /etc/postgresql/postgresql_template.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R postgres:postgres /etc/postgresql && \
+  chown -R postgres:postgres /usr/lib/postgresql/9.4/bin && \
   chown postgres:postgres /usr/local/bin/*
 
 ENV PATH /usr/lib/postgresql/9.4/bin;$PATH

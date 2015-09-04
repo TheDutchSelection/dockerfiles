@@ -39,7 +39,7 @@
 # Instructions to bring back a lost node:
 # - Go inside a PGPool container "docker exec -it pgpool_ii bash".
 # - Check which node is lost (status 3): "pcp_node_info --verbose 10000 localhost 9898 [pcp_username] [pcp_password] 1".
-# - Make sure the postgresql container on the lost node is shut down.
+# - Make sure the postgresql container on the lost node is shut down and a new data container is up.
 # - Bring the lost node back with "pcp_recovery_node -d 10000 localhost 9898 [pcp_username] [pcp_password] 1".
 # - You have to manually bring the postgresql container back after this, see PostgreSQL dockerfile for instructions.
 

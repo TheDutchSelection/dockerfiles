@@ -8,9 +8,9 @@ echo "bring the lost node $recovery_target up-to-date and make sure it runs, see
 echo "waiting for $recovery_target on port 5432 or 15432 to come up..."
 end_loop="false"
 while [[ ! "$end_loop" == "true" ]]; do
-  result_1=$(pg_isready -h $recovery_target -p 5432)
-  result_2=$(pg_isready -h $recovery_target -p 15432)
-  if [[ "$result_1" == *"accepting connections"* || $result_2" == *"accepting connections"* ]]; then
+  result_1=$(pg_isready -h $recovery_target -p 5432; exit 0;)
+  result_2=$(pg_isready -h $recovery_target -p 15432; exit 0;)
+  if [[ "$result_1" == *"accepting connections"* || "$result_2" == *"accepting connections"* ]]; then
     echo "$recovery_target is up!"
     end_loop="true"
   else

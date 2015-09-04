@@ -22,16 +22,17 @@
 # used from this image. The WAL-E variables activate archiving to S3 (archiving will otherwise be off)
 #
 # Instructions for recovery using wale:
-# - Make sure PostgreSQL container is not running "systemctl stop postgresql_master"
+# - Make sure PostgreSQL container is not running, "systemctl disable postgresql_master", "systemctl stop postgresql_master"
 # - Throw away current data container "docker rm postgresql_master_data"
-# - Create new data container "systemctl start postgresql_master"
-# - Stop PostgreSQL again "systemctl stop postgresql_master"
+# - Create new data container "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master"
+# - Stop PostgreSQL again "systemctl disable postgresql_master", "systemctl stop postgresql_master"
 # - Start a container to execute backup commands "docker run -it --rm --entrypoint="bash" --volumes-from postgresql_master_data thedutchselection/postgresql:9.4.4"
 # - Set the following envs (export AWS_ACCESS_KEY_ID=""), DATA_DIRECTORY, AWS_ACCESS_KEY_ID, AWS_S3_WALE_BUCKET_NAME,
 #   AWS_S3_WALE_BUCKET_BASE_PATH, AWS_SECRET_ACCESS_KEY, HOST_IP (this has to be the ip of the server that servers as current master)
-# - Run "wal-e --s3-prefix=s3://tds-database-backups/5.9.222.251 backup-fetch "$DATA_DIRECTORY" LATEST"
-# - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/5.9.222.251 wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
-# - Start PostgreSQL "systemctl start postgresql_master" and everything should run fine.
+# - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST"
+# - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
+# - Exit this container.
+# - Start PostgreSQL "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master" and everything should run fine.
 
 
 FROM thedutchselection/debian:8.1

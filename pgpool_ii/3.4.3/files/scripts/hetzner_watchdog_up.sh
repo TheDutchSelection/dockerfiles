@@ -10,7 +10,7 @@ switch_ip () {
 echo "switching ip $SWITCHABLE_IP to server $HOST_IP ..."
 
 counter=0
-while [[ "$counter" < 10 ]]; do
+while [[ "$counter" -lt 10 ]]; do
   switch_result=$(switch_ip)
   echo "$switch_result"
   if [[ "$switch_result" == *"error"* && "$switch_result" != *"FAILOVER_ALREADY_ROUTED"* ]]; then

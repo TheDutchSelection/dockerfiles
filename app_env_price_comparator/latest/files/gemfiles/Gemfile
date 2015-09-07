@@ -64,6 +64,7 @@ group :development, :test do
   gem 'unicorn-rails'
   gem 'rack_session_access', '0.1.1'
   gem 'vcr', git: 'https://github.com/vcr/vcr.git', branch: 'master' # we need a fix for faraday which will be in 2.9.4
+  gem 'jasmine-rails'
   # gem 'rack-mini-profiler', require: false
 end
 

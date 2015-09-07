@@ -1,4 +1,4 @@
-# NAME: Elasticsearch 1.5.0
+# NAME: Elasticsearch 1.7.1
 #
 # DESCRIPTION: Elasticsearch image.
 #
@@ -13,28 +13,34 @@
 # PATH_DATA (ie. "/home/elastic/data/data")
 # PATH_WORK (ie. "/home/elastic/data/work")
 # PATH_LOGS (ie. "/home/elastic/data/logs")
+# PATH_REPO (ie. "/home/elastic/data/backups")
 # PUBLISH_HOST (ie. "10.0.4.3")
 # TRANSPORT_PORT (ie. "9300")
 # HTTP_PORT  (ie. "9200")
 #
 # OPTIONAL ENVS:
-# EXTRA_MASTER_AVZONES (when there are masters in other avzones, ie. "doa3 vla1")
 # ELASTICSEARCH_MASTER_[APP_ID]_HOST_PRIVATE_IP (ie. "10.0.4.3")
 # ELASTICSEARCH_MASTER_[APP_ID]_HOST_PUBLIC_IP (ie. "10.0.4.3")
 # ELASTICSEARCH_MASTER_[APP_ID]_HOST_PORT_PEER (ie. "9300")
 #
 # OTHER:
+# To upgrade nodes, first disable shard reallocation:
+# curl -XPUT localhost:9200/_cluster/settings -d '{"transient":{"cluster.routing.allocation.enable":"none"}}'
+# Then shutdown node, upgrade, confirm it joins the cluster, reenable shard reallocation:
+# curl -XPUT localhost:9200/_cluster/settings -d '{"transient":{"cluster.routing.allocation.enable":"all"}}'
+# Observe that all shards are properly allocated on all nodes. Balancing may take some time. Repeat this process for all
+# remaining nodes.
 
 FROM thedutchselection/java:8
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-ADD https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.5.0.tar.gz /tmp/
+ADD https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.1.tar.gz /tmp/
 
 WORKDIR /tmp
 
 RUN \
-  tar xvzf elasticsearch-1.5.0.tar.gz && \
-  mv /tmp/elasticsearch-1.5.0 /usr/local/bin/elasticsearch && \
+  tar xvzf elasticsearch-1.7.1.tar.gz && \
+  mv /tmp/elasticsearch-1.7.1 /usr/local/bin/elasticsearch && \
   useradd -m -u 9200 elastic
 
 ADD files/elasticsearch.yml /usr/local/bin/elasticsearch/config/

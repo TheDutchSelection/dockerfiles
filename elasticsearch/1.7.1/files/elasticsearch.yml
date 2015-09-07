@@ -166,6 +166,8 @@ path.logs: ${PATH_LOGS}
 #
 #path.plugins: /path/to/plugins
 
+# Snapshot path
+path.repo: ${PATH_REPO}
 
 #################################### Plugin ###################################
 

@@ -11,6 +11,7 @@
 # STORAGE_SIZE (ie. "20G", size varnish can use on disk)
 #
 # OPTIONAL ENVS:
+# CACHE_AUTHENTICATION_HEADERS (ie. "1", if you want to cache requests with authentication headers)
 # KEEP_CLIENT_COOKIES_AND_AUTH_PATHS (ie. "/contact /other-page-where-clients-needs-to-send-auth-or-cookies")
 #
 # OTHER:

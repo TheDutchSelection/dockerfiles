@@ -243,7 +243,7 @@ create_vcl_recv_unsets () {
         local vcl_recv_unsets="$vcl_recv_unsets"" && !(req.url ~ \"^""$path""\")"
       fi
     done
-    local vcl_recv_unsets="$vcl_recv_unsets"") {"$'\n'"$unset_rules"$'\n'"  }"
+    local vcl_recv_unsets="$vcl_recv_unsets"") {""$unset_rules"$'\n'"  }"
   fi
 
   echo "$vcl_recv_unsets"
@@ -323,10 +323,10 @@ create_vcl_backend_fetch () {
 
   if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
     local vcl_backend_fetch="sub vcl_backend_fetch {"
-    local vcl_backend_fetch="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
-    local vcl_backend_fetch="$vcl_hash"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
-    local vcl_backend_fetch="$vcl_hash"$'\n'"  }"
-    local vcl_backend_fetch="$vcl_hash"$'\n'"}"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  if (req.http.X-Authorization) {"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  }"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"}"
   fi
 
   echo "$vcl_backend_fetch"
@@ -351,7 +351,7 @@ create_config_file () {
   local backends=$(create_backends)
   local vcl_init=$(create_vcl_init "$backends")
   local vcl_recv=$(create_vcl_recv "$vcl_init")
-  local vcl_hash=$(create_vcl_hash "$vcl_hash")
+  local vcl_hash=$(create_vcl_hash)
   local vcl_deliver=$(create_vcl_deliver)
   local vcl_synth=$(create_vcl_synth)
   local vcl_backend_fetch=$(create_vcl_backend_fetch)

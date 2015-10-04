@@ -323,8 +323,8 @@ create_vcl_backend_fetch () {
 
   if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
     local vcl_backend_fetch="sub vcl_backend_fetch {"
-    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  if (req.http.X-Authorization) {"
-    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  if (bereq.http.X-Authorization) {"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"    set bereq.http.Authorization = bereq.http.X-Authorization;"
     local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  }"
     local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"}"
   fi

@@ -57,12 +57,12 @@ sub vcl_deliver {
     unset resp.http.magicmarker;
     set resp.http.X-Varnish-Age = resp.http.age;
     if (##long_term_client_cache_matches##) {
-      set resp.http.cache-control = "public, max-age=31536000";
+      set resp.http.Cache-Control = "public, max-age=31536000";
     }
     else {
       set resp.http.X-Varnish-Age = resp.http.age;
-      set resp.http.cache-control = "private, max-age=0, no-cache";
-      set resp.http.age = "0";
+      set resp.http.Cache-Control = "private, max-age=0, no-cache";
+      set resp.http.Age = "0";
     }
   }
 }
@@ -184,7 +184,7 @@ create_vcl_init () {
       local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')
       # new app
       if [[ "$app" != "$last_app" ]]; then
-        local vcl_init="$vcl_init"$'\n'$'\n'"  new ""$app"" = directors.round_robin();"
+        local vcl_init="$vcl_init"$'\n'"  new ""$app"" = directors.round_robin();"
         local last_app="$app"
       fi
       local vcl_init="$vcl_init"$'\n'"  $app"".add_backend(""$backend_name"");"
@@ -224,8 +224,13 @@ create_vcl_recv_devicedetect () {
 create_vcl_recv_unsets () {
   set -e
 
+  local unset_rules=$'\n'"    unset req.http.Cookie;"
+  local unset_rules="$unset_rules"$'\n'"    if (req.http.Authorization) {"
+  local unset_rules="$unset_rules"$'\n'"      set req.http.X-Authorization = req.http.Authorization;"
+  local unset_rules="$unset_rules"$'\n'"      unset req.http.Authorization;"
+  local unset_rules="$unset_rules"$'\n'"    }"
   if [[ -z "$KEEP_CLIENT_COOKIES_AND_AUTH_PATHS" ]]; then
-    local vcl_recv_unsets=$'\n'"  unset req.http.cookie;"$'\n'"  unset req.http.authorization;"
+    local vcl_recv_unsets="$unset_rules"
   else
     local first_path=true
     local vcl_recv_unsets=$'\n'"  if ("
@@ -238,10 +243,22 @@ create_vcl_recv_unsets () {
         local vcl_recv_unsets="$vcl_recv_unsets"" && !(req.url ~ \"^""$path""\")"
       fi
     done
-    local vcl_recv_unsets="$vcl_recv_unsets"") {"$'\n'"    unset req.http.cookie;"$'\n'"    unset req.http.authorization;"$'\n'"  }"
+    local vcl_recv_unsets="$vcl_recv_unsets"") {"$'\n'"$unset_rules"$'\n'"  }"
   fi
 
   echo "$vcl_recv_unsets"
+}
+
+create_vcl_hash () {
+  set -e
+
+  local vcl_hash="sub vcl_hash {"
+  local vcl_hash="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
+  local vcl_hash="$vcl_hash"$'\n'"    hash_data(req.http.X-Authorization);"
+  local vcl_hash="$vcl_hash"$'\n'"  }"
+  local vcl_hash="$vcl_hash"$'\n'"}"
+
+  echo "$vcl_hash"
 }
 
 # $1: vcl_init
@@ -299,6 +316,18 @@ create_vcl_deliver () {
   echo "$vcl_deliver"
 }
 
+create_vcl_backend_fetch () {
+  set -e
+
+  local vcl_backend_fetch="sub vcl_backend_fetch {"
+  local vcl_backend_fetch="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
+  local vcl_backend_fetch="$vcl_hash"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
+  local vcl_backend_fetch="$vcl_hash"$'\n'"  }"
+  local vcl_backend_fetch="$vcl_hash"$'\n'"}"
+
+  echo "$vcl_backend_fetch"
+}
+
 create_vcl_backend_response () {
   set -e
 
@@ -318,8 +347,10 @@ create_config_file () {
   local backends=$(create_backends)
   local vcl_init=$(create_vcl_init "$backends")
   local vcl_recv=$(create_vcl_recv "$vcl_init")
+  local vcl_hash=$(create_vcl_hash "$vcl_hash")
   local vcl_deliver=$(create_vcl_deliver)
   local vcl_synth=$(create_vcl_synth)
+  local vcl_backend_fetch=$(create_vcl_backend_fetch)
   local vcl_backend_response=$(create_vcl_backend_response)
 
 
@@ -327,8 +358,10 @@ create_config_file () {
   echo "$backends"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_init"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_recv"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_hash"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_synth"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_backend_fetch"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_backend_response" >> "$varnish_vcl_file"
 }
 

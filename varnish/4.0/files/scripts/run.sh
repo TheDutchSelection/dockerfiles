@@ -252,11 +252,13 @@ create_vcl_recv_unsets () {
 create_vcl_hash () {
   set -e
 
-  local vcl_hash="sub vcl_hash {"
-  local vcl_hash="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
-  local vcl_hash="$vcl_hash"$'\n'"    hash_data(req.http.X-Authorization);"
-  local vcl_hash="$vcl_hash"$'\n'"  }"
-  local vcl_hash="$vcl_hash"$'\n'"}"
+  if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
+    local vcl_hash="sub vcl_hash {"
+    local vcl_hash="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
+    local vcl_hash="$vcl_hash"$'\n'"    hash_data(req.http.X-Authorization);"
+    local vcl_hash="$vcl_hash"$'\n'"  }"
+    local vcl_hash="$vcl_hash"$'\n'"}"
+  fi
 
   echo "$vcl_hash"
 }
@@ -319,11 +321,13 @@ create_vcl_deliver () {
 create_vcl_backend_fetch () {
   set -e
 
-  local vcl_backend_fetch="sub vcl_backend_fetch {"
-  local vcl_backend_fetch="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
-  local vcl_backend_fetch="$vcl_hash"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
-  local vcl_backend_fetch="$vcl_hash"$'\n'"  }"
-  local vcl_backend_fetch="$vcl_hash"$'\n'"}"
+  if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
+    local vcl_backend_fetch="sub vcl_backend_fetch {"
+    local vcl_backend_fetch="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
+    local vcl_backend_fetch="$vcl_hash"$'\n'"    set req.http.Authorization = req.http.X-Authorization;"
+    local vcl_backend_fetch="$vcl_hash"$'\n'"  }"
+    local vcl_backend_fetch="$vcl_hash"$'\n'"}"
+  fi
 
   echo "$vcl_backend_fetch"
 }

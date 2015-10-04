@@ -45,7 +45,7 @@ sub vcl_backend_response {
 }
 EOM
 
-read -r -d '' varnish_vcl_deliver << EOM || true
+read -r -d '' varnish_vcl_deliver_base << EOM || true
 sub vcl_deliver {
   # modify the vary header for caches in the wild
   if ((req.http.X-UA-Device) && (resp.http.Vary)) {
@@ -55,12 +55,12 @@ sub vcl_deliver {
   # modify the cache-control, so that it's set right for client cachers
   if (resp.http.magicmarker) {
     unset resp.http.magicmarker;
-    set resp.http.varnish-age = resp.http.age;
-    if (req.http.host ~ "tdscd.com") {
+    set resp.http.X-Varnish-Age = resp.http.age;
+    if (##long_term_client_cache_matches##) {
       set resp.http.cache-control = "public, max-age=31536000";
     }
     else {
-      set resp.http.varnish-age = resp.http.age;
+      set resp.http.X-Varnish-Age = resp.http.age;
       set resp.http.cache-control = "private, max-age=0, no-cache";
       set resp.http.age = "0";
     }
@@ -113,10 +113,106 @@ sub vcl_synth {
 }
 EOM
 
-create_vcl_backend_response () {
+create_backends () {
   set -e
+  local envs=$(env)
+  local envs=$(echo "$envs" | sort)
 
-  echo "$varnish_vcl_backend_response"
+  local backends=""
+  while read -r env; do
+    local host=""
+    local port=""
+    local backend="$varnish_backend_base"
+    # we want the [APP]_[APP_ID]_HOST_PRIVATE_IP=10.0.4.1 ones
+    if [[ "$env" == *"_HOST_PRIVATE_IP="* ]]; then
+      local host_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local host=$(echo "$env" | awk -F'=' '{print $2}')
+      local port_var=${host_var/_PRIVATE_IP/_PORT}
+      eval port=\$$port_var
+    # we want the [APP]_[APP_ID]_HOST_PUBLIC_IP=10.0.4.1 ones
+    elif [[ "$env" == *"_HOST_PUBLIC_IP="* ]]; then
+      # check if we have a private ip available, then we don't want the public one
+      local temp_host_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local host_private_ip_var=${temp_host_var/_PUBLIC_IP/_PRIVATE_IP}
+      eval host_private_ip=\$$host_private_ip_var
+      if [[ -z "$host_private_ip" ]]; then
+        # we want all PUBLIC_IPS for the specified availability zones
+        local host_var=$(echo "$env" | awk -F'=' '{print $1}')
+        local host=$(echo "$env" | awk -F'=' '{print $2}')
+        local port_var=${host_var/_PUBLIC_IP/_PORT}
+        eval port=\$$port_var
+      fi
+    fi
+
+    if [[ ! -z "$host" && ! -z "$port" ]]; then
+      # remove last 4 parts for APP, ie. NGINX_PRICE_COMPARATOR_1_HOST_PRIVATE_IP
+      local app_upper=$(echo "$host_var" | awk -F'_' '{for(i = 1; i <= NF - 4; i++) printf "%s%s", $i, i == NF -4 ? "" : "_" }')
+      local app=$(echo "$app_upper" | awk '{print tolower($0)}')
+      # print only the 4th part from behind for id
+      local app_id=$(echo "$host_var" | awk -F'_' '{print $(NF - 3) }')
+      local app_id=$(echo "$app_id" | awk '{print tolower($0)}')
+      # [APP]_PROBE_PATH
+      local probe_path_var="$app_upper""_PROBE_PATH"
+      eval probe_path=\$$probe_path_var
+
+      # put backend together
+      local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
+      local backend=${backend//\#\#host_ip\#\#/"$host"}
+      local backend=${backend//\#\#host_port\#\#/"$port"}
+      local backend=${backend//\#\#probe_url\#\#/"$probe_path"}
+
+      local backends="$backends"$'\n'"$backend"$'\n'
+    fi
+  done <<< "$envs"
+
+  echo "$backends"
+}
+
+# $1: backends
+create_vcl_init () {
+  set -e
+  local backends="$1"
+  local backends=$(echo "$backends" | sort)
+
+  local vcl_init="sub vcl_init {"
+  local last_app=""
+  while read -r backend; do
+    # we want the "backend [app]_[app_id] {" ones
+    if [[ "$backend" == "backend "* && "$backend" == *"{"* ]]; then
+      local backend_name=$(echo "$backend" | awk -F' ' '{print $2}')
+      # remove app_id from app_app_id, ie. nginx_price_comparator_nl_telecom_portal_doa3wrkprd006
+      local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')
+      # new app
+      if [[ "$app" != "$last_app" ]]; then
+        local vcl_init="$vcl_init"$'\n'$'\n'"  new ""$app"" = directors.round_robin();"
+        local last_app="$app"
+      fi
+      local vcl_init="$vcl_init"$'\n'"  $app"".add_backend(""$backend_name"");"
+    fi
+  done <<< "$backends"
+
+  local vcl_init="$vcl_init"$'\n'"}"
+  echo "$vcl_init"
+}
+
+# $1: vcl_init
+create_vcl_recv () {
+  set -e
+  local vcl_init="$1"
+
+  local vcl_recv_backend_hints=$(create_vcl_recv_backend_hints "$vcl_init")
+  local vcl_recv_unsets=$(create_vcl_recv_unsets)
+  local vcl_recv_devicedetect=$(create_vcl_recv_devicedetect)
+
+  local vcl_recv="sub vcl_recv {"
+  local vcl_recv="$vcl_recv""$vcl_recv_backend_hints"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $vcl_recv_devicedetect"
+  local vcl_recv="$vcl_recv"$'\n'"$vcl_recv_unsets"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_ban"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_health_check"
+  local vcl_recv="$vcl_recv"$'\n'"}"
+
+  echo "$vcl_recv"
 }
 
 create_vcl_recv_devicedetect () {
@@ -181,120 +277,32 @@ create_vcl_recv_backend_hints () {
   echo "$vcl_recv_backend_hints"
 }
 
-# $1: vcl_init
-create_vcl_recv () {
-  set -e
-  local vcl_init="$1"
-
-  local vcl_recv_backend_hints=$(create_vcl_recv_backend_hints "$vcl_init")
-  local vcl_recv_unsets=$(create_vcl_recv_unsets)
-  local vcl_recv_devicedetect=$(create_vcl_recv_devicedetect)
-
-  local vcl_recv="sub vcl_recv {"
-  local vcl_recv="$vcl_recv""$vcl_recv_backend_hints"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $vcl_recv_devicedetect"
-  local vcl_recv="$vcl_recv"$'\n'"$vcl_recv_unsets"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_ban"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_health_check"
-  local vcl_recv="$vcl_recv"$'\n'"}"
-
-  echo "$vcl_recv"
-}
-
-# $1: backends
-create_vcl_init () {
-  set -e
-  local backends="$1"
-  local backends=$(echo "$backends" | sort)
-
-  local vcl_init="sub vcl_init {"
-  local last_app=""
-  while read -r backend; do
-    # we want the "backend [app]_[app_id] {" ones
-    if [[ "$backend" == "backend "* && "$backend" == *"{"* ]]; then
-      local backend_name=$(echo "$backend" | awk -F' ' '{print $2}')
-      # remove app_id from app_app_id, ie. nginx_price_comparator_nl_telecom_portal_doa3wrkprd006
-      local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')
-      # new app
-      if [[ "$app" != "$last_app" ]]; then
-        local vcl_init="$vcl_init"$'\n'$'\n'"  new ""$app"" = directors.round_robin();"
-        local last_app="$app"
-      fi
-      local vcl_init="$vcl_init"$'\n'"  $app"".add_backend(""$backend_name"");"
-    fi
-  done <<< "$backends"
-
-  local vcl_init="$vcl_init"$'\n'"}"
-  echo "$vcl_init"
-}
-
-create_backends () {
-  set -e
-  local envs=$(env)
-  local envs=$(echo "$envs" | sort)
-
-  local backends=""
-  while read -r env; do
-    local host=""
-    local port=""
-    local backend="$varnish_backend_base"
-    # we want the [APP]_[APP_ID]_HOST_PRIVATE_IP=10.0.4.1 ones
-    if [[ "$env" == *"_HOST_PRIVATE_IP="* ]]; then
-      local host_var=$(echo "$env" | awk -F'=' '{print $1}')
-      local host=$(echo "$env" | awk -F'=' '{print $2}')
-      local port_var=${host_var/_PRIVATE_IP/_PORT}
-      eval port=\$$port_var
-    # we want the [APP]_[APP_ID]_HOST_PUBLIC_IP=10.0.4.1 ones
-    elif [[ "$env" == *"_HOST_PUBLIC_IP="* ]]; then
-      # check if we have a private ip available, then we don't want the public one
-      local temp_host_var=$(echo "$env" | awk -F'=' '{print $1}')
-      local host_private_ip_var=${temp_host_var/_PUBLIC_IP/_PRIVATE_IP}
-      eval host_private_ip=\$$host_private_ip_var
-      if [[ -z "$host_private_ip" ]]; then
-        # we want all PUBLIC_IPS for the specified availability zones
-        local host_var=$(echo "$env" | awk -F'=' '{print $1}')
-        local host=$(echo "$env" | awk -F'=' '{print $2}')
-        local port_var=${host_var/_PUBLIC_IP/_PORT}
-        eval port=\$$port_var
-      fi
-    fi
-
-    if [[ ! -z "$host" && ! -z "$port" ]]; then
-      # remove last 4 parts for APP, ie. NGINX_PRICE_COMPARATOR_1_HOST_PRIVATE_IP
-      local app_upper=$(echo "$host_var" | awk -F'_' '{for(i = 1; i <= NF - 4; i++) printf "%s%s", $i, i == NF -4 ? "" : "_" }')
-      local app=$(echo "$app_upper" | awk '{print tolower($0)}')
-      # print only the 4th part from behind for id
-      local app_id=$(echo "$host_var" | awk -F'_' '{print $(NF - 3) }')
-      local app_id=$(echo "$app_id" | awk '{print tolower($0)}')
-      # [APP]_PROBE_PATH
-      local probe_path_var="$app_upper""_PROBE_PATH"
-      eval probe_path=\$$probe_path_var
-
-      # put backend together
-      local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
-      local backend=${backend//\#\#host_ip\#\#/"$host"}
-      local backend=${backend//\#\#host_port\#\#/"$port"}
-      local backend=${backend//\#\#probe_url\#\#/"$probe_path"}
-
-      local backends="$backends"$'\n'"$backend"$'\n'
-    fi
-  done <<< "$envs"
-
-  echo "$backends"
-}
-
-create_vcl_deliver () {
-  set -e
-  local vcl_deliver="$varnish_vcl_deliver"
-
-  echo "$vcl_deliver"
-}
-
 create_vcl_synth () {
   set -e
   local vcl_synth="$varnish_vcl_synth"
 
   echo "$vcl_synth"
+}
+
+create_vcl_deliver () {
+  set -e
+
+  local vcl_deliver="$varnish_vcl_deliver_base"
+  local match_line="req.http.host ~ \"^$\""
+  for long_term_client_cache_match in $LONG_TERM_CLIENT_CACHE_MATCHES
+  do
+    local match_line="$match_line || req.http.host ~ \"$long_term_client_cache_match\""
+  done
+
+  local vcl_deliver=${vcl_deliver//\#\#long_term_client_cache_matches\#\#/"$match_line"}
+
+  echo "$vcl_deliver"
+}
+
+create_vcl_backend_response () {
+  set -e
+
+  echo "$varnish_vcl_backend_response"
 }
 
 # $1: varnish base
@@ -306,19 +314,21 @@ create_config_file () {
 
   cat /dev/null > "$varnish_vcl_file"
 
+  # the config file is generated in order Varnish uses the subroutines
   local backends=$(create_backends)
-  local vcl_deliver=$(create_vcl_deliver)
   local vcl_init=$(create_vcl_init "$backends")
   local vcl_recv=$(create_vcl_recv "$vcl_init")
+  local vcl_deliver=$(create_vcl_deliver)
   local vcl_synth=$(create_vcl_synth)
   local vcl_backend_response=$(create_vcl_backend_response)
 
+
   echo "$varnish_base" >> "$varnish_vcl_file"
   echo "$backends"$'\n' >> "$varnish_vcl_file"
-  echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_init"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_recv"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_synth"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_backend_response" >> "$varnish_vcl_file"
 }
 

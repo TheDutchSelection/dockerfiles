@@ -27,7 +27,7 @@
 # - Create new data container "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master"
 # - Stop PostgreSQL again "systemctl disable postgresql_master", "systemctl stop postgresql_master"
 # - Start a container to execute backup commands "docker run -it --rm --entrypoint="bash" --volumes-from postgresql_master_data thedutchselection/postgresql:9.4.4"
-# - Set the following envs (export AWS_ACCESS_KEY_ID=""), DATA_DIRECTORY, AWS_ACCESS_KEY_ID, AWS_S3_WALE_BUCKET_NAME,
+# - Set the following envs (export AWS_ACCESS_KEY_ID="") DATA_DIRECTORY, AWS_ACCESS_KEY_ID, AWS_S3_WALE_BUCKET_NAME,
 #   AWS_S3_WALE_BUCKET_BASE_PATH, AWS_SECRET_ACCESS_KEY, HOST_IP (this has to be the ip of the server that servers as current master)
 # - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST"
 # - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""

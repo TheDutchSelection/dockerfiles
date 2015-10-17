@@ -45,7 +45,7 @@ sub vcl_backend_response {
 }
 EOM
 
-read -r -d '' varnish_vcl_deliver << EOM || true
+read -r -d '' varnish_vcl_deliver_base << EOM || true
 sub vcl_deliver {
   # modify the vary header for caches in the wild
   if ((req.http.X-UA-Device) && (resp.http.Vary)) {
@@ -55,14 +55,14 @@ sub vcl_deliver {
   # modify the cache-control, so that it's set right for client cachers
   if (resp.http.magicmarker) {
     unset resp.http.magicmarker;
-    set resp.http.varnish-age = resp.http.age;
-    if (req.http.host ~ "tdscd.com") {
-      set resp.http.cache-control = "public, max-age=31536000";
+    set resp.http.X-Varnish-Age = resp.http.age;
+    if (##long_term_client_cache_matches##) {
+      set resp.http.Cache-Control = "public, max-age=31536000";
     }
     else {
-      set resp.http.varnish-age = resp.http.age;
-      set resp.http.cache-control = "private, max-age=0, no-cache";
-      set resp.http.age = "0";
+      set resp.http.X-Varnish-Age = resp.http.age;
+      set resp.http.Cache-Control = "private, max-age=0, no-cache";
+      set resp.http.Age = "0";
     }
   }
 }
@@ -112,121 +112,6 @@ sub vcl_synth {
   }
 }
 EOM
-
-create_vcl_backend_response () {
-  set -e
-
-  echo "$varnish_vcl_backend_response"
-}
-
-create_vcl_recv_devicedetect () {
-  set -e
-
-  echo "$varnish_vcl_recv_devicedetect"
-}
-
-create_vcl_recv_unsets () {
-  set -e
-
-  if [[ -z "$KEEP_CLIENT_COOKIES_AND_AUTH_PATHS" ]]; then
-    local vcl_recv_unsets=$'\n'"  unset req.http.cookie;"$'\n'"  unset req.http.authorization;"
-  else
-    local first_path=true
-    local vcl_recv_unsets=$'\n'"  if ("
-    for path in $KEEP_CLIENT_COOKIES_AND_AUTH_PATHS
-    do
-      if [[ "$first_path" = true ]]; then
-        local vcl_recv_unsets="$vcl_recv_unsets""!(req.url ~ \"^""$path""\")"
-        local first_path=false
-      else
-        local vcl_recv_unsets="$vcl_recv_unsets"" && !(req.url ~ \"^""$path""\")"
-      fi
-    done
-    local vcl_recv_unsets="$vcl_recv_unsets"") {"$'\n'"    unset req.http.cookie;"$'\n'"    unset req.http.authorization;"$'\n'"  }"
-  fi
-
-  echo "$vcl_recv_unsets"
-}
-
-# $1: vcl_init
-create_vcl_recv_backend_hints () {
-  set -e
-  local vcl_init="$1"
-  local vcl_init=$(echo "$vcl_init" | sort)
-
-  while read -r vcl_init_line; do
-    # we want the "new [app] = directors.round.robin();" ones
-    if [[ "$vcl_init_line" == *"new "* && "$vcl_init_line" == *"directors.round_robin"* ]]; then
-      local app=$(echo "$vcl_init_line" | awk -F' ' '{print $2}')
-      local app_upper=$(echo "$app" | awk '{print toupper($0)}')
-      local backend_hosts_var="$app_upper""_BACKEND_HOSTS"
-      eval backend_hosts=\$$backend_hosts_var
-
-      local vcl_recv_backend_hints="$vcl_recv_backend_hints"$'\n'"  if ("
-      local first_backend_host=true
-      for backend_host in $backend_hosts
-      do
-        if [[ "$first_backend_host" = true ]]; then
-          local vcl_recv_backend_hints="$vcl_recv_backend_hints""req.http.host ~ \"""$backend_host""\""
-          local first_backend_host=false
-        else
-          local vcl_recv_backend_hints="$vcl_recv_backend_hints"" || req.http.host ~ \"""$backend_host""\""
-        fi
-      done
-      local vcl_recv_backend_hints="$vcl_recv_backend_hints"") {"$'\n'"    set req.backend_hint = ""$app"".backend();"$'\n'"  }"$'\n'
-
-    fi
-  done <<< "$vcl_init"
-
-  echo "$vcl_recv_backend_hints"
-}
-
-# $1: vcl_init
-create_vcl_recv () {
-  set -e
-  local vcl_init="$1"
-
-  local vcl_recv_backend_hints=$(create_vcl_recv_backend_hints "$vcl_init")
-  local vcl_recv_unsets=$(create_vcl_recv_unsets)
-  local vcl_recv_devicedetect=$(create_vcl_recv_devicedetect)
-
-  local vcl_recv="sub vcl_recv {"
-  local vcl_recv="$vcl_recv""$vcl_recv_backend_hints"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $vcl_recv_devicedetect"
-  local vcl_recv="$vcl_recv"$'\n'"$vcl_recv_unsets"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_ban"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_health_check"
-  local vcl_recv="$vcl_recv"$'\n'"}"
-
-  echo "$vcl_recv"
-}
-
-# $1: backends
-create_vcl_init () {
-  set -e
-  local backends="$1"
-  local backends=$(echo "$backends" | sort)
-
-  local vcl_init="sub vcl_init {"
-  local last_app=""
-  while read -r backend; do
-    # we want the "backend [app]_[app_id] {" ones
-    if [[ "$backend" == "backend "* && "$backend" == *"{"* ]]; then
-      local backend_name=$(echo "$backend" | awk -F' ' '{print $2}')
-      # remove app_id from app_app_id, ie. nginx_price_comparator_nl_telecom_portal_doa3wrkprd006
-      local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')
-      # new app
-      if [[ "$app" != "$last_app" ]]; then
-        local vcl_init="$vcl_init"$'\n'$'\n'"  new ""$app"" = directors.round_robin();"
-        local last_app="$app"
-      fi
-      local vcl_init="$vcl_init"$'\n'"  $app"".add_backend(""$backend_name"");"
-    fi
-  done <<< "$backends"
-
-  local vcl_init="$vcl_init"$'\n'"}"
-  echo "$vcl_init"
-}
 
 create_backends () {
   set -e
@@ -283,11 +168,132 @@ create_backends () {
   echo "$backends"
 }
 
-create_vcl_deliver () {
+# $1: backends
+create_vcl_init () {
   set -e
-  local vcl_deliver="$varnish_vcl_deliver"
+  local backends="$1"
+  local backends=$(echo "$backends" | sort)
 
-  echo "$vcl_deliver"
+  local vcl_init="sub vcl_init {"
+  local last_app=""
+  while read -r backend; do
+    # we want the "backend [app]_[app_id] {" ones
+    if [[ "$backend" == "backend "* && "$backend" == *"{"* ]]; then
+      local backend_name=$(echo "$backend" | awk -F' ' '{print $2}')
+      # remove app_id from app_app_id, ie. nginx_price_comparator_nl_telecom_portal_doa3wrkprd006
+      local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')
+      # new app
+      if [[ "$app" != "$last_app" ]]; then
+        local vcl_init="$vcl_init"$'\n'"  new ""$app"" = directors.round_robin();"
+        local last_app="$app"
+      fi
+      local vcl_init="$vcl_init"$'\n'"  $app"".add_backend(""$backend_name"");"
+    fi
+  done <<< "$backends"
+
+  local vcl_init="$vcl_init"$'\n'"}"
+  echo "$vcl_init"
+}
+
+# $1: vcl_init
+create_vcl_recv () {
+  set -e
+  local vcl_init="$1"
+
+  local vcl_recv_backend_hints=$(create_vcl_recv_backend_hints "$vcl_init")
+  local vcl_recv_unsets=$(create_vcl_recv_unsets)
+  local vcl_recv_devicedetect=$(create_vcl_recv_devicedetect)
+
+  local vcl_recv="sub vcl_recv {"
+  local vcl_recv="$vcl_recv""$vcl_recv_backend_hints"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $vcl_recv_devicedetect"
+  local vcl_recv="$vcl_recv"$'\n'"$vcl_recv_unsets"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_ban"
+  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_health_check"
+  local vcl_recv="$vcl_recv"$'\n'"}"
+
+  echo "$vcl_recv"
+}
+
+create_vcl_recv_devicedetect () {
+  set -e
+
+  echo "$varnish_vcl_recv_devicedetect"
+}
+
+create_vcl_recv_unsets () {
+  set -e
+
+  local unset_rules=$'\n'"    unset req.http.Cookie;"
+  local unset_rules="$unset_rules"$'\n'"    if (req.http.Authorization) {"
+  local unset_rules="$unset_rules"$'\n'"      set req.http.X-Authorization = req.http.Authorization;"
+  local unset_rules="$unset_rules"$'\n'"      unset req.http.Authorization;"
+  local unset_rules="$unset_rules"$'\n'"    }"
+  if [[ -z "$KEEP_CLIENT_COOKIES_AND_AUTH_PATHS" ]]; then
+    local vcl_recv_unsets="$unset_rules"
+  else
+    local first_path=true
+    local vcl_recv_unsets=$'\n'"  if ("
+    for path in $KEEP_CLIENT_COOKIES_AND_AUTH_PATHS
+    do
+      if [[ "$first_path" = true ]]; then
+        local vcl_recv_unsets="$vcl_recv_unsets""!(req.url ~ \"^""$path""\")"
+        local first_path=false
+      else
+        local vcl_recv_unsets="$vcl_recv_unsets"" && !(req.url ~ \"^""$path""\")"
+      fi
+    done
+    local vcl_recv_unsets="$vcl_recv_unsets"") {""$unset_rules"$'\n'"  }"
+  fi
+
+  echo "$vcl_recv_unsets"
+}
+
+create_vcl_hash () {
+  set -e
+
+  if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
+    local vcl_hash="sub vcl_hash {"
+    local vcl_hash="$vcl_hash"$'\n'"  if (req.http.X-Authorization) {"
+    local vcl_hash="$vcl_hash"$'\n'"    hash_data(req.http.X-Authorization);"
+    local vcl_hash="$vcl_hash"$'\n'"  }"
+    local vcl_hash="$vcl_hash"$'\n'"}"
+  fi
+
+  echo "$vcl_hash"
+}
+
+# $1: vcl_init
+create_vcl_recv_backend_hints () {
+  set -e
+  local vcl_init="$1"
+  local vcl_init=$(echo "$vcl_init" | sort)
+
+  while read -r vcl_init_line; do
+    # we want the "new [app] = directors.round.robin();" ones
+    if [[ "$vcl_init_line" == *"new "* && "$vcl_init_line" == *"directors.round_robin"* ]]; then
+      local app=$(echo "$vcl_init_line" | awk -F' ' '{print $2}')
+      local app_upper=$(echo "$app" | awk '{print toupper($0)}')
+      local backend_hosts_var="$app_upper""_BACKEND_HOSTS"
+      eval backend_hosts=\$$backend_hosts_var
+
+      local vcl_recv_backend_hints="$vcl_recv_backend_hints"$'\n'"  if ("
+      local first_backend_host=true
+      for backend_host in $backend_hosts
+      do
+        if [[ "$first_backend_host" = true ]]; then
+          local vcl_recv_backend_hints="$vcl_recv_backend_hints""req.http.host ~ \"""$backend_host""\""
+          local first_backend_host=false
+        else
+          local vcl_recv_backend_hints="$vcl_recv_backend_hints"" || req.http.host ~ \"""$backend_host""\""
+        fi
+      done
+      local vcl_recv_backend_hints="$vcl_recv_backend_hints"") {"$'\n'"    set req.backend_hint = ""$app"".backend();"$'\n'"  }"$'\n'
+
+    fi
+  done <<< "$vcl_init"
+
+  echo "$vcl_recv_backend_hints"
 }
 
 create_vcl_synth () {
@@ -295,6 +301,41 @@ create_vcl_synth () {
   local vcl_synth="$varnish_vcl_synth"
 
   echo "$vcl_synth"
+}
+
+create_vcl_deliver () {
+  set -e
+
+  local vcl_deliver="$varnish_vcl_deliver_base"
+  local match_line="req.http.host ~ \"^$\""
+  for long_term_client_cache_match in $LONG_TERM_CLIENT_CACHE_MATCHES
+  do
+    local match_line="$match_line || req.http.host ~ \"$long_term_client_cache_match\""
+  done
+
+  local vcl_deliver=${vcl_deliver//\#\#long_term_client_cache_matches\#\#/"$match_line"}
+
+  echo "$vcl_deliver"
+}
+
+create_vcl_backend_fetch () {
+  set -e
+
+  if [[ "$CACHE_AUTHENTICATION_HEADERS" == "1" ]]; then
+    local vcl_backend_fetch="sub vcl_backend_fetch {"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  if (bereq.http.X-Authorization) {"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"    set bereq.http.Authorization = bereq.http.X-Authorization;"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"  }"
+    local vcl_backend_fetch="$vcl_backend_fetch"$'\n'"}"
+  fi
+
+  echo "$vcl_backend_fetch"
+}
+
+create_vcl_backend_response () {
+  set -e
+
+  echo "$varnish_vcl_backend_response"
 }
 
 # $1: varnish base
@@ -306,19 +347,25 @@ create_config_file () {
 
   cat /dev/null > "$varnish_vcl_file"
 
+  # the config file is generated in order Varnish uses the subroutines
   local backends=$(create_backends)
-  local vcl_deliver=$(create_vcl_deliver)
   local vcl_init=$(create_vcl_init "$backends")
   local vcl_recv=$(create_vcl_recv "$vcl_init")
+  local vcl_hash=$(create_vcl_hash)
+  local vcl_deliver=$(create_vcl_deliver)
   local vcl_synth=$(create_vcl_synth)
+  local vcl_backend_fetch=$(create_vcl_backend_fetch)
   local vcl_backend_response=$(create_vcl_backend_response)
+
 
   echo "$varnish_base" >> "$varnish_vcl_file"
   echo "$backends"$'\n' >> "$varnish_vcl_file"
-  echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_init"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_recv"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_hash"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_synth"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_backend_fetch"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_backend_response" >> "$varnish_vcl_file"
 }
 

@@ -7,13 +7,19 @@
 # [APP]_[APP_ID]_HOST_PORT (ie. 3000)
 # [APP]_PROBE_PATH (ie. "/health_check/host", should be available on ip:port)
 # [APP]_BACKEND_HOSTS (ie. "pcnltelecom.tdsapi.com pcnltelecom.tdscd.com")
+# LONG_TERM_CLIENT_CACHE_MATCHES (ie. "tdscd.com other-asset-domain.com")
 # STORAGE_SIZE (ie. "20G", size varnish can use on disk)
 #
 # OPTIONAL ENVS:
+# CACHE_AUTHENTICATION_HEADERS (ie. "1", if you want to cache requests with authentication headers)
 # KEEP_CLIENT_COOKIES_AND_AUTH_PATHS (ie. "/contact /other-page-where-clients-needs-to-send-auth-or-cookies")
 #
 # OTHER:
 # To use commands like varnishtop with docker exec, you have to run "export TERM=xterm" in the container first.
+#
+# Some commands:
+# varnishtop -i BereqURL (urls that most hit the backend)
+# varnishlog -q 'ReqURL ~ "^/foo/bar"' (request coming from the client containing /foo/bar
 
 
 FROM thedutchselection/debian:8.1

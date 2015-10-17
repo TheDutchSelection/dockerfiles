@@ -32,6 +32,7 @@
 # - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST"
 # - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
 # - Exit this container.
+# - Remove (inconsistent) S3 wal-e data for this PostgreSQL.
 # - Start PostgreSQL "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master" and everything should run fine.
 
 

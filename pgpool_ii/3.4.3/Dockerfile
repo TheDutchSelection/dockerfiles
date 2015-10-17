@@ -37,10 +37,12 @@
 # implemented. So if the variables are left out, no online recovery is possible.
 #
 # Instructions to bring back a lost node:
+# - Tail the pgpool logs and up PostgreSQL containers for details and instructions.
 # - Go inside a PGPool container "docker exec -it pgpool_ii bash".
 # - Check which node is lost (status 3): "pcp_node_info --verbose 10000 localhost 9898 [pcp_username] [pcp_password] 1".
 # - Make sure the postgresql container on the lost node is shut down.
 # - Bring the lost node back with "pcp_recovery_node -d 10000 localhost 9898 [pcp_username] [pcp_password] 1".
+# - If this fails try to restart all pgpools.
 # - If this fails, shutdown all pgpools and after that all postgresqls. Then recover the node that needs recovery,
 #   manually start all postgresqls and bring back the pgpools with a new data container.
 # - You have to manually bring the postgresql container back after this, see PostgreSQL dockerfile for instructions.

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.2.2'
 
-gem 'rails', '~> 4.2.3'
+gem 'rails', '~> 4.2.4'
 
 # Assets
 gem 'sass', '~> 3.4.15'
@@ -28,7 +28,6 @@ gem 'mustache', '1.0.2'
 gem 'jbuilder', '2.3.1'
 gem 'faraday', '~> 0.9.1'
 gem 'mobvious', '~> 0.3.2'
-
 gem 'sdoc', '~> 0.4.1', group: :doc
 
 # Feed parser
@@ -49,6 +48,8 @@ gem 'bigquery'
 gem 'unicorn', '4.9.0'
 
 group :development do
+  gem 'spring'
+  gem 'spring-commands-rspec'
   gem 'better_errors'
   gem 'binding_of_caller'
 end
@@ -59,15 +60,16 @@ group :development, :test do
   gem 'guard-livereload', '~> 2.4', require: false
   gem 'factory_girl_rails', '4.5.0'
   gem 'capybara', '2.4.4'
-  gem 'poltergeist', git: 'https://github.com/teampoltergeist/poltergeist.git', branch: 'master' # we need a fix for failing poltergeist in production jenkins, when version > 1.6.0 is available, use that one
+  gem 'poltergeist', git: 'https://github.com/teampoltergeist/poltergeist.git', branch: 'master' # we need a fix for failing poltergeist in production jenkins, when version > 1.7.0 is available, use that one
   gem 'pry'
   gem 'pry-remote'
   gem 'quiet_assets'
-  gem 'database_cleaner', '~> 1.4.1'
+  gem 'database_cleaner', '1.5.0'
   gem 'unicorn-rails'
   gem 'rack_session_access', '0.1.1'
   gem 'vcr', git: 'https://github.com/vcr/vcr.git', branch: 'master' # we need a fix for faraday which will be in 2.9.4
   gem 'jasmine-rails'
+  gem 'timecop'
   # gem 'rack-mini-profiler', require: false
 end
 

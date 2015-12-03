@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.2.2'
 
-gem 'rails', '~> 4.2.4'
+gem 'rails', '~> 4.2.5'
 
 # Assets
 gem 'sass', '~> 3.4.15'
@@ -10,7 +10,7 @@ gem 'sass-rails', '5.0.3'
 gem 'uglifier', '>= 2.7.1'
 gem 'coffee-rails', '~> 4.1.0'
 
-gem 'pg', '0.18.1'
+gem 'pg', '0.18.4'
 gem 'jquery-rails', '3.1.0'
 gem 'jquery-ui-rails', '4.2.1'
 gem 'devise', '3.5.1'
@@ -20,7 +20,7 @@ gem 'bootstrap-slider-rails'
 gem 'autoprefixer-rails', '5.2.1.1'
 gem 'paperclip', '4.3.0'
 gem 'paperclip-meta', '1.2.0'
-gem 'fog', '1.34.0'
+gem 'fog', '1.36.0'
 gem 'figaro', '1.1.1'
 gem 'elasticsearch', '1.0.12'
 gem 'typhoeus', '0.7.2'

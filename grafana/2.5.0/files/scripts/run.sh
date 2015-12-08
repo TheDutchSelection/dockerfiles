@@ -22,5 +22,5 @@ sed -i "s/##database_host##/$DATABASE_HOST/g" /etc/grafana/grafana.ini
 sed -i "s/##database_port##/$DATABASE_PORT/g" /etc/grafana/grafana.ini
 sed -i "s/##secret_key##/$SECRET_KEY/g" /etc/grafana/grafana.ini
 
-echo "starting redis..."
-exec grafana-server -config="/etc/default/grafana-server" -homepath="/usr/share/grafana" web
+echo "starting grafana..."
+exec grafana-server -config="/etc/grafana/grafana.ini" -homepath="/usr/share/grafana" "cfg:default.paths.logs=/var/log/grafana" web

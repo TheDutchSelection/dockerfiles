@@ -11,7 +11,7 @@
 #
 # OTHER:
 
-FROM thedutchselection/debian:8.1
+FROM thedutchselection/debian:8.2
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

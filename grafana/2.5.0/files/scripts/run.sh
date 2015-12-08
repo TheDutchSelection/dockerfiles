@@ -22,4 +22,4 @@ sed -i "s/##database_port##/$DATABASE_PORT/g" /etc/grafana/grafana.ini
 sed -i "s/##secret_key##/$SECRET_KEY/g" /etc/grafana/grafana.ini
 
 echo "starting redis..."
-exec /usr/local/bin/redis-server /etc/redis/redis.conf
+exec grafana-server -config="/etc/default/grafana-server" -homepath="/usr/share/grafana" web

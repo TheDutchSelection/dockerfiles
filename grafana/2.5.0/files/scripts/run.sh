@@ -14,6 +14,7 @@ echo "set values to grafana-server file..."
 sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/default/grafana-server
 
 echo "set values to grafana.ini file..."
+sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/grafana/grafana.ini
 sed -i "s/##database##/$DATABASE/g" /etc/grafana/grafana.ini
 sed -i "s/##database_user##/$DATABASE_USER/g" /etc/grafana/grafana.ini
 sed -i "s/##database_password##/$DATABASE_PASSWORD/g" /etc/grafana/grafana.ini

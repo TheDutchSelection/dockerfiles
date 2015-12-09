@@ -48,7 +48,7 @@
 # - You have to manually bring the postgresql container back after this, see PostgreSQL dockerfile for instructions.
 
 
-FROM thedutchselection/debian:8.2
+FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

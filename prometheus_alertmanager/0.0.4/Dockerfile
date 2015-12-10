@@ -42,5 +42,7 @@ RUN \
 
 EXPOSE 9093
 
+USER alertmanager
+
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]
 

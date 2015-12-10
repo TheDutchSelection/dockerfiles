@@ -1,0 +1,36 @@
+# NAME: Prometheus Node Exporter 0.11.0
+#
+# DESCRIPTION: Prometheus Node Exporter.
+#
+# REQUIRED ENVS:
+#
+# OPTIONAL ENVS:
+#
+# OTHER:
+
+FROM thedutchselection/alpine:3.2
+MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+
+RUN \
+  apk add --update bash && \
+  rm /var/cache/apk/*
+
+ADD https://github.com/prometheus/node_exporter/releases/download/0.11.0/node_exporter-0.11.0.linux-amd64.tar.gz /tmp/
+
+WORKDIR /tmp
+
+RUN \
+  tar -xzf node_exporter-0.11.0.linux-amd64.tar.gz && \
+  mv node_exporter /usr/local/bin/ && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+WORKDIR /home
+
+ADD files/scripts /usr/local/bin
+
+RUN \
+  chmod +x /usr/local/bin/run.sh
+
+EXPOSE 9100
+
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

@@ -50,7 +50,7 @@ RUN \
     --conf-path=/etc/nginx/nginx.conf \
     --error-log-path=/dev/null \
     --http-log-path=/dev/null \
-    --pid-path=/var/run/nginx.pid \
+    --pid-path=/var/run/nginx/nginx.pid \
     --lock-path=/var/run/lock/subsys/nginx \
     --user=nginx \
     --group=nginx \

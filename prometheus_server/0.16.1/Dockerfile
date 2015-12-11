@@ -17,7 +17,8 @@ FROM thedutchselection/alpine:3.2
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
-  apk add --update bash && \
+  apk update && \
+  apk add bash && \
   rm /var/cache/apk/*
 
 ADD https://github.com/prometheus/prometheus/releases/download/0.16.1/prometheus-0.16.1.linux-amd64.tar.gz /tmp/

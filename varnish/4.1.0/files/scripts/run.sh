@@ -378,4 +378,4 @@ echo "creating $varnish_vcl_file..."
 create_config_file "$varnish_base" "$varnish_vcl_file"
 
 echo "starting varnish..."
-exec varnishd -a :6081 -F -j unix,user=varnish -f "$varnish_vcl_file" -s file,/tmp,"$STORAGE_SIZE"
+exec varnishd -j unix,user=varnish -a :6081 -F -f "$varnish_vcl_file" -s file,/tmp,"$STORAGE_SIZE"

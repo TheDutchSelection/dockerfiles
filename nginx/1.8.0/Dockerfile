@@ -50,8 +50,8 @@ RUN \
     --conf-path=/etc/nginx/nginx.conf \
     --error-log-path=/dev/null \
     --http-log-path=/dev/null \
-    --pid-path=/run/nginx/nginx.pid \
-    --lock-path=/run/lock/subsys/nginx \
+    --pid-path=/var/run/nginx.pid \
+    --lock-path=/var/run/lock/subsys/nginx \
     --user=nginx \
     --group=nginx \
     --with-file-aio \
@@ -75,6 +75,7 @@ RUN \
   make && \
   make install && \
   mkdir -p /var/run/nginx && \
+  mkdir -p /var/run/lock/subsys && \
   rm -f /tmp/nginx-1.8.0.tar.gz && \
   rm -rf /tmp/nginx-1.8.0
 
@@ -87,6 +88,7 @@ RUN \
   chmod +x /usr/local/bin/run.sh && \
   chown -R appmaster:appmaster /etc/nginx && \
   chown -R appmaster:appmaster /var/run/nginx && \
+  chown -R appmaster:appmaster /var/run/lock/subsys && \
   chown -R appmaster:appmaster /usr/local/nginx && \
   chown -R appmaster:appmaster /usr/local/bin/*
 

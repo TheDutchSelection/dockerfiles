@@ -28,7 +28,7 @@ sub vcl_backend_response {
 
   # set a header to modify cache-control in vcl_deliver
   if (beresp.ttl > 0s) {
-    set beresp.http.X-Varnish-Cachable = "1";
+    set beresp.http.X-Response-Has-TTL = "1";
   }
 }
 EOM
@@ -36,8 +36,8 @@ EOM
 read -r -d '' varnish_vcl_deliver_base << EOM || true
 sub vcl_deliver {
   # modify the cache-control, so that it's set right for client cachers
-  if (resp.http.X-Varnish-Cachable) {
-    unset resp.http.X-Varnish-Cachable;
+  if (resp.http.X-Response-Has-TTL) {
+    unset resp.http.X-Response-Has-TTL;
     set resp.http.X-Varnish-Age = resp.http.age;
     if (##long_term_client_cache_matches##) {
       set resp.http.Cache-Control = "public, max-age=31536000";

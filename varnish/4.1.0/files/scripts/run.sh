@@ -5,7 +5,6 @@ trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w varnish" SIGT
 
 read -r -d '' varnish_base << EOM || true
 vcl 4.0;
-include "devicedetect.vcl";
 import directors;
 EOM
 
@@ -27,34 +26,18 @@ read -r -d '' varnish_vcl_backend_response << EOM || true
 sub vcl_backend_response {
   set beresp.grace = 6h;
 
-  # set a magicmarker to modify cache-control in vcl_deliver
+  # set a header to modify cache-control in vcl_deliver
   if (beresp.ttl > 0s) {
-    set beresp.http.magicmarker = "1";
+    set beresp.http.X-Varnish-Cachable = "1";
   }
-
-  # modify the Vary header so we vary on the x-ua-device header we added with devicedetect
-  if (bereq.http.X-UA-Device) {
-    if (!beresp.http.Vary) { # no Vary at all
-      set beresp.http.Vary = "X-UA-Device";
-    }
-    elseif (beresp.http.Vary !~ "X-UA-Device") { # add to existing Vary
-      set beresp.http.Vary = beresp.http.Vary + ", X-UA-Device";
-    }
-  }
-  set beresp.http.X-UA-Device = bereq.http.X-UA-Device;
 }
 EOM
 
 read -r -d '' varnish_vcl_deliver_base << EOM || true
 sub vcl_deliver {
-  # modify the vary header for caches in the wild
-  if ((req.http.X-UA-Device) && (resp.http.Vary)) {
-    set resp.http.Vary = regsub(resp.http.Vary, "X-UA-Device", "User-Agent");
-  }
-
   # modify the cache-control, so that it's set right for client cachers
-  if (resp.http.magicmarker) {
-    unset resp.http.magicmarker;
+  if (resp.http.X-Varnish-Cachable) {
+    unset resp.http.X-Varnish-Cachable;
     set resp.http.X-Varnish-Age = resp.http.age;
     if (##long_term_client_cache_matches##) {
       set resp.http.Cache-Control = "public, max-age=31536000";
@@ -72,21 +55,6 @@ read -r -d '' varnish_vcl_recv_ban << EOM || true
   if (req.method == "PUT" && req.http.host ~ ":6081" && req.http.ban-host ~ ".") {
     ban("req.http.host ~ " + req.http.ban-host + " && req.url ~ " + req.url);
     return(synth(999, "Ban added: req.http.host ~ " + req.http.ban-host + " && req.url ~ " + req.url));
-  }
-EOM
-
-read -r -d '' varnish_vcl_recv_devicedetect << EOM || true
-  call devicedetect;
-
-  # normalize devicedetect outcome, because we only want pc, tablet or mobile caches
-  if (req.http.X-UA-Device ~ "^mobile") {
-    set req.http.X-UA-Device = "mobile";
-  }
-  elseif (req.http.X-UA-Device ~ "^tablet") {
-    set req.http.X-UA-Device = "tablet";
-  }
-  else {
-    set req.http.X-UA-Device = "pc";
   }
 EOM
 
@@ -202,23 +170,15 @@ create_vcl_recv () {
 
   local vcl_recv_backend_hints=$(create_vcl_recv_backend_hints "$vcl_init")
   local vcl_recv_unsets=$(create_vcl_recv_unsets)
-  local vcl_recv_devicedetect=$(create_vcl_recv_devicedetect)
 
   local vcl_recv="sub vcl_recv {"
   local vcl_recv="$vcl_recv""$vcl_recv_backend_hints"
-  local vcl_recv="$vcl_recv"$'\n'$'\n'"  $vcl_recv_devicedetect"
   local vcl_recv="$vcl_recv"$'\n'"$vcl_recv_unsets"
   local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_ban"
   local vcl_recv="$vcl_recv"$'\n'$'\n'"  $varnish_vcl_recv_health_check"
   local vcl_recv="$vcl_recv"$'\n'"}"
 
   echo "$vcl_recv"
-}
-
-create_vcl_recv_devicedetect () {
-  set -e
-
-  echo "$varnish_vcl_recv_devicedetect"
 }
 
 create_vcl_recv_unsets () {

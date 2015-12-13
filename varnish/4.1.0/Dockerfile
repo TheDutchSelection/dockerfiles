@@ -15,8 +15,6 @@
 # KEEP_CLIENT_COOKIES_AND_AUTH_PATHS (ie. "/contact /other-page-where-clients-needs-to-send-auth-or-cookies")
 #
 # OTHER:
-# To use commands like varnishtop with docker exec, you have to run "export TERM=xterm" in the container first.
-#
 # Some commands:
 # varnishtop -i BereqURL (urls that most hit the backend)
 # varnishlog -q 'ReqURL ~ "^/foo/bar"' (request coming from the client containing /foo/bar
@@ -37,9 +35,10 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ADD files/scripts /usr/local/bin
-ADD files/devicedetect.vcl /etc/varnish/devicedetect.vcl
 
 RUN chmod +x /usr/local/bin/run.sh
+
+ENV TERM xterm
 
 EXPOSE 6081
 

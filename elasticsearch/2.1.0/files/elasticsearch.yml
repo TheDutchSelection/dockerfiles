@@ -59,7 +59,7 @@ path.logs: ${PATH_LOGS}
 #
 # Set the bind address to a specific IP (IPv4 or IPv6):
 #
-# network.host: 192.168.0.1
+network.host: ${HOST}
 #
 # Set the address other nodes will use to communicate with this node. If not
 # set, it is automatically derived. It must point to an actual IP address.

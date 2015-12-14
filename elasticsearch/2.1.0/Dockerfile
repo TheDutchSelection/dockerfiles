@@ -5,6 +5,7 @@
 # REQUIRED ENVS:
 # CLUSTER_NAME (ie. "tds_nl")
 # EXPECTED_NUMBER_OF_NODES (ie. "6")
+# HOST (ie. "10.0.4.3")
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_MASTER (true or false)
 # NODE_DATA (true or false)
@@ -41,6 +42,8 @@ ADD https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch
 WORKDIR /tmp
 
 RUN \
+  apt-get update && \
+  apt-get install -yq curl && \
   tar xvzf elasticsearch-2.1.0.tar.gz && \
   mv /tmp/elasticsearch-2.1.0 /usr/local/bin/elasticsearch && \
   useradd -m -u 9200 elastic

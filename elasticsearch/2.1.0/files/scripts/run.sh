@@ -56,11 +56,7 @@ elasticsearch_config_file="/usr/local/bin/elasticsearch/config/elasticsearch.yml
 
 echo "creating persistant directories..."
 mkdir -p "$PATH_DATA"
-mkdir -p "$PATH_WORK"
 mkdir -p "$PATH_LOGS"
-if [[ ! -z "$PATH_REPO" ]]; then
-  mkdir -p "$PATH_REPO"
-fi
 
 echo "creating $elasticsearch_config_file..."
 create_config_file "$elasticsearch_config_file"

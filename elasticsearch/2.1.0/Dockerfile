@@ -48,6 +48,10 @@ RUN \
   mv /tmp/elasticsearch-2.1.0 /usr/local/bin/elasticsearch && \
   useradd -m -u 9200 elastic
 
+# plugins
+RUN \
+  /usr/local/bin/elasticsearch/bin/plugin install delete-by-query
+
 ADD files/elasticsearch.yml /usr/local/bin/elasticsearch/config/
 ADD files/logging.yml /usr/local/bin/elasticsearch/config/
 ADD files/scripts /usr/local/bin

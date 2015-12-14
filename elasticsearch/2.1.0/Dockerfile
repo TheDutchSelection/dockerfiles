@@ -16,6 +16,7 @@
 # NUMBER_OF_REPLICAS (ie. "1")
 # PATH_DATA (ie. "/home/elastic/data/data")
 # PATH_LOGS (ie. "/home/elastic/data/logs")
+# PATH_REPO (ie. "/home/elastic/data/backups")
 # PUBLISH_HOST (ie. "10.0.4.3")
 # TRANSPORT_PORT (ie. "9300")
 # HTTP_PORT  (ie. "9200")

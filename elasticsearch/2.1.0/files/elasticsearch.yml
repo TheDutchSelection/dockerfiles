@@ -44,6 +44,10 @@ path.data: ${PATH_DATA}
 #
 path.logs: ${PATH_LOGS}
 #
+# Path to snapshots:
+#
+path.repo: ${PATH_REPO}
+#
 # ----------------------------------- Memory -----------------------------------
 #
 # Lock the memory on startup:
@@ -87,10 +91,6 @@ transport.tcp.port: ${TRANSPORT_PORT}
 # --------------------------------- Discovery ----------------------------------
 #
 # Elasticsearch nodes will find each other via unicast, by default.
-#
-# No multicast
-#
-discovery.zen.ping.multicast.enabled: false
 #
 # Pass an initial list of hosts to perform discovery when new node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
@@ -137,6 +137,3 @@ gateway.expected_nodes: ${EXPECTED_NUMBER_OF_NODES}
 # Waiting time before starting recovery
 #
 gateway.recover_after_time: 5m
-#
-# Set throttling for SSD disks
-indices.store.throttle.max_bytes_per_sec: 100mb

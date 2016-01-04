@@ -29,6 +29,19 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
+ADD http://ftp.gnu.org/gnu/parallel/parallel-20151122.tar.bz2 /tmp/
+
+WORKDIR /tmp
+
+RUN \
+  tar xvjf parallel-20151122.tar.bz2 && \
+  cd parallel-20151122 && \
+  ./configure && \
+  make && \
+  make install && \
+  rm -f /tmp/parallel-20151122.tar.bz2 && \
+  rm -rf /tmp/parallel-20151122
+
 ADD https://s3.eu-central-1.amazonaws.com/tds-bin/phantomjs/phantomjs-2.0-linux-x86_64.tar.gz /usr/local/share/
 
 RUN \

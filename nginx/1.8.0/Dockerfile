@@ -34,6 +34,7 @@ RUN \
   apk add musl && \
   apk add libcrypto1.0 && \
   apk add g++ && \
+  apk add apache2-utils && \
   rm /var/cache/apk/* && \
   adduser -D -u 6666 appmaster
 

@@ -12,6 +12,7 @@
 # AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23")
 # BACKUP_EXECUTION_TIME (ie. "02:00", time is in UTC and for backups to succeed, WALE needs to be setup)
 # HOST_IP (ie. "123.123.123.1", ip of the host this is running on, if use_with_pgpool or WAL-E)
+# MAX_CONNECTIONS (ie. "100", defaults to 500)
 # RUN_AS_DEVELOPMENT (ie. "1", if set the database will be insecure)
 # SUPERUSER_USERNAME (ie. "superuser")
 # SUPERUSER_PASSWORD (ie. "abcdabcd1234")
@@ -37,7 +38,7 @@
 # - Start PostgreSQL "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master" and everything should run fine.
 
 
-FROM thedutchselection/debian:8.2
+FROM thedutchselection/debian:8.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

@@ -68,7 +68,13 @@ create_postgresql_conf () {
 
   local escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
   local archive_dummy_directory="$DATA_DIRECTORY""pg_xlog/dummy_archive/"
+  if [[ -z "$MAX_CONNECTIONS" ]]; then
+    local calculated_max_connections="500"
+  else
+    local calculated_max_connections="$MAX_CONNECTIONS"
+  fi
 
+  sed -i "s/##max_connections##/$calculated_max_connections/g" /etc/postgresql/postgresql.conf
   sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/postgresql.conf
   if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" ]]; then
     local wale_s3_prefix=$(create_wale_prefix)

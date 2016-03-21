@@ -1,9 +1,9 @@
-# NAME: Environment for application Price Comparator
+# NAME: Environment for application Insights
 #
-# DESCRIPTION: Base for other the Price Comparator images. The gemfiles are a copy of the price comparator
-# apps actual gemfiles. When the files are updated in the price comparator app, you can update them here.
-# The more up to date they are, the faster the building process of the price comparator app, but nothing
-# will break when they are not up to date. The price comparator dockerfile will always run bundle install
+# DESCRIPTION: Base for other the Insights images. The gemfiles are a copy of the insights apps actual gemfiles. When
+# the files are updated in the insights app, you can update them here.
+# The more up to date they are, the faster the building process of the insights app, but nothing
+# will break when they are not up to date. The insights dockerfile will always run bundle install
 # on the latest files.
 #
 # REQUIRED ENVS:
@@ -28,19 +28,6 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
-
-ADD http://ftp.gnu.org/gnu/parallel/parallel-20151122.tar.bz2 /tmp/
-
-WORKDIR /tmp
-
-RUN \
-  tar xvjf parallel-20151122.tar.bz2 && \
-  cd parallel-20151122 && \
-  ./configure && \
-  make && \
-  make install && \
-  rm -f /tmp/parallel-20151122.tar.bz2 && \
-  rm -rf /tmp/parallel-20151122
 
 ADD http://download.redis.io/releases/redis-3.0.7.tar.gz /tmp/
 

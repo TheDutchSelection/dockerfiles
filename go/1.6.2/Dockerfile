@@ -1,4 +1,4 @@
-# NAME: Go 1.5.4
+# NAME: Go 1.6.2
 #
 # DESCRIPTION: Base for other images using Go.
 #
@@ -25,9 +25,9 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV GOLANG_VERSION 1.5.4
+ENV GOLANG_VERSION 1.6.2
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 a3358721210787dc1e06f5ea1460ae0564f22a0fbd91be9dcd947fb1d19b9560
+ENV GOLANG_DOWNLOAD_SHA256 e40c36ae71756198478624ed1bb4ce17597b3c19d243f3f0899bb5740d56212a
 
 WORKDIR /tmp
 
@@ -45,5 +45,3 @@ RUN \
   chmod -R 777 "$GOPATH"
 
 WORKDIR $GOPATH
-
-ADD https://raw.githubusercontent.com/docker-library/golang/master/1.5/go-wrapper /usr/local/bin/

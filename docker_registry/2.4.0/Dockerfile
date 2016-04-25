@@ -38,6 +38,7 @@ WORKDIR $DISTRIBUTION_DIR
 
 RUN \
   make PREFIX=/go clean binaries && \
+  cp /go/bin/* /usr/local/bin/ && \
   mkdir -p /etc/registry && \
   rm -rf /go
 

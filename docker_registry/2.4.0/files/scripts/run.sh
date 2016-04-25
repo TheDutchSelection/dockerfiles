@@ -15,4 +15,4 @@ sed -i "s/##tls_certificate##/$escaped_tls_certificate/g" /etc/registry/config.y
 sed -i "s/##tls_key##/$escaped_tls_key/g" /etc/registry/config.yml
 
 echo "starting docker registry..."
-exec /usr/local/bin/registry /etc/registry/config.yml
+exec /usr/local/bin/registry serve /etc/registry/config.yml

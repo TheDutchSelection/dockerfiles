@@ -39,14 +39,14 @@ RUN \
   rm -f /tmp/redis-3.0.7.tar.gz && \
   rm -rf /tmp/redis-3.0.7
 
-ADD https://s3.eu-central-1.amazonaws.com/tds-bin/phantomjs/phantomjs-2.0-linux-x86_64.tar.gz /usr/local/share/
+ADD https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 /usr/local/share/
 
 RUN \
   cd /usr/local/share && \
-  tar -zxvf phantomjs-2.0-linux-x86_64.tar.gz && \
-  rm /usr/local/share/phantomjs-2.0-linux-x86_64.tar.gz && \
-  ln -s /usr/local/share/phantomjs /usr/local/bin/phantomjs && \
-  ln -s /usr/local/share/phantomjs /usr/bin/phantomjs
+  tar -xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  rm /usr/local/share/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs && \
+  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
 WORKDIR /tmp
 

@@ -10,7 +10,7 @@
 #
 # OTHER:
 
-FROM thedutchselection/debian:8.2
+FROM thedutchselection/debian:8.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 ADD http://download.redis.io/releases/redis-3.2.0.tar.gz /tmp/

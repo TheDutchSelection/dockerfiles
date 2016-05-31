@@ -42,7 +42,7 @@ RUN mkdir -p /opt/jenkins
 
 WORKDIR /opt/jenkins
 
-ADD http://mirrors.jenkins-ci.org/war-stable/1.609.1/jenkins.war /opt/jenkins/
+ADD http://mirrors.jenkins-ci.org/war-stable/1.651.2/jenkins.war /opt/jenkins/
 
 RUN \
   useradd -m -u 8080 jenkins && \

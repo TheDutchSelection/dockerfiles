@@ -1,4 +1,4 @@
-# NAME: Jenkins 1.609.1
+# NAME: Jenkins 1.651.2
 #
 # DESCRIPTION: Jenkins image.
 #

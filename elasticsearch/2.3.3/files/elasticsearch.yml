@@ -138,3 +138,7 @@ gateway.expected_nodes: ${EXPECTED_NUMBER_OF_NODES}
 # Waiting time before starting recovery
 #
 gateway.recover_after_time: 5m
+#
+# No automatic index creation
+#
+action.auto_create_index: false

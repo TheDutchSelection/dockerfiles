@@ -22,7 +22,7 @@ WORKDIR /tmp
 
 RUN \
   tar -xzf node_exporter-0.12.0.linux-amd64.tar.gz && \
-  mv node_exporter /usr/local/bin/ && \
+  mv node_exporter-0.12.0.linux-amd64/node_exporter /usr/local/bin/ && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home

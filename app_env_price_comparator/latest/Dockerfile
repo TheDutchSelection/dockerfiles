@@ -42,15 +42,15 @@ RUN \
   rm -f /tmp/parallel-20151122.tar.bz2 && \
   rm -rf /tmp/parallel-20151122
 
-ADD http://download.redis.io/releases/redis-3.0.7.tar.gz /tmp/
+ADD http://download.redis.io/releases/redis-3.2.0.tar.gz /tmp/
 
 RUN \
-  tar xzf redis-3.0.7.tar.gz && \
-  cd redis-3.0.7 && \
+  tar xzf redis-3.2.0.tar.gz && \
+  cd redis-3.2.0 && \
   make && \
   cp src/redis-cli /usr/local/bin/redis-cli && \
-  rm -f /tmp/redis-3.0.7.tar.gz && \
-  rm -rf /tmp/redis-3.0.7
+  rm -f /tmp/redis-3.2.0.tar.gz && \
+  rm -rf /tmp/redis-3.2.0
 
 ADD https://s3.eu-central-1.amazonaws.com/tds-bin/phantomjs/phantomjs-2.0-linux-x86_64.tar.gz /usr/local/share/
 

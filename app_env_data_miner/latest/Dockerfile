@@ -1,9 +1,9 @@
-# NAME: Environment for application Insights
+# NAME: Environment for application Data Miner
 #
-# DESCRIPTION: Base for other the Insights images. The gemfiles are a copy of the insights apps actual gemfiles. When
-# the files are updated in the insights app, you can update them here.
-# The more up to date they are, the faster the building process of the insights app, but nothing
-# will break when they are not up to date. The insights dockerfile will always run bundle install
+# DESCRIPTION: Base for other the Data Miner images. The gemfiles are a copy of the data miner apps actual gemfiles. When
+# the files are updated in the data miner app, you can update them here.
+# The more up to date they are, the faster the building process of the data miner app, but nothing
+# will break when they are not up to date. The data miner dockerfile will always run bundle install
 # on the latest files.
 #
 # REQUIRED ENVS:
@@ -21,7 +21,6 @@ RUN \
   curl -sL https://deb.nodesource.com/setup | bash - && \
   apt-get install -yq nodejs && \
   apt-get install -yq libpq-dev && \
-  apt-get install -yq imagemagick && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-9.4 && \

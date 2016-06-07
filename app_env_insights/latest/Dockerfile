@@ -22,6 +22,7 @@ RUN \
   apt-get install -yq nodejs && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq imagemagick && \
+  apt-get install -yq libfontconfig && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-9.4 && \

@@ -1,25 +1,17 @@
 GIT
   remote: git://github.com/TheDutchSelection/simhanada_css.git
-  revision: a03c7d3ffb5e1c3697085ec58f0a6c7e01c3b47e
+  revision: 4348cb3238e15b40c0e801003ba68d65fb8c926a
   branch: master
   specs:
-    simhanada_css (0.1.0)
+    simhanada (0.2.0)
       autoprefixer-rails (>= 6.3.6)
       bourbon (>= 4.2.7)
       sass-rails (>= 5.0.4)
-
-GIT
-  remote: git://github.com/amatsuda/kaminari.git
-  revision: de208a31c8a3361b105346e850d99261f42791af
-  branch: master
-  specs:
-    kaminari (1.0.0.alpha)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
+      sprockets-es6 (>= 0.9.0)
 
 GIT
   remote: git://github.com/sinatra/sinatra.git
-  revision: 5e9e23621c1f6abbd793b46452cb11ae8ca1277e
+  revision: 5fcb1e1bd49c6b296927c2a25d8e47031c323008
   branch: master
   specs:
     sinatra (2.0.0.pre.alpha)
@@ -32,43 +24,44 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.2)
-    actioncable (5.0.0.rc1)
-      actionpack (= 5.0.0.rc1)
+    actioncable (5.0.0.rc2)
+      actionpack (= 5.0.0.rc2)
       nio4r (~> 1.2)
       websocket-driver (~> 0.6.1)
-    actionmailer (5.0.0.rc1)
-      actionpack (= 5.0.0.rc1)
-      actionview (= 5.0.0.rc1)
-      activejob (= 5.0.0.rc1)
+    actionmailer (5.0.0.rc2)
+      actionpack (= 5.0.0.rc2)
+      actionview (= 5.0.0.rc2)
+      activejob (= 5.0.0.rc2)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 1.0, >= 1.0.5)
-    actionpack (5.0.0.rc1)
-      actionview (= 5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    actionpack (5.0.0.rc2)
+      actionview (= 5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       rack (~> 2.x)
       rack-test (~> 0.6.3)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    actionview (5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    actionview (5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       builder (~> 3.1)
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
-    active_model_serializers (0.10.0.rc5)
-      actionpack (>= 4.0)
-      activemodel (>= 4.0)
-      railties (>= 4.0)
-    activejob (5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    active_model_serializers (0.10.1)
+      actionpack (>= 4.1, < 6)
+      activemodel (>= 4.1, < 6)
+      jsonapi (~> 0.1.1.beta2)
+      railties (>= 4.1, < 6)
+    activejob (5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       globalid (>= 0.3.6)
-    activemodel (5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
-    activerecord (5.0.0.rc1)
-      activemodel (= 5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    activemodel (5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
+    activerecord (5.0.0.rc2)
+      activemodel (= 5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       arel (~> 7.0)
-    activesupport (5.0.0.rc1)
+    activesupport (5.0.0.rc2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
@@ -112,12 +105,11 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    commonjs (0.2.7)
     concurrent-ruby (1.0.2)
     database_cleaner (1.5.3)
     debase (0.2.1)
       debase-ruby_core_source
-    debase-ruby_core_source (0.9.0)
+    debase-ruby_core_source (0.9.1)
     debug_inspector (0.0.2)
     devise (4.1.0)
       bcrypt (~> 3.0)
@@ -183,8 +175,8 @@ GEM
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (0.9.2)
-      fog-core (~> 1.27)
+    fog-aws (0.9.3)
+      fog-core (~> 1.38)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
@@ -248,7 +240,7 @@ GEM
     fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (1.1.1)
+    fog-softlayer (1.1.2)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.1)
@@ -263,7 +255,7 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-vsphere (0.7.0)
+    fog-vsphere (0.8.0)
       fog-core
       rbvmomi (~> 1.8)
     fog-xenserver (0.2.3)
@@ -303,7 +295,7 @@ GEM
     inflecto (0.0.2)
     ipaddress (0.8.3)
     jasmine-core (2.4.1)
-    jasmine-rails (0.12.4)
+    jasmine-rails (0.12.5)
       jasmine-core (>= 1.3, < 3.0)
       phantomjs (>= 1.9)
       railties (>= 3.2.0)
@@ -313,13 +305,11 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
-    less (2.6.0)
-      commonjs (~> 0.2.7)
-    less-rails (2.7.1)
-      actionpack (>= 4.0)
-      less (~> 2.6.0)
-      sprockets (> 2, < 4)
-      tilt
+    jsonapi (0.1.1.beta2)
+      json (~> 1.8)
+    kaminari (0.17.0)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -333,7 +323,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
-    mini_portile2 (2.0.0)
+    mini_portile2 (2.1.0)
     minitest (5.9.0)
     mono_logger (1.1.0)
     multi_json (1.12.1)
@@ -342,8 +332,9 @@ GEM
       tool (~> 0.2)
     nenv (0.3.0)
     nio4r (1.2.1)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     notiffany (0.1.0)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -360,6 +351,7 @@ GEM
       paperclip (~> 4.3, >= 4.3.6)
     pg (0.18.4)
     phantomjs (2.1.1.0)
+    pkg-config (1.1.7)
     poltergeist (1.9.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -387,17 +379,17 @@ GEM
     rack_session_access (0.1.1)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
-    rails (5.0.0.rc1)
-      actioncable (= 5.0.0.rc1)
-      actionmailer (= 5.0.0.rc1)
-      actionpack (= 5.0.0.rc1)
-      actionview (= 5.0.0.rc1)
-      activejob (= 5.0.0.rc1)
-      activemodel (= 5.0.0.rc1)
-      activerecord (= 5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    rails (5.0.0.rc2)
+      actioncable (= 5.0.0.rc2)
+      actionmailer (= 5.0.0.rc2)
+      actionpack (= 5.0.0.rc2)
+      actionview (= 5.0.0.rc2)
+      activejob (= 5.0.0.rc2)
+      activemodel (= 5.0.0.rc2)
+      activerecord (= 5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 5.0.0.rc1)
+      railties (= 5.0.0.rc2)
       sprockets-rails (>= 2.0.0)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
@@ -407,13 +399,13 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    railties (5.0.0.rc1)
-      actionpack (= 5.0.0.rc1)
-      activesupport (= 5.0.0.rc1)
+    railties (5.0.0.rc2)
+      actionpack (= 5.0.0.rc2)
+      activesupport (= 5.0.0.rc2)
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (11.1.2)
+    rake (11.2.2)
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
@@ -440,12 +432,6 @@ GEM
       redis (~> 3.0)
       resque (~> 1.25)
       rufus-scheduler (~> 3.2)
-    resque-web (0.0.7)
-      coffee-rails
-      jquery-rails
-      resque
-      sass-rails
-      twitter-bootstrap-rails
     rspec (3.5.0.beta4)
       rspec-core (= 3.5.0.beta4)
       rspec-expectations (= 3.5.0.beta4)
@@ -490,7 +476,7 @@ GEM
     spring-watcher-listen (2.0.0)
       listen (>= 2.7, < 4.0)
       spring (~> 1.2)
-    sprockets (3.6.0)
+    sprockets (3.6.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-es6 (0.9.0)
@@ -512,11 +498,6 @@ GEM
     timecop (0.8.1)
     tool (0.2.3)
     trollop (2.1.2)
-    twitter-bootstrap-rails (3.2.2)
-      actionpack (>= 3.1)
-      execjs (>= 2.2.2, >= 2.2)
-      less-rails (>= 2.5.0)
-      railties (>= 3.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (3.0.0)
@@ -537,12 +518,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_model_serializers (= 0.10.0.rc5)
+  active_model_serializers (= 0.10.1)
   autoprefixer-rails (= 6.3.6)
   better_errors
   binding_of_caller
   bourbon (= 4.2.7)
   capybara
+  coffee-rails (= 4.1.1)
   database_cleaner
   debase
   devise (= 4.1.0)
@@ -556,7 +538,7 @@ DEPENDENCIES
   hiredis (= 0.6.1)
   jasmine-rails
   jquery-rails (= 4.1.1)
-  kaminari!
+  kaminari (= 0.17.0)
   listen (~> 3.0.6)
   paperclip (= 4.3.6)
   paperclip-compression (= 0.3.15)
@@ -569,18 +551,17 @@ DEPENDENCIES
   rack-cors (= 0.4.0)
   rack-livereload
   rack_session_access
-  rails (= 5.0.0.rc1)
+  rails (= 5.0.0.rc2)
   redis (= 3.3.0)
   resque (= 1.26)
   resque-pool (= 0.6.0)
   resque-scheduler (= 4.2.0)
-  resque-web (= 0.0.7)
   rspec (~> 3.5.0.beta3)
   rspec-core (~> 3.5.0.beta3)
   rspec-rails (>= 3.5.0.beta3)
   ruby-debug-ide
   sass-rails (= 5.0.4)
-  simhanada_css!
+  simhanada!
   simplecov
   sinatra!
   spring

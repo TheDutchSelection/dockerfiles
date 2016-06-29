@@ -5,7 +5,6 @@
 #
 # REQUIRED ENVS:
 # ELASTICSEARCH_URI (ie. "http://127.0.0.1:9200")
-# WEB_LISTEN_PORT (ie. ":9107")
 #
 # OPTIONAL ENVS:
 #

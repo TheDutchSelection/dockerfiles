@@ -9,9 +9,7 @@ sed -i "s/##prometheus_alertmanager_hosts_notification_email_address##/$HOSTS_NO
 sed -i "s/##prometheus_alertmanager_pushover_application_token##/$PUSHOVER_APPLICATION_TOKEN/g" /etc/alertmanager/alertmanager.yml
 sed -i "s/##prometheus_alertmanager_pushover_group_key##/$PUSHOVER_GROUP_KEY/g" /etc/alertmanager/alertmanager.yml
 
-silence_file="$DATA_DIRECTORY""silences.json"
-
 echo "starting prometheus alert manager..."
 exec /usr/local/bin/alertmanager \
   -config.file=/etc/alertmanager/alertmanager.yml \
-  -silences.file="$silence_file"
+  -storage.path="$DATA_DIRECTORY"

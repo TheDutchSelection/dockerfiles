@@ -35,8 +35,6 @@ ADD files/scripts /usr/local/bin
 RUN \
   chmod +x /usr/local/bin/run.sh
 
-EXPOSE 9107
 EXPOSE 9108
-EXPOSE 9109
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

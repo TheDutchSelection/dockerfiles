@@ -8,7 +8,7 @@ ALERT NodeDown
   }
 
 ALERT NodeLowMemory
-  IF(node_memory_MemAvailable / node_memory_MemTotal * 100) < 95
+  IF(node_memory_MemAvailable / node_memory_MemTotal * 100) < 5
   FOR 2m
   LABELS { severity="page" }
   ANNOTATIONS {

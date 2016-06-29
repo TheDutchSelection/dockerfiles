@@ -1,4 +1,4 @@
-# NAME: Prometheus Server 0.15.0rc1
+# NAME: Prometheus Server 0.20.0
 #
 # DESCRIPTION: Prometheus server image.
 #
@@ -13,37 +13,24 @@
 #
 # OTHER:
 
-FROM thedutchselection/debian:8.1
+FROM thedutchselection/alpine:3.2
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
-  apt-get update && \
-  apt-get install -yq vim-common && \
-  apt-get install -yq mercurial && \
-  apt-get install -yq libc6-dev && \
-  apt-get install -yq make && \
-  apt-get install -yq curl && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  apk update && \
+  apk add bash && \
+  rm /var/cache/apk/*
 
-RUN mkdir -p /go/src/github.com/prometheus
+ADD https://github.com/prometheus/prometheus/releases/download/0.20.0/prometheus-0.20.0.linux-amd64.tar.gz /tmp/
 
-WORKDIR /go/src/github.com/prometheus
+WORKDIR /tmp
 
 RUN \
-  git clone https://github.com/prometheus/prometheus.git && \
-  cd prometheus && \
-  git checkout tags/0.15.0rc1 && \
-  useradd -m -u 9090 prometheus
-
-WORKDIR /go/src/github.com/prometheus/prometheus
-
-RUN \
-  make build && \
-  cp prometheus /usr/local/bin/ && \
-  mkdir -p /etc/prometheus && \
-  make clean && \
-  rm -rf /go
+  tar -xzf prometheus-0.20.0.linux-amd64.tar.gz && \
+  mv prometheus-0.20.0.linux-amd64/prometheus /usr/local/bin/ && \
+  mv prometheus-0.20.0.linux-amd64/promtool /usr/local/bin/ && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  adduser -D -u 9090 prometheus
 
 WORKDIR /home/prometheus
 

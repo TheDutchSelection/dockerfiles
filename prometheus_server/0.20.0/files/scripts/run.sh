@@ -19,14 +19,14 @@ read -r -d '' prometheus_hosts_job << EOM || true
 - job_name: "hosts"
   scheme: "http"
   metrics_path: "/metrics"
-  target_groups:
+  static_configs:
 EOM
 
 read -r -d '' prometheus_containers_job << EOM || true
 - job_name: "containers"
   scheme: "http"
   metrics_path: "/metrics"
-  target_groups:
+  static_configs:
 EOM
 
 hosts_job () {

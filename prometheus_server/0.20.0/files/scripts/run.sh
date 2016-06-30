@@ -22,8 +22,8 @@ read -r -d '' prometheus_hosts_job << EOM || true
   static_configs:
 EOM
 
-read -r -d '' prometheus_containers_job << EOM || true
-- job_name: "containers"
+read -r -d '' prometheus_elasticsearch_job << EOM || true
+- job_name: "elasticsearch"
   scheme: "http"
   metrics_path: "/metrics"
   static_configs:
@@ -36,16 +36,16 @@ hosts_job () {
   local targets=""
 
   while read -r env; do
-    # we want the only the [HOST]_PUBLIC_IP=188.90.45.31 ones
+    # we want the only the HOST_[HOST]_PUBLIC_IP=188.90.45.31 ones
     local number_of_dashes=$(grep -o "_" <<< "$env" | wc -l)
-    if [[ "$env" == *"_PUBLIC_IP="* && "$number_of_dashes" == "2" ]]; then
+    if [[ "$env" == "HOST_"*"_PUBLIC_IP="* && "$number_of_dashes" == "3" ]]; then
       local host_var=$(echo "$env" | awk -F'=' '{print $1}')
       local host=$(echo "$env" | awk -F'=' '{print $2}')
-      local host_name=${host_var%%_*}
-      local host_name=$(echo "$host_name" | awk '{print tolower($0)}')
+      local name=${host_var:5:13} # string manipulation starting at 5, 13 chars
+      local name=$(echo "$name" | awk '{print tolower($0)}')
 
       local target="    - ""$host"":9100"
-      local labels="    labels:"$'\n'"      node: ""$host_name"
+      local labels="    labels:"$'\n'"      node: ""$name"
       local target_groups="$target_groups"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
     fi
   done <<< "$envs"
@@ -53,18 +53,36 @@ hosts_job () {
   echo "$target_groups"
 }
 
-containers_job () {
+elasticsearch_job () {
   set -e
-  echo ""
+
+  local envs=$(env)
+  local targets=""
+
+  while read -r env; do
+    # we want the only the ELASTICSEARCH_[HOST]_PUBLIC_IP=188.90.45.31 ones
+    local number_of_dashes=$(grep -o "_" <<< "$env" | wc -l)
+    if [[ "$env" == "ELASTICSEARCH_"*"_PUBLIC_IP="* && "$number_of_dashes" == "3" ]]; then
+      local host_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local host=$(echo "$env" | awk -F'=' '{print $2}')
+      local host_name=${host_var:14:13} # string manipulation starting at 14, 13 chars
+      local host_name=$(echo "$host_name" | awk '{print tolower($0)}')
+
+      local target="    - ""$host"":9108"
+      local labels="    labels:"$'\n'"      elasticsearch_node: ""$host_name"
+      local target_groups="$target_groups"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
+    fi
+  done <<< "$envs"
+
+  echo "$target_groups"
 }
 
 create_jobs () {
   set -e
 
   local hosts_job=$(hosts_job)
-  local containers_job=$(containers_job)
-  # local jobs="$prometheus_hosts_job""$hosts_job"$'\n'$'\n'"$prometheus_containers_job""$containers_job"
-  local jobs="$prometheus_hosts_job""$hosts_job"
+  local elasticsearch_job=$(elasticsearch_job)
+  local jobs="$prometheus_hosts_job""$hosts_job"$'\n'$'\n'"$prometheus_elasticsearch_job""$elasticsearch_job"
 
   echo "$jobs"
 }

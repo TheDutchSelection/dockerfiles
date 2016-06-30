@@ -4,7 +4,7 @@
 #
 # REQUIRED ENVS:
 # DATA_DIRECTORY (ie. "/home/prometheus/data/")
-# [HOST]_PUBLIC_IP (ie. "123.123.123.123")
+# HOST_[HOST]_PUBLIC_IP (for the hosts job ie. "123.123.123.123")
 # MEMORY_CHUNCKS (ie. "524288")
 #
 # OPTIONAL ENVS:

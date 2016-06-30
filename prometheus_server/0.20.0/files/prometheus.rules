@@ -24,3 +24,12 @@ ALERT NodeLowDisk
     summary = "Node {{$labels.node}} disk space low",
     description = "{{$labels.node}} has less than 10% free disk space available for more than 2 minutes."
   }
+
+ALERT HighLoad
+  IF node_load1 > 20
+  FOR 1m
+  LABELS { severity="page" }
+  ANNOTATIONS {
+    summary = "Node {{$labels.node}} high load",
+    description = "{{$labels.node}} has a load of over 20 for more than 2 minutes."
+   }

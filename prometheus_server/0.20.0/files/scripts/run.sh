@@ -30,7 +30,7 @@ read -r -d '' prometheus_elasticsearch_job << EOM || true
 EOM
 
 read -r -d '' prometheus_blackbox_job_base << EOM || true
-- job_name: "blackbox ##target_name##"
+- job_name: "blackbox_##job_name##"
   scheme: "http"
   metrics_path: "##metrics_path##"
   static_configs:
@@ -96,13 +96,13 @@ blackbox_jobs () {
       local url_var=$(echo "$env" | awk -F'=' '{print $1}')
       local url=$(echo "$env" | awk -F'=' '{print $2}')
       local host_plus_port=${url%%/*}
-      local target_name=${url_var:19} # string manipulation starting at 19
-      local target_name=$(echo "$target_name" | awk '{print tolower($0)}')
-      local target_name=${target_name//_/ }
+      local job_name=${url_var:19} # string manipulation starting at 19
+      local job_name=$(echo "$job_name" | awk '{print tolower($0)}')
+      local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
 
       local job="$prometheus_blackbox_job_base"
-      local job=${job/\#\#target_name\#\#/"$target_name"}
+      local job=${job/\#\#job_name\#\#/"$job_name"}
       local job=${job/\#\#metrics_path\#\#/"$metrics_path"}
 
       local target="    - ""$host_plus_port"

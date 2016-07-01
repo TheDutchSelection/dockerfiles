@@ -173,5 +173,6 @@ else
     -config.file=/etc/prometheus/prometheus.yml \
     -storage.local.path="$DATA_DIRECTORY" \
     -storage.local.memory-chunks="$MEMORY_CHUNCKS" \
-    -alertmanager.url=http://"$ALERTMANAGER_HOST":"$ALERTMANAGER_PORT"
+    -alertmanager.url=http://"$ALERTMANAGER_HOST":"$ALERTMANAGER_PORT" \
+    -log.level="debug"
 fi

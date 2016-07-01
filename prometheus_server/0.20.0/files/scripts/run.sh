@@ -101,6 +101,7 @@ blackbox_jobs () {
       local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
       local metrics_path=${metrics_path//%3D/=}
+      local metrics_path="/""$metrics_path"
 
       local job="$prometheus_blackbox_job_base"
       local job=${job/\#\#job_name\#\#/"$job_name"}

@@ -14,7 +14,7 @@ ALERT NodeLowMemory
   ANNOTATIONS {
     summary = "Node {{$labels.node}} memory low",
     description = "{{$labels.node}} has less than 5% memory available for more than 2 minutes."
-   }
+  }
 
 ALERT NodeLowDisk
   IF (node_filesystem_free{filesystem="/"} / node_filesystem_size{filesystem="/"} * 100) < 10
@@ -32,4 +32,13 @@ ALERT HighLoad
   ANNOTATIONS {
     summary = "Node {{$labels.node}} high load",
     description = "{{$labels.node}} has a load of over 20 for more than 2 minutes."
-   }
+  }
+
+ALERT EndpointUnavailable
+  IF probe_success == 0
+  FOR 2m
+  LABELS { severity="page" }
+  ANNOTATIONS {
+    summary = "Endpoint {{$labels.target_name}} unavailable",
+    description = "Endpoint {{$labels.target_name}} has been unavailable for more than 2 minutes."
+  }

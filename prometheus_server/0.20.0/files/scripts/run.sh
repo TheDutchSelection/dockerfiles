@@ -29,6 +29,13 @@ read -r -d '' prometheus_elasticsearch_job << EOM || true
   static_configs:
 EOM
 
+read -r -d '' prometheus_blackbox_job << EOM || true
+- job_name: "blackbox"
+  scheme: "http"
+  metrics_path: ""
+  static_configs:
+EOM
+
 hosts_job () {
   set -e
 
@@ -77,12 +84,47 @@ elasticsearch_job () {
   echo "$target_groups"
 }
 
+blackbox_job () {
+  set -e
+
+  local envs=$(env)
+  local targets=""
+
+  while read -r env; do
+    # we want only the BLACKBOX_PROBE_URL_[TARGET_NAME]=http://localhost:9115/probe?target=google.com&module=http_2xx ones
+    if [[ "$env" == "BLACKBOX_PROBE_URL"* ]]; then
+      local url_var=$(echo "$env" | awk -F'=' '{print $1}')
+      local url=$(echo "$env" | awk -F'=' '{print $2}')
+      local target_name=${url_var##*_}
+      local target_name=$(echo "$target_name" | awk '{print tolower($0)}')
+      local target_name=${target_name//-/ }
+
+      local target="    - ""$url"
+      local labels="    labels:"$'\n'"      target_name: ""$target_name"
+      local target_groups="$target_groups"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
+    fi
+  done <<< "$envs"
+
+  echo "$target_groups"
+}
+
 create_jobs () {
   set -e
 
   local hosts_job=$(hosts_job)
   local elasticsearch_job=$(elasticsearch_job)
-  local jobs="$prometheus_hosts_job""$hosts_job"$'\n'$'\n'"$prometheus_elasticsearch_job""$elasticsearch_job"
+  local blackbox_job=$(blackbox_job)
+  local jobs=""
+  if [[ ! -z "$hosts_job" ]]; then
+    local jobs="$jobs""$prometheus_hosts_job""$hosts_job"$'\n'$'\n'
+  fi
+  if [[ ! -z "$elasticsearch_job" ]]; then
+    local jobs="$jobs""$prometheus_elasticsearch_job""$elasticsearch_job"$'\n'$'\n'
+  fi
+
+  if [[ ! -z "$blackbox_job" ]]; then
+    local jobs="$jobs""$prometheus_blackbox_job""$blackbox_job"
+  fi
 
   echo "$jobs"
 }

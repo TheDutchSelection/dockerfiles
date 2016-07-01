@@ -4,12 +4,14 @@
 #
 # REQUIRED ENVS:
 # DATA_DIRECTORY (ie. "/home/prometheus/data/")
-# HOST_[HOST]_PUBLIC_IP (for the hosts job ie. "123.123.123.123")
 # MEMORY_CHUNCKS (ie. "524288")
 #
 # OPTIONAL ENVS:
 # ALERTMANAGER_HOST (ie. "10.0.0.1")
 # ALERTMANAGER_PORT (ie. "9090")
+# BLACKBOX_PROBE_URL_[TARGET_NAME] (for probing urls ie. "123.123.123.123:9115/probe?target=google.com&module=http_2xx")
+# ELASTICSEARCH_[HOST]_PUBLIC_IP (for the elasticsearch job ie. "123.123.123.123")
+# HOST_[HOST]_PUBLIC_IP (for the hosts job ie. "123.123.123.123")
 #
 # OTHER:
 

@@ -91,7 +91,7 @@ blackbox_jobs () {
   local targets=""
 
   while read -r env; do
-    # we want only the BLACKBOX_PROBE_URL_[TARGET_NAME]=localhost:9115/probe?target=google.com&module=http_2xx ones
+    # we want only the BLACKBOX_PROBE_URL_[TARGET_NAME]=localhost:9115/probe?target%3Dgoogle.com&module%3Dhttp_2xx ones
     if [[ "$env" == "BLACKBOX_PROBE_URL"* ]]; then
       local url_var=$(echo "$env" | awk -F'=' '{print $1}')
       local url=$(echo "$env" | awk -F'=' '{print $2}')
@@ -100,6 +100,7 @@ blackbox_jobs () {
       local job_name=$(echo "$job_name" | awk '{print tolower($0)}')
       local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
+      local metrics_path=${metrics_path//%3D/=}
 
       local job="$prometheus_blackbox_job_base"
       local job=${job/\#\#job_name\#\#/"$job_name"}

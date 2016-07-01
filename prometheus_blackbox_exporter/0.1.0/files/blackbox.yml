@@ -1,0 +1,12 @@
+modules:
+  http_price_comparator_nl_telecom:
+    prober: http
+    timeout: 30s
+    http:
+      valid_status_codes: []  # Defaults to 2xx
+      method: GET
+      no_follow_redirects: false
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+      fail_if_not_matches_regexp:
+      - "Telefoon met abonnement"

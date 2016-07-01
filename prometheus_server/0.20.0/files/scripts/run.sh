@@ -106,7 +106,7 @@ blackbox_jobs () {
       local job=${job/\#\#metrics_path\#\#/"$metrics_path"}
 
       local target="    - ""$host_plus_port"
-      local labels="    labels:"$'\n'"      target_name: ""$target_name"
+      local labels="    labels:"$'\n'"      target_name: \"""$target_name""\""
       local job="$job"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
       local jobs="$jobs"$'\n'"$job"
     fi

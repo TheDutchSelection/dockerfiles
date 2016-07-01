@@ -29,10 +29,10 @@ read -r -d '' prometheus_elasticsearch_job << EOM || true
   static_configs:
 EOM
 
-read -r -d '' prometheus_blackbox_job << EOM || true
-- job_name: "blackbox"
+read -r -d '' prometheus_blackbox_job_base << EOM || true
+- job_name: "blackbox ##target_name##"
   scheme: "http"
-  metrics_path: ""
+  metrics_path: "##metrics_path##"
   static_configs:
 EOM
 
@@ -84,28 +84,35 @@ elasticsearch_job () {
   echo "$target_groups"
 }
 
-blackbox_job () {
+blackbox_jobs () {
   set -e
 
   local envs=$(env)
   local targets=""
 
   while read -r env; do
-    # we want only the BLACKBOX_PROBE_URL_[TARGET_NAME]=http://localhost:9115/probe?target=google.com&module=http_2xx ones
+    # we want only the BLACKBOX_PROBE_URL_[TARGET_NAME]=localhost:9115/probe?target=google.com&module=http_2xx ones
     if [[ "$env" == "BLACKBOX_PROBE_URL"* ]]; then
       local url_var=$(echo "$env" | awk -F'=' '{print $1}')
       local url=$(echo "$env" | awk -F'=' '{print $2}')
+      local host_plus_port=${url%%/*}
       local target_name=${url_var:19} # string manipulation starting at 19
       local target_name=$(echo "$target_name" | awk '{print tolower($0)}')
       local target_name=${target_name//_/ }
+      local metrics_path=${url#*/}
 
-      local target="    - ""$url"
+      local job="$prometheus_blackbox_job_base"
+      local job=${job/\#\#target_name\#\#/"$target_name"}
+      local job=${job/\#\#metrics_path\#\#/"$metrics_path"}
+
+      local target="    - ""$host_plus_port"
       local labels="    labels:"$'\n'"      target_name: ""$target_name"
-      local target_groups="$target_groups"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
+      local job="$job"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
+      local jobs="$jobs"$'\n'"$job"
     fi
   done <<< "$envs"
 
-  echo "$target_groups"
+  echo "$jobs"
 }
 
 create_jobs () {
@@ -113,7 +120,7 @@ create_jobs () {
 
   local hosts_job=$(hosts_job)
   local elasticsearch_job=$(elasticsearch_job)
-  local blackbox_job=$(blackbox_job)
+  local blackbox_jobs=$(blackbox_jobs)
   local jobs=""
   if [[ ! -z "$hosts_job" ]]; then
     local jobs="$jobs""$prometheus_hosts_job""$hosts_job"$'\n'$'\n'
@@ -122,8 +129,8 @@ create_jobs () {
     local jobs="$jobs""$prometheus_elasticsearch_job""$elasticsearch_job"$'\n'$'\n'
   fi
 
-  if [[ ! -z "$blackbox_job" ]]; then
-    local jobs="$jobs""$prometheus_blackbox_job""$blackbox_job"
+  if [[ ! -z "$blackbox_jobs" ]]; then
+    local jobs="$jobs""$blackbox_jobs"
   fi
 
   echo "$jobs"

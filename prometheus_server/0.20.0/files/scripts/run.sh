@@ -95,9 +95,9 @@ blackbox_job () {
     if [[ "$env" == "BLACKBOX_PROBE_URL"* ]]; then
       local url_var=$(echo "$env" | awk -F'=' '{print $1}')
       local url=$(echo "$env" | awk -F'=' '{print $2}')
-      local target_name=${url_var##*_}
+      local target_name=${url_var:19} # string manipulation starting at 19
       local target_name=$(echo "$target_name" | awk '{print tolower($0)}')
-      local target_name=${target_name//-/ }
+      local target_name=${target_name//_/ }
 
       local target="    - ""$url"
       local labels="    labels:"$'\n'"      target_name: ""$target_name"

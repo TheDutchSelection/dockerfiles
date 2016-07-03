@@ -104,6 +104,7 @@ blackbox_jobs () {
       local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
       local target_param=$(echo "$metrics_path" | sed 's/.*target%3D//' | sed 's/\&.*//')
+      local target_param=${target_param//%3D/=}
       local module_param=$(echo "$metrics_path" | sed 's/.*module%3D//' | sed 's/\&.*//')
 
       local job="$prometheus_blackbox_job_base"

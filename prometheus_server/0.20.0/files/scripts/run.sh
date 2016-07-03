@@ -34,8 +34,8 @@ read -r -d '' prometheus_blackbox_job_base << EOM || true
   scheme: "http"
   metrics_path: "/probe"
   params:
-    target: "##target_param##"
-    module: "##module_param##"
+    target: ["##target_param##"]
+    module: ["##module_param##"]
   static_configs:
 EOM
 

@@ -32,7 +32,10 @@ EOM
 read -r -d '' prometheus_blackbox_job_base << EOM || true
 - job_name: "blackbox_##job_name##"
   scheme: "http"
-  metrics_path: "##metrics_path##"
+  metrics_path: "/probe"
+  params:
+    target: "##target_param##"
+    module: "##module_param##"
   static_configs:
 EOM
 
@@ -101,11 +104,13 @@ blackbox_jobs () {
       local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
       local metrics_path=${metrics_path//%3D/=}
-      local metrics_path="/""$metrics_path"
+      local target_param=$(echo "$metrics_path" | sed 's/.*target=//' | sed 's/\&.*//')
+      local module_param=$(echo "$metrics_path" | sed 's/.*module=//' | sed 's/\&.*//')
 
       local job="$prometheus_blackbox_job_base"
       local job=${job/\#\#job_name\#\#/"$job_name"}
-      local job=${job/\#\#metrics_path\#\#/"$metrics_path"}
+      local job=${job/\#\#target_param\#\#/"$target_param"}
+      local job=${job/\#\#module_param\#\#/"$module_param"}
 
       local target="    - ""$host_plus_port"
       local labels="    labels:"$'\n'"      target_name: \"""$target_name""\""

@@ -103,9 +103,8 @@ blackbox_jobs () {
       local job_name=$(echo "$job_name" | awk '{print tolower($0)}')
       local target_name=${job_name//_/ }
       local metrics_path=${url#*/}
-      local metrics_path=${metrics_path//%3D/=}
-      local target_param=$(echo "$metrics_path" | sed 's/.*target=//' | sed 's/\&.*//')
-      local module_param=$(echo "$metrics_path" | sed 's/.*module=//' | sed 's/\&.*//')
+      local target_param=$(echo "$metrics_path" | sed 's/.*target%3D//' | sed 's/\&.*//')
+      local module_param=$(echo "$metrics_path" | sed 's/.*module%3D//' | sed 's/\&.*//')
 
       local job="$prometheus_blackbox_job_base"
       local job=${job/\#\#job_name\#\#/"$job_name"}

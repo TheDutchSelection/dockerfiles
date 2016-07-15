@@ -10,7 +10,7 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/ruby:2.3.0
+FROM thedutchselection/ruby:2.3.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
@@ -30,37 +30,37 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
-ADD http://ftp.gnu.org/gnu/parallel/parallel-20151122.tar.bz2 /tmp/
+ADD http://ftp.gnu.org/gnu/parallel/parallel-20160622.tar.bz2 /tmp/
 
 WORKDIR /tmp
 
 RUN \
-  tar xvjf parallel-20151122.tar.bz2 && \
-  cd parallel-20151122 && \
+  tar xvjf parallel-20160622.tar.bz2 && \
+  cd parallel-20160622 && \
   ./configure && \
   make && \
   make install && \
-  rm -f /tmp/parallel-20151122.tar.bz2 && \
-  rm -rf /tmp/parallel-20151122
+  rm -f /tmp/parallel-20160622.tar.bz2 && \
+  rm -rf /tmp/parallel-20160622
 
-ADD http://download.redis.io/releases/redis-3.2.0.tar.gz /tmp/
+ADD http://download.redis.io/releases/redis-3.2.1.tar.gz /tmp/
 
 RUN \
-  tar xzf redis-3.2.0.tar.gz && \
-  cd redis-3.2.0 && \
+  tar xzf redis-3.2.1.tar.gz && \
+  cd redis-3.2.1 && \
   make && \
   cp src/redis-cli /usr/local/bin/redis-cli && \
-  rm -f /tmp/redis-3.2.0.tar.gz && \
-  rm -rf /tmp/redis-3.2.0
+  rm -f /tmp/redis-3.2.1.tar.gz && \
+  rm -rf /tmp/redis-3.2.1
 
-ADD https://s3.eu-central-1.amazonaws.com/tds-bin/phantomjs/phantomjs-2.0-linux-x86_64.tar.gz /usr/local/share/
+ADD https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 /usr/local/share/
 
 RUN \
   cd /usr/local/share && \
-  tar -zxvf phantomjs-2.0-linux-x86_64.tar.gz && \
-  rm /usr/local/share/phantomjs-2.0-linux-x86_64.tar.gz && \
-  ln -s /usr/local/share/phantomjs /usr/local/bin/phantomjs && \
-  ln -s /usr/local/share/phantomjs /usr/bin/phantomjs
+  tar -xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  rm /usr/local/share/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs && \
+  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
 WORKDIR /tmp
 

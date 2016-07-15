@@ -30,7 +30,7 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
-ADD http://download.redis.io/releases/redis-3.2.0.tar.gz /tmp/
+ADD http://download.redis.io/releases/redis-3.2.1.tar.gz /tmp/
 
 RUN \
   tar xzf redis-3.2.1.tar.gz && \

@@ -1,6 +1,6 @@
-# NAME: Alpine 3.2
+# NAME: Alpine 3.4
 #
-# DESCRIPTION: Base for other images using Alpine 3.2.
+# DESCRIPTION: Base for other images using Alpine 3.4.
 #
 # REQUIRED ENVS:
 #
@@ -8,7 +8,7 @@
 #
 # OTHER:
 
-FROM alpine:3.2
+FROM alpine:3.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 ENV ALPINE_GLIBC_URL "https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/"

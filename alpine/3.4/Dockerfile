@@ -19,4 +19,4 @@ ENV GLIBC_BIN_PKG "glibc-bin-2.21-r2.apk"
 RUN \
   apk add --update -t deps wget ca-certificates && \
   apk del --purge deps && \
-  rm /tmp/* /var/cache/apk/*
+  rm /var/cache/apk/*

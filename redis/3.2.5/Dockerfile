@@ -1,6 +1,6 @@
-# NAME: Redis 3.0.7
+# NAME: Redis 3.2.5
 #
-# DESCRIPTION: Redis 3.0.7 image.
+# DESCRIPTION: Redis 3.2.5 image.
 #
 # REQUIRED ENVS:
 # DATA_DIRECTORY (ie. "/home/redis/db")
@@ -10,16 +10,16 @@
 #
 # OTHER:
 
-FROM thedutchselection/debian:8.2
+FROM thedutchselection/debian:8.6
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-ADD http://download.redis.io/releases/redis-3.0.7.tar.gz /tmp/
+ADD http://download.redis.io/releases/redis-3.2.5.tar.gz /tmp/
 
 WORKDIR /tmp
 
 RUN \
-  tar -xzf redis-3.0.7.tar.gz && \
-  cd redis-3.0.7 && \
+  tar -xzf redis-3.2.5.tar.gz && \
+  cd redis-3.2.5 && \
   make && \
   make install && \
   mkdir -p /etc/redis && \

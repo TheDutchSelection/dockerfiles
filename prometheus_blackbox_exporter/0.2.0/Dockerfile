@@ -16,7 +16,7 @@ RUN \
   apk add bash && \
   rm /var/cache/apk/*
 
-ADD https://github.com/prometheus/blackbox_exporter/releases/download/0.2.0/blackbox_exporter-0.2.0.linux-amd64.tar.gz /tmp/
+ADD https://github.com/prometheus/blackbox_exporter/releases/download/v0.2.0/blackbox_exporter-0.2.0.linux-amd64.tar.gz /tmp/
 
 WORKDIR /tmp
 

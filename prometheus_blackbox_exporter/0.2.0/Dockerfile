@@ -22,7 +22,7 @@ WORKDIR /tmp
 
 RUN \
   tar -xzf blackbox_exporter-0.2.0.linux-amd64.tar.gz && \
-  mv blackbox_exporter /usr/local/bin/ && \
+  mv /tmp/blackbox_exporter-0.2.0.linux-amd64/blackbox_exporter /usr/local/bin/ && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home

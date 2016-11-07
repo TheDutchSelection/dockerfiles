@@ -11,6 +11,8 @@
 # REDIS_DATABASE (ie. 0)
 # REDIS_NAMESPACE (ie. "tds", : not allowed)
 # REDIS_PASSWORD: (ie. "abcdabcd1234")
+# SSH_KEY: (ie. "/home/jenkins/.ssh/id_rsa")
+# SSH_PUB_KEY: (ie. "/home/jenkins/.ssh/id_rsa.pub")
 #
 # OTHER:
 # mount the docker.sock from the host into this container for jenkins to be able to run docker commands, ie.

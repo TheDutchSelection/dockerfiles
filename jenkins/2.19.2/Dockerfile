@@ -6,8 +6,6 @@
 # DATA_DIRECTORY (ie. "/home/jenkins/data/")
 #
 # OPTIONAL ENVS:
-# GIT_USER_NAME: (ie. "TDS Servers")
-# GIT_USER_EMAIL: (ie. "github@tdsservers.com")
 # REDIS_HOST (ie. 127.0.0.1)
 # REDIS_PORT (ie. 6379)
 # REDIS_DATABASE (ie. 0)

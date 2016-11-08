@@ -37,7 +37,6 @@ RUN \
   apt-get install -yq curl && \
   apt-get install -yq redis-tools && \
   apt-get install -yq docker-engine=1.10.3-0~jessie && \
-  apt-get install -yq groovy2 && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

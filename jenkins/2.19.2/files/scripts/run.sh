@@ -5,8 +5,11 @@ set -e
 rm -f /var/run/docker.pid
 
 if [[ -f "$SSH_KEY" && -f  "$SSH_PUB_KEY" ]]; then
+  known_host_file=$(dirname "${SSH_KEY}")"/known_hosts"
+  touch "$known_host_file"
   chown jenkins:jenkins "$SSH_KEY"
   chown jenkins:jenkins "$SSH_PUB_KEY"
+  chown jenkins:jenkins "$known_host_file"
   chmod 400 "$SSH_KEY"
   chmod 400 "$SSH_PUB_KEY"
 fi

@@ -114,18 +114,18 @@ create_backends () {
 
   local backends=""
   while read -r env; do
-    # we want the [APP]_[APP_ID]_HOST_PRIVATE_IP=10.0.4.1 ones
-    if [[ "$env" == *"_HOST_PRIVATE_IP="* ]]; then
+    # we want the [APP]_[APP_ID]_HOST_PUBLIC_IP=10.0.4.1 ones
+    if [[ "$env" == *"_HOST_PUBLIC_IP="* ]]; then
       local last_app="$app"
       local host_var=$(echo "$env" | awk -F'=' '{print $1}')
       local host=$(echo "$env" | awk -F'=' '{print $2}')
-      # remove last 4 parts for APP, ie. NGINX_PRICE_COMPARATOR_1_HOST_PRIVATE_IP
+      # remove last 4 parts for APP, ie. NGINX_PRICE_COMPARATOR_1_HOST_PUBLIC_IP
       local app=$(echo "$host_var" | awk -F'_' '{for(i = 1; i <= NF - 4; i++) printf "%s%s", $i, i == NF -4 ? "" : "_" }')
       local app=$(echo "$app" | awk '{print tolower($0)}')
       # print only the 4th part from behind for id
       local app_id=$(echo "$host_var" | awk -F'_' '{print $(NF - 3) }')
       local app_id=$(echo "$app_id" | awk '{print tolower($0)}')
-      local port_var=${host_var/_PRIVATE_IP/_PORT}
+      local port_var=${host_var/_PUBLIC_IP/_PORT}
       eval port=\$$port_var
 
       # this works because the envs are alphabetically sorted

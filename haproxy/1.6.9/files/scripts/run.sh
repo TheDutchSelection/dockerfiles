@@ -127,6 +127,14 @@ create_backends () {
       local app_id=$(echo "$app_id" | awk '{print tolower($0)}')
       local port_var=${host_var/_PUBLIC_IP/_PORT}
       eval port=\$$port_var
+      local is_backup_var=${host_var/_PUBLIC_IP/_IS_BACKUP}
+      eval is_backup=\$$is_backup_var
+
+      if [[ "$is_backup" == "1" ]]; then
+        local backup_text=" backup"
+      else
+        local backup_text=""
+      fi
 
       # this works because the envs are alphabetically sorted
       if [[ "$last_app" != "$app" ]]; then
@@ -137,7 +145,7 @@ create_backends () {
           local backend=$'\n'$'\n'"backend $app"
         fi
       fi
-      local backend="$backend"$'\n'"  server $app_$app_id $host:$port check inter 2000 rise 2 fall 2"
+      local backend="$backend"$'\n'"  server $app_$app_id $host:$port check inter 2000 rise 2 fall 2$backup_text"
     fi
   done <<< "$envs"
 

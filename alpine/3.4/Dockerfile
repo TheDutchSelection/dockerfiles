@@ -11,12 +11,9 @@
 FROM alpine:3.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-ENV ALPINE_GLIBC_URL "https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/"
-ENV GLIBC_PKG "glibc-2.21-r2.apk"
-ENV GLIBC_BIN_PKG "glibc-bin-2.21-r2.apk"
+RUN apk add --no-cache ca-certificates
 
-# https://github.com/gliderlabs/docker-alpine/issues/11
 RUN \
-  apk add --update -t deps wget ca-certificates && \
+  apk add --update -t deps wget && \
   apk del --purge deps && \
   rm /var/cache/apk/*

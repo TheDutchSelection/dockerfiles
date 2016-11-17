@@ -41,6 +41,12 @@ read -r -d '' server_base << EOM || true
 
     ##access_control_allow_origin##
 
+    location ^~ /assets/ {
+      gzip_static on;
+      expires max;
+      add_header Cache-Control public;
+    }
+
     try_files \$uri/index.html \$uri @##app##;
 
     location @##app## {
@@ -69,6 +75,12 @@ read -r -d '' assets_server_base << EOM || true
     root ##root##;
 
     add_header Access-Control-Allow-Origin *;
+
+    location ^~ /assets/ {
+      gzip_static on;
+      expires max;
+      add_header Cache-Control public;
+    }
 
     try_files \$uri =404;
   }

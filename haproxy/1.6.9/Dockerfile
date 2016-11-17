@@ -3,13 +3,14 @@
 # DESCRIPTION: HAProxy image.
 #
 # REQUIRED ENVS:
+# [APP]_[APP_ID]_HOST_PUBLIC_IP (ie. "81.192.5.1", backend for app)
+# [APP]_[APP_ID]_HOST_PORT (ie. "1001", backend for app)
 # CRT_DIRECTORY (ie. /etc/ssl/domains/)
-# [APP]_[APP_ID]_HOST_PUBLIC_IP (ie. "81.192.5.1")
-# [APP]_[APP_ID]_HOST_PORT (ie. "1001")
-# FRONTEND_[APP]_DOMAIN (ie. "backend.thedutchselection.com assets.thedutchselection.com")
+# FRONTEND_[APP]_DOMAIN (ie. "backend.thedutchselection.com assets.thedutchselection.com", frontend for app)
 #
 # OPTIONAL ENVS:
-# FRONTEND_[APP]_DOMAIN_FORCE_SSL (ie. "1")
+# [APP]_[APP_ID]_HOST_IS_BACKUP (ie. "1", marks host as backup backend)
+# FRONTEND_[APP]_DOMAIN_FORCE_SSL (ie. "1", redirects to SSL)
 # FRONTEND_[APP]_DOMAIN_REDIRECTS (ie. "www.backend.thedutchselection.com##!!backend.thedutchselection.com")
 #
 # OTHER:

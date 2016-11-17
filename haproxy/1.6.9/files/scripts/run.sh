@@ -31,6 +31,7 @@ EOM
 read -r -d '' haproxy_frontend_http << EOM || true
 frontend web-http
   bind *:8080
+  monitor-uri /haproxy_test
   reqadd X-Forwarded-Proto:\ http
 EOM
 

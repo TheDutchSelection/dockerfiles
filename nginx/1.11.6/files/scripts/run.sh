@@ -39,8 +39,6 @@ read -r -d '' server_base << EOM || true
     server_name ##domain####default_server_name##;
     root ##root##;
 
-    ##access_control_allow_origin##
-
     location ^~ /assets/ {
       gzip_static on;
       expires max;
@@ -74,11 +72,10 @@ read -r -d '' assets_server_base << EOM || true
     server_name ##domain##;
     root ##root##;
 
-    add_header Access-Control-Allow-Origin *;
-
     location ^~ /assets/ {
       gzip_static on;
       expires max;
+      add_header 'Access-Control-Allow-Origin' '*';
       add_header Cache-Control public;
     }
 
@@ -116,8 +113,6 @@ create_servers () {
       local base="$server_base"
       local root_var=${server_domain_var/_DOMAIN/_ROOT}
       eval root=\$$root_var
-      local allow_origin_var=${server_domain_var/_DOMAIN/_ALLOW_ORIGIN}
-      eval allow_origin=\$$allow_origin_var
       local location_options_var=${server_domain_var/_DOMAIN/_LOCATION_OPTIONS}
       eval location_options=\$$location_options_var
       local is_default_server_var=${server_domain_var/_DOMAIN/_IS_DEFAULT_SERVER}
@@ -129,11 +124,6 @@ create_servers () {
         local server=${server//\#\#location_options\#\#/}
       else
         local server=${server//\#\#location_options\#\#/"$location_options"}
-      fi
-      if [[ "$allow_origin" == "1" ]]; then
-        local server=${server//\#\#access_control_allow_origin\#\#/"add_header Access-Control-Allow-Origin *;"}
-      else
-        local server=${server//\#\#access_control_allow_origin\#\#/}
       fi
       if [[ -z "$BASIC_AUTH_VALUES" ]]; then
         local server=${server//\#\#basic_auth\#\#/}

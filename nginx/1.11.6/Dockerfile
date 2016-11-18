@@ -14,7 +14,6 @@
 # SERVER_[APP]_ASSETS_DOMAIN (ie. "assets.thedutchselection.com")
 # SERVER_[APP]_ASSETS_ROOT (ie. "/home/appmaster/application/public")
 # SERVER_[APP]_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
-# SERVER_[APP]_ALLOW_ORIGIN (ie. "1")
 # BASIC_AUTH_VALUES (ie. "username1##!!password1 username2##!!password2")
 # SERVER_[APP]_IS_DEFAULT_SERVER (ie. "1")
 #

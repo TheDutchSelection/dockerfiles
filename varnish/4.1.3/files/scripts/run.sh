@@ -297,10 +297,10 @@ create_vcl_backend_response () {
         local varnish_vcl_backend_response="$varnish_vcl_backend_response""((bereq.url ~ \"^""$file""$\")"
         local first_file=false
       else
-        local varnish_vcl_backend_response="$varnish_vcl_backend_response"" || (bereq.url ~ \"^""$file""\"))"
+        local varnish_vcl_backend_response="$varnish_vcl_backend_response"" || (bereq.url ~ \"^""$file""\")"
       fi
     done
-    local varnish_vcl_backend_response="$varnish_vcl_backend_response"" && ""$allowed_301_caching_conditions"") {""$allowed_301_caching_rules"$'\n'"  }"$'\n'"}"
+    local varnish_vcl_backend_response="$varnish_vcl_backend_response"") && ""$allowed_301_caching_conditions"") {""$allowed_301_caching_rules"$'\n'"  }"$'\n'"}"
   fi
 
   echo "$varnish_vcl_backend_response"

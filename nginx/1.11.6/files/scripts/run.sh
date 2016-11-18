@@ -74,8 +74,8 @@ read -r -d '' assets_server_base << EOM || true
 
     location ^~ /assets/ {
       gzip_static on;
-      expires max;
-      add_header 'Access-Control-Allow-Origin' '*';
+      expires 24h;
+      add_header "Access-Control-Allow-Origin" "*";
       add_header Cache-Control public;
     }
 

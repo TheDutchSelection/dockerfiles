@@ -287,7 +287,7 @@ create_vcl_backend_response () {
     local varnish_vcl_backend_response="$varnish_vcl_backend_response"$'\n'"}"
   else
     local first_file=true
-    local allowed_301_caching_rules=$'\n'"    set beresp.http.Cache-Control = \"public, max-age=86400\";"$'\n'"    set beresp.http.X-Response-Has-TTL = \"1\";"
+    local allowed_301_caching_rules=$'\n'"    set beresp.ttl = 86400s;"$'\n'"    set beresp.http.Cache-Control = \"public, max-age=86400\";"$'\n'"    set beresp.http.X-Response-Has-TTL = \"1\";"
     local allowed_301_caching_conditions="(beresp.status == 301) && (beresp.http.Cache-Control ~ \"no-cache\")"
     local varnish_vcl_backend_response="$varnish_vcl_backend_response"$'\n'$'\n'"  if ("
     for file in $ALLOWED_301_CACHING_FILES
@@ -319,10 +319,10 @@ create_config_file () {
   local vcl_init=$(create_vcl_init "$backends")
   local vcl_recv=$(create_vcl_recv "$vcl_init")
   local vcl_hash=$(create_vcl_hash)
-  local vcl_deliver=$(create_vcl_deliver)
   local vcl_synth=$(create_vcl_synth)
   local vcl_backend_fetch=$(create_vcl_backend_fetch)
   local vcl_backend_response=$(create_vcl_backend_response)
+  local vcl_deliver=$(create_vcl_deliver)
 
 
   echo "$varnish_base" >> "$varnish_vcl_file"
@@ -331,9 +331,9 @@ create_config_file () {
   echo "$vcl_recv"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_hash"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_synth"$'\n' >> "$varnish_vcl_file"
-  echo "$vcl_deliver"$'\n' >> "$varnish_vcl_file"
   echo "$vcl_backend_fetch"$'\n' >> "$varnish_vcl_file"
-  echo "$vcl_backend_response" >> "$varnish_vcl_file"
+  echo "$vcl_backend_response"$'\n' >> "$varnish_vcl_file"
+  echo "$vcl_deliver" >> "$varnish_vcl_file"
 }
 
 varnish_vcl_file="/etc/varnish/varnish.vcl"

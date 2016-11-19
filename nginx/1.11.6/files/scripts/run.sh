@@ -39,13 +39,10 @@ read -r -d '' server_base << EOM || true
     server_name ##domain####default_server_name##;
     root ##root##;
 
-    add_header "X-TDS-1" "base";
-
     location ^~ /assets/ {
       gzip_static on;
       expires max;
       add_header Cache-Control public;
-      add_header "X-TDS-2" "assets-from-base";
     }
 
     try_files \$uri/index.html \$uri @##app##;
@@ -75,13 +72,10 @@ read -r -d '' assets_server_base << EOM || true
     server_name ##domain##;
     root ##root##;
 
-    add_header "X-TDS-3" "assets-base";
-
     location ^~ /assets/ {
       gzip_static on;
       expires max;
-      add_header "Access-Control-Allow-Origin" "*";
-      add_header "X-TDS-4" "assets-from-assets-base";
+      add_header Access-Control-Allow-Origin "*";
       add_header Cache-Control public;
     }
 

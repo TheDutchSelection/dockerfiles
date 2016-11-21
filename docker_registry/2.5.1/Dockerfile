@@ -12,7 +12,7 @@
 #
 # OTHER:
 
-FROM thedutchselection/go:1.6.3
+FROM thedutchselection/go:1.7.3
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

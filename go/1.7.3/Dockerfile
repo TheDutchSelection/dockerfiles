@@ -1,4 +1,4 @@
-# NAME: Go 1.6.3
+# NAME: Go 1.7.3
 #
 # DESCRIPTION: Base for other images using Go.
 #
@@ -25,9 +25,9 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV GOLANG_VERSION 1.6.3
+ENV GOLANG_VERSION 1.7.3
 ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
-ENV GOLANG_DOWNLOAD_SHA256 e40c36ae71756198478624ed1bb4ce17597b3c19d243f3f0899bb5740d56212a
+ENV GOLANG_DOWNLOAD_SHA256 508028aac0654e993564b6e2014bf2d4a9751e3b286661b0b0040046cf18028e
 
 WORKDIR /tmp
 

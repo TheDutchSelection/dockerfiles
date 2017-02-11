@@ -51,11 +51,12 @@ hosts_job () {
     if [[ "$env" == "HOST_"*"_PUBLIC_IP="* && "$number_of_dashes" == "3" ]]; then
       local host_var=$(echo "$env" | awk -F'=' '{print $1}')
       local host=$(echo "$env" | awk -F'=' '{print $2}')
-      local name=${host_var:5:13} # string manipulation starting at 5, 13 chars
-      local name=$(echo "$name" | awk '{print tolower($0)}')
+      local host_name=${host_var:5:15} # string manipulation starting at 5, 15 chars
+      local host_name=${host_name:0:5}"."${host_name:5:3}"."${host_name:8:4}"."${host_name:12:3}
+      local host_name=$(echo "$host_name" | awk '{print tolower($0)}')
 
       local target="    - ""$host"":9100"
-      local labels="    labels:"$'\n'"      node: ""$name"
+      local labels="    labels:"$'\n'"      node: ""$host_name"
       local target_groups="$target_groups"$'\n'"  - targets:"$'\n'"$target"$'\n'"$labels"
     fi
   done <<< "$envs"
@@ -75,7 +76,8 @@ elasticsearch_job () {
     if [[ "$env" == "ELASTICSEARCH_"*"_PUBLIC_IP="* && "$number_of_dashes" == "3" ]]; then
       local host_var=$(echo "$env" | awk -F'=' '{print $1}')
       local host=$(echo "$env" | awk -F'=' '{print $2}')
-      local host_name=${host_var:14:13} # string manipulation starting at 14, 13 chars
+      local host_name=${host_var:14:15} # string manipulation starting at 14, 15 chars
+      local host_name=${host_name:0:5}"."${host_name:5:3}"."${host_name:8:4}"."${host_name:12:3}
       local host_name=$(echo "$host_name" | awk '{print tolower($0)}')
 
       local target="    - ""$host"":9108"

@@ -2,7 +2,7 @@
 #
 # REQUIRED ENVS:
 # REDIS_APP (ie. "price_comparator_nl_telecom")
-# REDIS_APP_ENV (ie. "wrkprd", "wrkstg", "local")
+# REDIS_APP_ENV (ie. "prd", "stg", "tst")
 
 set -e
 
@@ -25,7 +25,7 @@ get_app_env_keys () {
 
   for redis_key in $redis_keys
   do
-    if [[ "$redis_key" == *"$redis_app_env"* ]]; then
+    if [[ "$redis_key" == *".""$redis_app_env""."* ]]; then
       if [[ -z "$keys" ]]; then
         local keys="$redis_key"
       else

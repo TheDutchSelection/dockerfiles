@@ -21,7 +21,7 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD http://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.4.0.tar.gz /tmp/
+ADD http://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.0.tar.gz /tmp/
 
 WORKDIR /tmp
 

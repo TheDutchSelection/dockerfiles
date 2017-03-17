@@ -1,6 +1,6 @@
-# NAME: Debian 8.1
+# NAME: Debian 8.7
 #
-# DESCRIPTION: Base for other images using Debian 8.1.
+# DESCRIPTION: Base for other images using Debian 8.7.
 #
 # REQUIRED ENVS:
 #
@@ -8,7 +8,7 @@
 #
 # USAGE EXAMPLE: docker run thedutchselection/debian
 
-FROM debian:8.1
+FROM debian:8.7
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 ENV DEBIAN_FRONTEND noninteractive

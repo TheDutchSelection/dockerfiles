@@ -11,7 +11,6 @@
 # AWS_S3_WALE_BUCKET_BASE_PATH (ie. "postgresql/" ending with a slash), needed if WAL-E is used
 # AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23", needed if WAL-E is used)
 # BACKUP_EXECUTION_TIME (ie. "02:00", time is in UTC and for backups to succeed, WALE needs to be setup)
-# ROLE (ie. "master", master or slave, default is master)
 # HOST_IP (ie. "123.123.123.1", ip of the host this is running on, needed if WAL-E is used)
 # MASTER_HOST_IP (ie. "123.123.123.1", ip of the master, needed if ROLE=slave)
 # MASTER_HOST_PORT (ie. "5432", port of the master, needed if ROLE=slave)
@@ -20,6 +19,7 @@
 # MAX_WAL_SENDERS (ie. "5", defaults to 0, no replication, needed if you want replication)
 # REPLICATOR_PASSWORD (ie. "rep", replicator password, needed if ROLE=slave)
 # REPLICATOR_USER (ie. "rep", replicator user, needed if ROLE=slave)
+# ROLE (ie. "master", master or slave, default is master)
 # RUN_AS_DEVELOPMENT (ie. "1", if set the database will be insecure)
 # SHARED_BUFFERS (ie. "16", means 16GB, default is 1)
 # SUPERUSER_USERNAME (ie. "superuser")

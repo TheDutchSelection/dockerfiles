@@ -144,13 +144,13 @@ init_data_directory_and_create_superuser() {
 
     # do slave related tasks
     if [[ "$ROLE" == "slave" ]]; then
-      echo "creating recovery.conf..."
-      create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
-
       echo "import base backup..."
       export PGPASSWORD="$SUPERUSER_PASSWORD"
       pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
       unset PGPASSWORD
+      
+      echo "creating recovery.conf..."
+      create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
     else
       "copying files into data directory..."
       cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"

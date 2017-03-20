@@ -143,8 +143,9 @@ init_data_directory_and_create_superuser() {
     mkdir -p "$DATA_DIRECTORY"
     cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
 
-    # create base backup if this is a slave
+    # import base backup if this is a slave
     if [[ "$ROLE" == "slave" ]]; then
+      echo "import base backup..."
       export PGPASSWORD="$SUPERUSER_PASSWORD"
       pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
       unset PGPASSWORD

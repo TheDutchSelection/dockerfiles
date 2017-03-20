@@ -32,33 +32,43 @@
 # Promoting a slave to master:
 # - Set the failover ip to the server of the slave you want to promote to master
 # - Ssh to the slave server you want to promote "docker exec -it postgresql_slave bash"
-# - "touch "$DATA_DIRECTORT"failover"
+# - "touch [data-directory]/failover"
 # - This slave is now accepting write connections and acting as the master, it will not try to connect to the previous master
 #
 #
 # After promoting a slave and when the previous master is back up:
-# - Ssh to the previous master server and follow "Instructions for recovery using wal-e", but use the slave host_ip for recovery, do not start the container yet
 # - Set the failover ip to the master server
-# - Shutdown the slave container and make sure all wal data is properly written to S3
-# - Start the master server
-# - When everything is up and running, throw away the slave (data) containers and redeploy them.
+# - Go to the slave server and do "docker exec -it postgresql_slave bash"
+# - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-push "$DATA_DIRECTORY""
+# - Go to the master server and follow the instructions for recovery using wal-e
+# - When everything is up and running, throw away the slave (data) containers and redeploy them
 # - Everything is back to normal
 #
 #
 # Instructions for recovery using wal-e:
-# - Make sure PostgreSQL container is not running, "systemctl disable postgresql_master", "systemctl stop postgresql_master"
-# - Throw away current data container "docker rm postgresql_master_data"
-# - Create new data container "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master"
-# - Stop PostgreSQL again "systemctl disable postgresql_master", "systemctl stop postgresql_master"
-# - Start a container to execute backup commands "docker run -it --rm --entrypoint="bash" --volumes-from postgresql_master_data thedutchselection/postgresql:9.6.2"
-# - Set the following envs (export AWS_ACCESS_KEY_ID="") DATA_DIRECTORY, AWS_ACCESS_KEY_ID, AWS_S3_WALE_BUCKET_NAME,
-#   AWS_S3_WALE_BUCKET_BASE_PATH, AWS_SECRET_ACCESS_KEY, HOST_IP (this has to be the ip of the server that servers as current master)
+# - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
+# - Throw away current data container "docker rm -v postgresql_master_data"
+# - Create new data container "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master"
+# - Stop PostgreSQL again "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
+# - Start a container to execute backup commands:
+#     /usr/bin/docker run \
+#     -it --rm \
+#     -e "AWS_ACCESS_KEY_ID=[access key]" \
+#     -e "AWS_REGION=[region]" \
+#     -e "AWS_S3_WALE_BUCKET_NAME=[bucket name]" \
+#     -e "AWS_S3_WALE_BUCKET_BASE_PATH=[path]" \
+#     -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
+#     -e "DATA_DIRECTORY=[data-directory]" \
+#     -e "HOST_IP=[current master host ip, not this server]" \
+#     --volumes-from postgresql_master_data \
+#     --entrypoint=bash \
+#     thedutchselection/postgresql:9.6.2
 # - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
 # - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
 # - If you want to restore to a specific point in time (else latest will be used) do "echo "recovery_target_time = '2016-02-19 15:50:00 GMT'" >> "$DATA_DIRECTORY""recovery.conf""
 # - Exit this container.
-# - Remove (inconsistent) S3 wal-e data for this PostgreSQL.
-# - Start PostgreSQL "systemctl enable [path-to]/postgresql_master", "systemctl start postgresql_master" and everything should run fine.
+# - Remove S3 wal-e data for this PostgreSQL.
+# - Start PostgreSQL "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master" and everything should run fine.
 
 
 FROM thedutchselection/debian:8.7

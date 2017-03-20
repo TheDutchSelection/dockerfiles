@@ -143,8 +143,11 @@ init_data_directory_and_create_superuser() {
     mkdir -p "$DATA_DIRECTORY"
     cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
 
-    # import base backup if this is a slave
+    # do slave related tasks
     if [[ "$ROLE" == "slave" ]]; then
+      echo "creating recovery.conf..."
+      create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
+
       echo "import base backup..."
       export PGPASSWORD="$SUPERUSER_PASSWORD"
       pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
@@ -219,10 +222,6 @@ echo "set values to pg_hba.conf..."
 authentication_settings=$(create_authentication_settings)
 escaped_authentication_settings=$(escape_string "$authentication_settings")
 perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/pg_hba.conf
-
-if [[ "$ROLE" == "slave" ]]; then
-  create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
-fi
 
 init_data_directory_and_create_superuser &
 

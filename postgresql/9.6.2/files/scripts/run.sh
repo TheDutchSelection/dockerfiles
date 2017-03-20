@@ -5,7 +5,7 @@ trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres;" SI
 
 read -r -d '' recovery_conf_base << EOM || true
 primary_conninfo = 'host=##master_host_ip## port=##master_host_port## user=##replicator_user## password=##replicator_password##'
-trigger_file = '##data_directory##/failover'
+trigger_file = '##data_directory##failover'
 standby_mode = 'on'
 EOM
 
@@ -127,10 +127,10 @@ create_recovery_conf () {
   cat /dev/null > "$recovery_conf_file"
 
   local recovery_conf=${recovery_conf_base/\#\#master_host_ip\#\#/"$MASTER_HOST_IP"}
-  local recovery_conf=${recovery_conf_base/\#\#master_host_port\#\#/"$MASTER_HOST_PORT"}
-  local recovery_conf=${recovery_conf_base/\#\#replicator_user\#\#/"$REPLICATOR_USER"}
-  local recovery_conf=${recovery_conf_base/\#\#replicator_password\#\#/"$REPLICATOR_PASSWORD"}
-  local recovery_conf=${recovery_conf_base/\#\#data_directory\#\#/"$DATA_DIRECTORY"}
+  local recovery_conf=${recovery_conf/\#\#master_host_port\#\#/"$MASTER_HOST_PORT"}
+  local recovery_conf=${recovery_conf/\#\#replicator_user\#\#/"$REPLICATOR_USER"}
+  local recovery_conf=${recovery_conf/\#\#replicator_password\#\#/"$REPLICATOR_PASSWORD"}
+  local recovery_conf=${recovery_conf/\#\#data_directory\#\#/"$DATA_DIRECTORY"}
 
   echo "$recovery_conf" >> "$recovery_conf_file"
 }
@@ -148,7 +148,7 @@ init_data_directory_and_create_superuser() {
       export PGPASSWORD="$SUPERUSER_PASSWORD"
       pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
       unset PGPASSWORD
-      
+
       echo "creating recovery.conf..."
       create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
     else

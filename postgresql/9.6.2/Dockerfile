@@ -7,6 +7,7 @@
 #
 # OPTIONAL ENVS:
 # AWS_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3", needed if WAL-E is used)
+# AWS_REGION (ie. "", region of the backup bucket, needed if WAL-E is used)
 # AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup", needed if WAL-E is used)
 # AWS_S3_WALE_BUCKET_BASE_PATH (ie. "postgresql/" ending with a slash), needed if WAL-E is used
 # AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23", needed if WAL-E is used)

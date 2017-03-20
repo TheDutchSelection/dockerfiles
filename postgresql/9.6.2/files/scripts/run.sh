@@ -42,13 +42,11 @@ create_authentication_settings () {
 
   local authentication_setting_2=${authentication_setting_1//0\.0\.0\.0\/0/"::1/128"}
 
-  if [[ "$USE_WITH_PGPOOL" == "1" ]]; then
-    local authentication_setting_3=${authentication_setting//\#\#type\#\#/"host"}
-    local authentication_setting_3=${authentication_setting_3//\#\#database\#\#/"replication"}
-    local authentication_setting_3=${authentication_setting_3//\#\#user\#\#/"all"}
-    local authentication_setting_3=${authentication_setting_3//\#\#address\#\#/"0.0.0.0/0"}
-    local authentication_setting_3=${authentication_setting_3//\#\#auth_method\#\#/"md5"}
-  fi
+  local authentication_setting_3=${authentication_setting//\#\#type\#\#/"host"}
+  local authentication_setting_3=${authentication_setting_3//\#\#database\#\#/"replication"}
+  local authentication_setting_3=${authentication_setting_3//\#\#user\#\#/"all"}
+  local authentication_setting_3=${authentication_setting_3//\#\#address\#\#/"0.0.0.0/0"}
+  local authentication_setting_3=${authentication_setting_3//\#\#auth_method\#\#/"md5"}
 
   local authentication_settings="$authentication_setting_1"$'\n'"$authentication_setting_2"$'\n'"$authentication_setting_3"$'\n'
 
@@ -107,7 +105,7 @@ create_postgresql_conf () {
     local wale_s3_prefix=$(create_wale_prefix)
 
     local archive_mode="on"
-    local archive_command="rm -rf ""$archive_dummy_directory"" \&\& wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p \&\& ""mkdir -p ""$archive_dummy_directory"" \&\& dd if=/dev/zero of=""$archive_dummy_directory""%f bs=1k count=1"
+    local archive_command="wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p"
   else
     local archive_mode="off"
     local archive_command=""
@@ -203,9 +201,8 @@ periodically_backup () {
   fi
 }
 
-
 # remove any existing postgresql pid
-rm -f /run/postgresql/*
+rm -f /run/postgresql/*.pid
 
 echo "copy conf files.."
 cp -p /etc/postgresql/postgresql_template.conf /etc/postgresql/postgresql.conf

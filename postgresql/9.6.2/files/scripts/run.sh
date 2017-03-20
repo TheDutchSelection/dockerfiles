@@ -204,6 +204,9 @@ periodically_backup () {
 # remove any existing postgresql pid
 rm -f /run/postgresql/*.pid
 
+# create stats_temp_directory if not exists
+mkdir -p /var/run/postgresql/9.6-main.pg_stat_tmp
+
 echo "copy conf files.."
 cp -p /etc/postgresql/postgresql_template.conf /etc/postgresql/postgresql.conf
 cp -p /etc/postgresql/pg_hba_template.conf /etc/postgresql/pg_hba.conf

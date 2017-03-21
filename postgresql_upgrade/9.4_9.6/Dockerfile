@@ -10,13 +10,13 @@
 # OTHER:
 # Process to migrate data between PostgreSQL versions:
 # 1. Turn off old PostgreSQL container.
-# 2. docker run --rm --volumes-from postgresql_master_data -v $(pwd):/backup thedutchselection/debian:8.7 tar cvf /backup/backup.tar /home/postgresql/data/
-# 3. docker run -e DATA_DIRECTORY=/home/postgresql/data --volumes-from postgresql_master_data --rm thedutchselection/postgresql_upgrade:9.4_9.6
+# 2. docker run --rm --volumes-from postgresql_master_data -v $(pwd):/backup thedutchselection/debian:8.7 tar cvf /backup/backup.tar /home/postgres/data/
+# 3. docker run -e DATA_DIRECTORY=/home/postgres/data --volumes-from postgresql_master_data --rm thedutchselection/postgresql_upgrade:9.4_9.6
 #
 # The data container should now be migrated and ready for the new PostgreSQL container. If something goes wrong, recover
 # the old data container by the following commands:
 # 1. docker rm postgresql_master_data
-# 2. docker run --name postgresql_master_data -e "DATA_DIRECTORY=/home/postgresql/data/" -e "USER_ID=5432" -e "GROUP_ID=5432" -v /home/postgresql/data/ thedutchselection/data:latest
+# 2. docker run --name postgresql_master_data -e "DATA_DIRECTORY=/home/postgres/data/" -e "USER_ID=5432" -e "GROUP_ID=5432" -v /home/postgres/data/ thedutchselection/data:latest
 # 3. docker run --volumes-from postgresql_master_data -v $(pwd):/backup thedutchselection/debian:8.7 tar xvf /backup/backup.tar
 
 FROM thedutchselection/debian:8.7

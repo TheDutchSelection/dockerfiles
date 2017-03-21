@@ -135,61 +135,60 @@ create_recovery_conf () {
   echo "$recovery_conf" >> "$recovery_conf_file"
 }
 
-# description: init the data directory and create the superuser
-init_data_directory_and_create_superuser() {
-  # if data directory exist, we assume the superuser is also already created
-  if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
-    echo "initializing $DATA_DIRECTORY..."
-    mkdir -p "$DATA_DIRECTORY"
+# description: init the data directory
+init_data_directory() {
+  echo "initializing $DATA_DIRECTORY..."
+  mkdir -p "$DATA_DIRECTORY"
 
-    # do slave related tasks
-    if [[ "$ROLE" == "slave" ]]; then
-      echo "import base backup..."
-      export PGPASSWORD="$SUPERUSER_PASSWORD"
-      pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
-      unset PGPASSWORD
+  # do slave related tasks
+  if [[ "$ROLE" == "slave" ]]; then
+    echo "import base backup..."
+    export PGPASSWORD="$SUPERUSER_PASSWORD"
+    pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
+    unset PGPASSWORD
 
-      echo "creating recovery.conf..."
-      create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
-    else
-      "copying files into data directory..."
-      cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
-    fi
-
-    # wait for postgresql to start
-    echo "waiting for postgresql to be started..."
-    while [[ ! -e /run/postgresql/9.6-main.pid ]] ; do
-      inotifywait -q -e create /run/postgresql/ >> /dev/null
-    done
-
-    sleep 2
-
-    if [[ ! -z "$SUPERUSER_USERNAME" ]]; then
-      echo "creating superuser $SUPERUSER_USERNAME..."
-      psql -q <<-EOF
-        DROP ROLE IF EXISTS $SUPERUSER_USERNAME;
-        CREATE ROLE $SUPERUSER_USERNAME WITH ENCRYPTED PASSWORD '$SUPERUSER_PASSWORD';
-        ALTER USER $SUPERUSER_USERNAME WITH ENCRYPTED PASSWORD '$SUPERUSER_PASSWORD';
-        ALTER ROLE $SUPERUSER_USERNAME WITH SUPERUSER;
-        ALTER ROLE $SUPERUSER_USERNAME WITH LOGIN;
-EOF
-    fi
-
-    echo "recreating template1..."
-    psql -q <<-EOF
-      UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';
-      DROP DATABASE template1;
-      CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UNICODE';
-      UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';
-EOF
-
-    echo "vacuum freeze template1..."
-    psql -q <<-EOF
-      \c template1
-      VACUUM FREEZE;
-EOF
-
+    echo "creating recovery.conf..."
+    create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
+  else
+    "copying files into data directory..."
+    cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
   fi
+}
+
+# create the superuser
+create_superuser_and_template1() {
+  # wait for postgresql to start
+  echo "waiting for postgresql to be started..."
+  while [[ ! -e /run/postgresql/9.6-main.pid ]] ; do
+    inotifywait -q -e create /run/postgresql/ >> /dev/null
+  done
+
+  sleep 2
+
+  if [[ ! -z "$SUPERUSER_USERNAME" ]]; then
+    echo "creating superuser $SUPERUSER_USERNAME..."
+    psql -q <<-EOF
+      DROP ROLE IF EXISTS $SUPERUSER_USERNAME;
+      CREATE ROLE $SUPERUSER_USERNAME WITH ENCRYPTED PASSWORD '$SUPERUSER_PASSWORD';
+      ALTER USER $SUPERUSER_USERNAME WITH ENCRYPTED PASSWORD '$SUPERUSER_PASSWORD';
+      ALTER ROLE $SUPERUSER_USERNAME WITH SUPERUSER;
+      ALTER ROLE $SUPERUSER_USERNAME WITH LOGIN;
+EOF
+  fi
+
+  echo "recreating template1..."
+  psql -q <<-EOF
+    UPDATE pg_database SET datistemplate = FALSE WHERE datname = 'template1';
+    DROP DATABASE template1;
+    CREATE DATABASE template1 WITH TEMPLATE = template0 ENCODING = 'UNICODE';
+    UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template1';
+EOF
+
+  echo "vacuum freeze template1..."
+  psql -q <<-EOF
+    \c template1
+    VACUUM FREEZE;
+EOF
 }
 
 periodically_backup () {
@@ -225,7 +224,12 @@ authentication_settings=$(create_authentication_settings)
 escaped_authentication_settings=$(escape_string "$authentication_settings")
 perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/pg_hba.conf
 
-init_data_directory_and_create_superuser &
+# if data directory exist, we assume the superuser is also already created
+if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
+  echo "creating the data directory, superuser and template1..."
+  init_data_directory
+  create_superuser_and_template1 &
+fi
 
 sleep 2
 

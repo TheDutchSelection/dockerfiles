@@ -226,9 +226,13 @@ perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"
 
 # if data directory exist, we assume the superuser is also already created
 if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
-  echo "creating the data directory, superuser and template1..."
+  echo "creating the data directory..."
   init_data_directory
-  create_superuser_and_template1 &
+
+  if [[ "$ROLE" != "slave" ]]; then
+    echo "creating  superuser and template1..."
+    create_superuser_and_template1 &
+  fi
 fi
 
 sleep 2

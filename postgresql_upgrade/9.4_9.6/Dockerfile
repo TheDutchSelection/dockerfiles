@@ -53,10 +53,10 @@ ADD files/scripts /usr/local/bin
 RUN \
   chmod 640 /etc/postgresql/9.4/main/pg_hba.conf && \
   chmod 640 /etc/postgresql/9.4/main/pg_ident.conf && \
-  chmod 644 /etc/postgresql/9.4/main/postgresql_9_3_template.conf && \
+  chmod 644 /etc/postgresql/9.4/main/postgresql_9_4_template.conf && \
   chmod 640 /etc/postgresql/9.6/main/pg_hba.conf && \
   chmod 640 /etc/postgresql/9.6/main/pg_ident.conf && \
-  chmod 644 /etc/postgresql/9.6/main/postgresql_9_4_template.conf && \
+  chmod 644 /etc/postgresql/9.6/main/postgresql_9_6_template.conf && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R postgres:postgres /etc/postgresql/9.4/main && \
   chown -R postgres:postgres /etc/postgresql/9.6/main && \

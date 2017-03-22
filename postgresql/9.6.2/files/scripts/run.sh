@@ -237,7 +237,7 @@ fi
 
 sleep 2
 
-if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
+if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" && "$ROLE" != "slave" ]]; then
   echo "start periodically backup at $BACKUP_EXECUTION_TIME""h..."
   periodically_backup &
 fi

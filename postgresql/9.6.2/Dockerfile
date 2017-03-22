@@ -40,6 +40,7 @@
 # - Set the failover ip to the master server
 # - Go to the slave server and do "docker exec -it postgresql_slave bash"
 # - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-push "$DATA_DIRECTORY""
+# - Shutdown the PostgreSQL slave
 # - Go to the master server and follow the instructions for recovery using wal-e
 # - When everything is up and running, throw away the slave (data) containers and redeploy them
 # - Everything is back to normal

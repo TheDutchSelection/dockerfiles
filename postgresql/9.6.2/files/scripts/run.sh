@@ -150,7 +150,7 @@ init_data_directory() {
     echo "creating recovery.conf..."
     create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
   else
-    "copying files into data directory..."
+    echo "copying files into data directory..."
     cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
   fi
 }

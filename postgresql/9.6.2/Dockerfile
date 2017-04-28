@@ -70,7 +70,13 @@
 # - Exit this container.
 # - Remove S3 wal-e data for this PostgreSQL.
 # - Start PostgreSQL "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master" and everything should run fine.
-
+#
+#
+# Show status of replication on the slave server:
+# - Do "docker exec -it postgresql_slave bash"
+# - Do "psql"
+# - Execute the query "select now() - pg_last_xact_replay_timestamp() AS replication_delay;"
+# This gives the replication delay. If there are no wirtes to the master, this might be bigger without any problems.
 
 FROM thedutchselection/debian:8.7
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

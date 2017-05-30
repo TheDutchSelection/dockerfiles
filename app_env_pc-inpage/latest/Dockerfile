@@ -24,6 +24,8 @@ RUN \
 
 WORKDIR /tmp
 
+USER appmaster
+
 ADD files/package/package.json /tmp/package.json
 ADD files/package/yarn.lock /tmp/yarn.lock
 

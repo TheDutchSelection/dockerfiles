@@ -22,13 +22,15 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
-WORKDIR /tmp
+ADD files/package/package.json /tmp/application/package.json
+ADD files/package/yarn.lock /tmp/application/yarn.lock
+
+WORKDIR /tmp/application
+
+RUN chown -R appmaster:appmaster /tmp/application
 
 USER appmaster
 
-ADD files/package/package.json /home/appmaster/package.json
-ADD files/package/yarn.lock /home/appmaster/yarn.lock
+RUN yarn
 
-RUN \
-  yarn && \
-  mv node_modules /home/appmaster/
+USER root

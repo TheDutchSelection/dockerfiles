@@ -21,16 +21,3 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
-
-ADD files/package/package.json /tmp/application/package.json
-ADD files/package/yarn.lock /tmp/application/yarn.lock
-
-WORKDIR /tmp/application
-
-RUN chown -R appmaster:appmaster /tmp/application
-
-USER appmaster
-
-RUN yarn
-
-USER root

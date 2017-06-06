@@ -14,4 +14,5 @@ USER root
 RUN \
   apk update && \
   apk add nodejs && \
+  apk add npm && \
   apk add yarn

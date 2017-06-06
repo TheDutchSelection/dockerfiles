@@ -6,18 +6,12 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/debian:8.7
+FROM thedutchselection/nginx:1.12.0
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
+USER root
+
 RUN \
-  apt-get update && \
-  apt-get install -yq curl && \
-  curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-  apt-get update && \
-  apt-get install -yq nodejs && \
-  apt-get install -yq yarn && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  useradd -m -u 6666 appmaster
+  apk update && \
+  apk add nodejs && \
+  apk add yarn

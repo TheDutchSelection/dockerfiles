@@ -102,7 +102,7 @@ read -r -d '' react_server_base << EOM || true
 
     ##redirects##
 
-    try_files \$uri =404;
+    try_files \$uri/index.html \$uri =404;
   }
 EOM
 
@@ -124,7 +124,7 @@ read -r -d '' storybook_server_base << EOM || true
 
     ##redirects##
 
-    try_files \$uri =404;
+    try_files \$uri/index.html \$uri =404;
   }
 EOM
 

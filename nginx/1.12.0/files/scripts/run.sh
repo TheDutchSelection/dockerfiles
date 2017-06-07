@@ -121,7 +121,7 @@ create_servers () {
         do
           local redirect_part_1=$(echo "$redirect" | awk -F'\!\!\#\#' '{print $1}')
           local redirect_part_2=$(echo "$redirect" | awk -F'\!\!\#\#' '{print $2}')
-          local redirect_line="rewrite ""$redirect_part_1"" ""$redirect_part_2"" redirect;"
+          local redirect_line="rewrite ""$redirect_part_1"" ""$redirect_part_2"" permanent;"
 
           if [[ "$first_redirect" = true ]]; then
             local redirect_lines="$redirect_line"

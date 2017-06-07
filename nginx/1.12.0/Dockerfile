@@ -5,19 +5,31 @@
 # REQUIRED ENVS:
 # WORKER_PROCESSES (ie. "2")
 # WORKER_CONNECTIONS (ie. "1024")
-# [APP]_[APP_ID]_HOST_PUBLIC_IP (ie. "81.192.5.1")
-# [APP]_[APP_ID]_HOST_PORT (ie. "1001")
 #
 # OPTIONAL ENVS:
+# [APP]_[APP_ID]_HOST_PUBLIC_IP (ie. "81.192.5.1")
+# [APP]_[APP_ID]_HOST_PORT (ie. "1001")
 # SERVER_[APP]_ASSETS_DOMAIN (ie. "assets.thedutchselection.com")
+# SERVER_[APP]_ASSETS_IS_DEFAULT_SERVER (ie. "1")
 # SERVER_[APP]_ASSETS_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
 # SERVER_[APP]_ASSETS_REDIRECTS (ie. "^/pc-inpage.js\$!!##/assets/js/main-42345jsdfg.js ^/pc-inpage.css\$!!##/assets/css/main-42345jsdfg.css")
 # SERVER_[APP]_ASSETS_ROOT (ie. "/home/appmaster/application/public")
 # SERVER_[APP]_DOMAIN (ie. "backend.thedutchselection.com")
-# SERVER_[APP]_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
-# SERVER_[APP]_ROOT (ie. "/home/appmaster/application/public")
-# BASIC_AUTH_VALUES (ie. "username1!!##password1 username2!!##password2")
 # SERVER_[APP]_IS_DEFAULT_SERVER (ie. "1")
+# SERVER_[APP]_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
+# SERVER_[APP]_REDIRECTS (ie. "^/pc-inpage.js\$!!##/assets/js/main-42345jsdfg.js ^/pc-inpage.css\$!!##/assets/css/main-42345jsdfg.css")
+# SERVER_[APP]_ROOT (ie. "/home/appmaster/application/public")
+# SERVER_[APP]_REACT_DOMAIN (ie. "assets.thedutchselection.com")
+# SERVER_[APP]_REACT_IS_DEFAULT_SERVER (ie. "1")
+# SERVER_[APP]_REACT_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
+# SERVER_[APP]_REACT_REDIRECTS (ie. "^/pc-inpage.js\$!!##/assets/js/main-42345jsdfg.js ^/pc-inpage.css\$!!##/assets/css/main-42345jsdfg.css")
+# SERVER_[APP]_REACT_ROOT (ie. "/home/appmaster/application/public")
+# SERVER_[APP]_STORYBOOK_DOMAIN (ie. "assets.thedutchselection.com")
+# SERVER_[APP]_STORYBOOK_IS_DEFAULT_SERVER (ie. "1")
+# SERVER_[APP]_STORYBOOK_LOCATION_OPTIONS (ie. "proxy_hide_header X-Frame-Options")
+# SERVER_[APP]_STORYBOOK_REDIRECTS (ie. "^/pc-inpage.js\$!!##/assets/js/main-42345jsdfg.js ^/pc-inpage.css\$!!##/assets/css/main-42345jsdfg.css")
+# SERVER_[APP]_STORYBOOK_ROOT (ie. "/home/appmaster/application/public")
+# BASIC_AUTH_VALUES (ie. "username1!!##password1 username2!!##password2")
 #
 # OTHER:
 

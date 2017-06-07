@@ -32,7 +32,29 @@ http {
   proxy_buffer_size 32k;
 EOM
 
-read -r -d '' server_base << EOM || true
+read -r -d '' assets_server_base << EOM || true
+  server {
+    listen 8080##default_server##;
+
+    server_name ##domain####default_server_name##;
+    root ##root##;
+
+    location ^~ /assets/ {
+      ##basic_auth##
+      gzip_static on;
+      expires max;
+      ##location_options##
+      add_header Access-Control-Allow-Origin "*";
+      add_header Cache-Control public;
+    }
+
+    ##redirects##
+
+    try_files \$uri =404;
+  }
+EOM
+
+read -r -d '' reverse_proxy_server_base << EOM || true
   server {
     listen 8080##default_server##;
 
@@ -44,6 +66,8 @@ read -r -d '' server_base << EOM || true
       expires max;
       add_header Cache-Control public;
     }
+
+    ##redirects##
 
     try_files \$uri/index.html \$uri @##app##;
 
@@ -60,62 +84,121 @@ read -r -d '' server_base << EOM || true
   }
 EOM
 
-read -r -d '' server_basic_auth << EOM || true
-      auth_basic "Restricted";
-      auth_basic_user_file /etc/nginx/.htpasswd;
-EOM
-
-read -r -d '' assets_server_base << EOM || true
+read -r -d '' react_server_base << EOM || true
   server {
-    listen 8080;
+    listen 8080##default_server##;
 
-    server_name ##domain##;
+    server_name ##domain####default_server_name##;
     root ##root##;
 
-    location ^~ /assets/ {
+    location ^~ /static/ {
+      ##basic_auth##
       gzip_static on;
       expires max;
       ##location_options##
       add_header Access-Control-Allow-Origin "*";
       add_header Cache-Control public;
     }
-EOM
 
-read -r -d '' assets_server_base_end << EOM || true
+    ##redirects##
+
     try_files \$uri =404;
   }
 EOM
 
-# $1: assets server base
-# $2: server base
+read -r -d '' storybook_server_base << EOM || true
+  server {
+    listen 8080##default_server##;
+
+    server_name ##domain####default_server_name##;
+    root ##root##;
+
+    location ^~ /static/ {
+      ##basic_auth##
+      gzip_static on;
+      expires max;
+      ##location_options##
+      add_header Access-Control-Allow-Origin "*";
+      add_header Cache-Control public;
+    }
+
+    ##redirects##
+
+    try_files \$uri =404;
+  }
+EOM
+
+read -r -d '' server_basic_auth << EOM || true
+      auth_basic "Restricted";
+      auth_basic_user_file /etc/nginx/.htpasswd;
+EOM
+
 create_servers () {
   set -e
-  local assets_server_base="$1"
-  local server_base="$2"
   local envs=$(env)
 
   local servers=""
   while read -r env; do
     server=""
-    if [[ "$env" == *"_ASSETS_DOMAIN="* && "$env" == "SERVER_"* ]]; then
-      # we want the SERVER_[APP]_ASSETS_DOMAIN=assets.thedutchselection.com ones
+    if [[ "$env" == *"_DOMAIN="* && "$env" == "SERVER_"* ]]; then
       local server_domain_var=$(echo "$env" | awk -F'=' '{print $1}')
       local domain=$(echo "$env" | awk -F'=' '{print $2}')
-      local base="$assets_server_base"
       local root_var=${server_domain_var/_DOMAIN/_ROOT}
       eval root=\$$root_var
       local location_options_var=${server_domain_var/_DOMAIN/_LOCATION_OPTIONS}
       eval location_options=\$$location_options_var
+      local is_default_server_var=${server_domain_var/_DOMAIN/_IS_DEFAULT_SERVER}
+      eval is_default_server=\$$is_default_server_var
       local redirects_var=${server_domain_var/_DOMAIN/_REDIRECTS}
       eval redirects=\$$redirects_var
-      local server=${base/\#\#domain\#\#/"$domain"}
+
+      # specific config
+      if [[ "$env" == *"_ASSETS_DOMAIN="* && "$env" == "SERVER_"* ]]; then
+        # asset domains like SERVER_[APP]_ASSETS_DOMAIN=pricecomparator.tdscd.com
+        local server="$assets_server_base"
+      elif [[ "$env" == *"_REACT_DOMAIN="* && "$env" == "SERVER_"* ]]; then
+        # asset domains like SERVER_[APP]_REACT_DOMAIN=pci.tdscd.com
+        local server="$react_server_base"
+      elif [[ "$env" == *"_STORYBOOK_DOMAIN="* && "$env" == "SERVER_"* ]]; then
+        # storybook domains like SERVER_[APP]_STORYBOOK_DOMAIN=pc-storybook.thedutchselection.com
+        local server="$storybook_server_base"
+      else
+        # reverse proxy domains like SERVER_[APP]_DOMAIN=pcnltelecom.tdsapi.com
+        local server="$reverse_proxy_server_base"
+        local app=${server_domain_var/SERVER_/}
+        local app=${app/_DOMAIN/}
+        local app=$(echo "$app" | awk '{print tolower($0)}')
+
+        local server=${server//\#\#app\#\#/"$app"}
+      fi
+
+      # replace everything in server
+      local server=${server/\#\#domain\#\#/"$domain"}
       local server=${server/\#\#root\#\#/"$root"}
+
       if [[ -z "$location_options" ]]; then
         local server=${server//\#\#location_options\#\#/}
       else
         local server=${server//\#\#location_options\#\#/"$location_options"}
       fi
-      if [[ ! -z "$redirects" ]]; then
+
+      if [[ -z "$is_default_server" ]]; then
+        local server=${server//\#\#default_server\#\#/}
+        local server=${server//\#\#default_server_name\#\#/}
+      else
+        local server=${server//\#\#default_server\#\#/" default_server"}
+        local server=${server//\#\#default_server_name\#\#/" _"}
+      fi
+
+      if [[ -z "$BASIC_AUTH_VALUES" ]]; then
+        local server=${server//\#\#basic_auth\#\#/}
+      else
+        local server=${server//\#\#basic_auth\#\#/"$server_basic_auth"}
+      fi
+
+      if [[ -z "$redirects" ]]; then
+        local server=${server//\#\#redirects\#\#/}
+      else
         local first_redirect=true
         for redirect in $redirects
         do
@@ -131,42 +214,7 @@ create_servers () {
           fi
         done
 
-        local server="$server"$'\n'$'\n'"$redirect_lines"
-      fi
-      local server="$server"$'\n'$'\n'"$assets_server_base_end"
-    elif [[ "$env" == *"_DOMAIN="* && "$env" == "SERVER_"* ]]; then
-      # we want the SERVER_[APP]_DOMAIN=pcnltelecom.tdsapi.com ones
-      local server_domain_var=$(echo "$env" | awk -F'=' '{print $1}')
-      local domain=$(echo "$env" | awk -F'=' '{print $2}')
-      local app=${server_domain_var/SERVER_/}
-      local app=${app/_DOMAIN/}
-      local app=$(echo "$app" | awk '{print tolower($0)}')
-      local base="$server_base"
-      local root_var=${server_domain_var/_DOMAIN/_ROOT}
-      eval root=\$$root_var
-      local location_options_var=${server_domain_var/_DOMAIN/_LOCATION_OPTIONS}
-      eval location_options=\$$location_options_var
-      local is_default_server_var=${server_domain_var/_DOMAIN/_IS_DEFAULT_SERVER}
-      eval is_default_server=\$$is_default_server_var
-      local server=${base/\#\#domain\#\#/"$domain"}
-      local server=${server/\#\#root\#\#/"$root"}
-      local server=${server//\#\#app\#\#/"$app"}
-      if [[ -z "$location_options" ]]; then
-        local server=${server//\#\#location_options\#\#/}
-      else
-        local server=${server//\#\#location_options\#\#/"$location_options"}
-      fi
-      if [[ -z "$BASIC_AUTH_VALUES" ]]; then
-        local server=${server//\#\#basic_auth\#\#/}
-      else
-        local server=${server//\#\#basic_auth\#\#/"$server_basic_auth"}
-      fi
-      if [[ -z "$is_default_server" ]]; then
-        local server=${server//\#\#default_server\#\#/}
-        local server=${server//\#\#default_server_name\#\#/}
-      else
-        local server=${server//\#\#default_server\#\#/" default_server"}
-        local server=${server//\#\#default_server_name\#\#/" _"}
+        local server=${server//\#\#redirects\#\#/"$redirect_lines"}
       fi
     fi
 
@@ -226,7 +274,7 @@ create_config_file () {
   cat /dev/null > "$nginx_cnf_file"
 
   local upstream_servers=$(create_upstream_servers)
-  local servers=$(create_servers "$assets_server_base" "$server_base")
+  local servers=$(create_servers)
 
   echo "$nginx_base"$'\n' >> "$nginx_cnf_file"
   echo "$upstream_servers" >> "$nginx_cnf_file"

@@ -39,6 +39,8 @@ read -r -d '' assets_server_base << EOM || true
     server_name ##domain####default_server_name##;
     root ##root##;
 
+    ##redirects##
+    
     location ^~ /assets/ {
       ##basic_auth##
       gzip_static on;
@@ -47,8 +49,6 @@ read -r -d '' assets_server_base << EOM || true
       add_header Access-Control-Allow-Origin "*";
       add_header Cache-Control public;
     }
-
-    ##redirects##
 
     try_files \$uri =404;
   }
@@ -91,6 +91,8 @@ read -r -d '' react_server_base << EOM || true
     server_name ##domain####default_server_name##;
     root ##root##;
 
+    ##redirects##
+
     location ^~ /static/ {
       ##basic_auth##
       gzip_static on;
@@ -99,8 +101,6 @@ read -r -d '' react_server_base << EOM || true
       add_header Access-Control-Allow-Origin "*";
       add_header Cache-Control public;
     }
-
-    ##redirects##
 
     try_files \$uri/index.html \$uri =404;
   }
@@ -113,6 +113,8 @@ read -r -d '' storybook_server_base << EOM || true
     server_name ##domain####default_server_name##;
     root ##root##;
 
+    ##redirects##
+
     location ^~ /static/ {
       ##basic_auth##
       gzip_static on;
@@ -121,8 +123,6 @@ read -r -d '' storybook_server_base << EOM || true
       add_header Access-Control-Allow-Origin "*";
       add_header Cache-Control public;
     }
-
-    ##redirects##
 
     try_files \$uri/index.html \$uri =404;
   }

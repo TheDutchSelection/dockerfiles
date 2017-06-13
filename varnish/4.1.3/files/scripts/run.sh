@@ -253,11 +253,27 @@ create_vcl_deliver () {
   set -e
 
   local vcl_deliver="$varnish_vcl_deliver_base"
-  local match_line="req.http.host ~ \"^$\""
+  local match_line="(req.http.host ~ \"^$\""
   for long_term_client_cache_match in $LONG_TERM_CLIENT_CACHE_MATCHES
   do
     local match_line="$match_line || req.http.host ~ \"$long_term_client_cache_match\""
   done
+
+  local match_line="$match_line"")"
+
+  if [[ ! -z "$ALLOWED_301_CACHING_FILES" ]]; then
+    local first_file=true
+    for file in $ALLOWED_301_CACHING_FILES
+    do
+      if [[ "$first_file" = true ]]; then
+        local match_line="$match_line"" && !((req.url ~ \"^""$file""$\")"
+        local first_file=false
+      else
+        local match_line="$match_line"" || (req.url ~ \"^""$file""\")"
+      fi
+    done
+    local match_line="$match_line"")"
+  fi
 
   local vcl_deliver=${vcl_deliver//\#\#long_term_client_cache_matches\#\#/"$match_line"}
 

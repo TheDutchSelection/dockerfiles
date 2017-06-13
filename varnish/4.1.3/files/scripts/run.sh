@@ -304,7 +304,7 @@ create_vcl_backend_response () {
   else
     local first_file=true
     local allowed_301_caching_rules=$'\n'"    set beresp.ttl = 86400s;"$'\n'"    set beresp.http.Cache-Control = \"public, max-age=86400\";"$'\n'"    set beresp.http.X-Response-Has-TTL = \"1\";"
-    local allowed_301_caching_conditions="(beresp.status == 301) && (beresp.http.Cache-Control ~ \"no-cache\")"
+    local allowed_301_caching_conditions="(beresp.status == 301)"
     local varnish_vcl_backend_response="$varnish_vcl_backend_response"$'\n'$'\n'"  if ("
     for file in $ALLOWED_301_CACHING_FILES
     do

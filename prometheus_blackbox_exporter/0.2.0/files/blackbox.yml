@@ -9,4 +9,4 @@ modules:
       fail_if_ssl: false
       fail_if_not_ssl: false
       fail_if_not_matches_regexp:
-      - "Telefoon met abonnement"
+      - "Toestel met abonnement"

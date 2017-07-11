@@ -40,8 +40,9 @@ RUN set -ex \
 
 VOLUME /var/lib/pgadmin4
 
-COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["docker-entrypoint.sh"]
+ADD files/scripts /usr/local/bin
+
+ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]
 
 EXPOSE 5050
 CMD ["pgadmin4"]

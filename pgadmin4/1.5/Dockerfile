@@ -3,18 +3,10 @@
 # DESCRIPTION: PG Admin 4.
 #
 # REQUIRED ENVS:
-# WORKER_PROCESSES (ie. "2")
-# WORKER_CONNECTIONS (ie. "1024")
+# DEFAULT_USER (ie. "test@thedutchselection.com")
+# DEFAULT_PASSWORD (ie. "abcdabcd1234")
 #
 # OPTIONAL ENVS:
-# DEFAULT_USER (ie. "test@thedutchselection.com", default: "pgadmin4@pgadmin.org")
-# DEFAULT_PASSWORD (ie. "abcdabcd1234", default: "admin")
-# MAIL_PASSWORD (ie. "abcd", default: none)
-# MAIL_PORT (ie. "2525", default: "25"
-# MAIL_SERVER (ie. "smtp.example.com", default: "localhost"
-# MAIL_USE_SSL (ie. "true", default: "false")
-# MAIL_USE_TLS (ie. "true", default: "false"
-# MAIL_USERNAME (ie. "test", default: none)
 #
 # OTHER:
 #

@@ -34,23 +34,14 @@ if [ "$1" = 'pgadmin4' ]; then
 		mkdir -p $DATA_DIR
 		sed -i "s:os.path.realpath(os.path.expanduser(u'~/.pgadmin/')):'${DATA_DIR}':" config_local.py
 
-		file_env 'MAIL_SERVER' 'localhost'
-		file_env 'MAIL_PORT'  "25"
-		file_env 'MAIL_USE_SSL' "False"
-		file_env 'MAIL_USE_TLS' "False"
-		file_env 'MAIL_USERNAME' ''
-		file_env 'MAIL_PASSWORD' ''
-
-		sed -i "s/^MAIL_SERVER.*/MAIL_SERVER = '${MAIL_SERVER}'/; \
-		        s/^MAIL_PORT.*/MAIL_PORT = ${MAIL_PORT}/; \
-		        s/^MAIL_USE_SSL.*/MAIL_USE_SSL = ${MAIL_USE_SSL}/; \
-		        s/^MAIL_USE_TLS.*/MAIL_USE_TLS = ${MAIL_USE_TLS}/; \
-		        s/^MAIL_USERNAME.*/MAIL_USERNAME = '${MAIL_USERNAME}'/; \
-		        s/^MAIL_PASSWORD.*/MAIL_PASSWORD = '${MAIL_PASSWORD}'/" \
+		sed -i "s/^MAIL_SERVER.*/MAIL_SERVER = 'localhost'/; \
+		        s/^MAIL_PORT.*/MAIL_PORT = 25/; \
+		        s/^MAIL_USE_SSL.*/MAIL_USE_SSL = False/; \
+		        s/^MAIL_USE_TLS.*/MAIL_USE_TLS = False/; \
+		        s/^MAIL_USERNAME.*/MAIL_USERNAME = ''/; \
+		        s/^MAIL_PASSWORD.*/MAIL_PASSWORD = ''/" \
 		    config_local.py
 
-		file_env 'DEFAULT_USER' 'pgadmin4@pgadmin.org'
-		file_env 'DEFAULT_PASSWORD' 'admin'
 		export PGADMIN_SETUP_EMAIL=${DEFAULT_USER}
 		export PGADMIN_SETUP_PASSWORD=${DEFAULT_PASSWORD}
 

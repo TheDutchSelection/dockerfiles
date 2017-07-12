@@ -17,6 +17,8 @@
 # MAIL_USERNAME (ie. "test", default: none)
 #
 # OTHER:
+#
+# Usage: docker run -d --name pgadmin4 -p 5050:5050 -e "DEFAULT_USER=pgadmin4" -e "DEFAULT_USER=admin1*" thedutchselection/pgadmin4:1.5
 
 FROM python:3-alpine
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

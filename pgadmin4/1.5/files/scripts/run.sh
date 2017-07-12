@@ -23,36 +23,32 @@ file_env() {
 	unset "$fileVar"
 }
 
-if [ "$1" = 'pgadmin4' ]; then
-	cd "$(python -c 'import os; print(os.path.dirname(os.__file__))')/site-packages/pgadmin4"
+cd "$(python -c 'import os; print(os.path.dirname(os.__file__))')/site-packages/pgadmin4"
 
-	if [ ! -f "config_local.py" ]; then
-		cp config.py config_local.py
-		sed -i "s/DEFAULT_SERVER = 'localhost'/DEFAULT_SERVER = '0.0.0.0'/g" config_local.py
+if [ ! -f "config_local.py" ]; then
+  cp config.py config_local.py
+  sed -i "s/DEFAULT_SERVER = 'localhost'/DEFAULT_SERVER = '0.0.0.0'/g" config_local.py
 
-		DATA_DIR="/var/lib/pgadmin4/data"
-		mkdir -p $DATA_DIR
-		sed -i "s:os.path.realpath(os.path.expanduser(u'~/.pgadmin/')):'${DATA_DIR}':" config_local.py
+  DATA_DIR="/var/lib/pgadmin4/data"
+  mkdir -p $DATA_DIR
+  sed -i "s:os.path.realpath(os.path.expanduser(u'~/.pgadmin/')):'${DATA_DIR}':" config_local.py
 
-		sed -i "s/^MAIL_SERVER.*/MAIL_SERVER = 'localhost'/; \
-		        s/^MAIL_PORT.*/MAIL_PORT = 25/; \
-		        s/^MAIL_USE_SSL.*/MAIL_USE_SSL = False/; \
-		        s/^MAIL_USE_TLS.*/MAIL_USE_TLS = False/; \
-		        s/^MAIL_USERNAME.*/MAIL_USERNAME = ''/; \
-		        s/^MAIL_PASSWORD.*/MAIL_PASSWORD = ''/" \
-		    config_local.py
+  sed -i "s/^MAIL_SERVER.*/MAIL_SERVER = 'localhost'/; \
+          s/^MAIL_PORT.*/MAIL_PORT = 25/; \
+          s/^MAIL_USE_SSL.*/MAIL_USE_SSL = False/; \
+          s/^MAIL_USE_TLS.*/MAIL_USE_TLS = False/; \
+          s/^MAIL_USERNAME.*/MAIL_USERNAME = ''/; \
+          s/^MAIL_PASSWORD.*/MAIL_PASSWORD = ''/" \
+      config_local.py
 
-		export PGADMIN_SETUP_EMAIL=${DEFAULT_USER}
-		export PGADMIN_SETUP_PASSWORD=${DEFAULT_PASSWORD}
+  export PGADMIN_SETUP_EMAIL=${DEFAULT_USER}
+  export PGADMIN_SETUP_PASSWORD=${DEFAULT_PASSWORD}
 
-		python setup.py
+  python setup.py
 
-		echo
-		echo "pgAdmin4 init process done. Ready for start up."
-		echo
-	fi
-
-	exec python pgAdmin4.py
-else
-	exec "$@"
+  echo
+  echo "pgAdmin4 init process done. Ready for start up."
+  echo
 fi
+
+exec python pgAdmin4.py

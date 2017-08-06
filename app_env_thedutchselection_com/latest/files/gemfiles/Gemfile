@@ -1,21 +1,19 @@
 source 'https://rubygems.org'
 
-ruby '2.3.3'
+ruby '2.4.1'
 
-gem 'rails', '5.0.2'
+gem 'rails', '5.1.2'
 
 gem 'bootstrap-sass', '3.3.7'
-gem 'coffee-rails', '4.2.1'
 gem 'figaro', '1.1.1'
 gem 'jquery-rails', '4.3.1'
-gem 'pg', '0.20.0'
-gem 'puma', '3.8.2'
+gem 'pg', '0.21.0'
+gem 'puma', '3.9.1'
 gem 'sass-rails', '5.0.6'
 gem 'sprockets-es6', '0.9.2'
-gem 'uglifier', '3.1.9'
+gem 'uglifier', '3.2.0'
 
 group :development, :test do
-  gem 'debase'
   gem 'pry'
   gem 'pry-remote'
   gem 'rack_session_access'
@@ -23,21 +21,15 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'guard-livereload', '~> 2.4', require: false
-  gem 'listen', '~> 3.0.6'
-  gem 'terminal-notifier-guard', '1.6.3'
+  gem 'web-console', '>= 3.3.0'
+  gem 'listen', '>= 3.0.5', '< 3.2'
 end
 
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_girl_rails'
-  gem 'jasmine-rails'
-  gem 'letter_opener'
   gem 'poltergeist'
-  gem 'rspec-rails', '3.5.2'
+  gem 'rspec-rails', '3.6.0'
   gem 'simplecov', :require => false
-  gem 'timecop'
 end

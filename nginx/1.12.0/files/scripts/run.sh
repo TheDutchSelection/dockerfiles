@@ -28,6 +28,7 @@ http {
   gzip_types text/plain application/xml text/css text/js text/xml application/x-javascript text/javascript application/json application/xml+rss image/svg+xml image/x-icon;
 
   client_max_body_size 20M;
+  large_client_header_buffers 4 32k;
   proxy_buffers 8 16k;
   proxy_buffer_size 32k;
 EOM

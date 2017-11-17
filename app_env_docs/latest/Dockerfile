@@ -6,7 +6,7 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/nginx:1.12.0
+FROM thedutchselection/nginx:1.12.2
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 USER root

@@ -141,7 +141,7 @@ create_servers () {
       elif [[ "$env" == *"_STORYBOOK_DOMAIN="* && "$env" == "SERVER_"* ]]; then
         # storybook domains like SERVER_[APP]_COMPONENT_STORYBOOK_DOMAIN=pc-component-storybook.thedutchselection.com
         local server="$standard_server_base"
-      elif [[ "$env" == *"_STORYBOOK_DOMAIN="* && "$env" == "SERVER_"* ]]; then
+      elif [[ "$env" == *"_STANDARD_DOMAIN="* && "$env" == "SERVER_"* ]]; then
         # storybook domains like SERVER_[APP]_STANDARD_DOMAIN=pc-docs.thedutchselection.com
         local server="$standard_server_base"
       else

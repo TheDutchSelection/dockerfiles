@@ -7,6 +7,7 @@
 #
 # OPTIONAL ENVS:
 # PASSWORD (ie. "abcdabcd1234")
+# MAX_MEMORY_IN_BYTES (ie. "1073741824", best is to keep 10% of memory for overhead)
 #
 # OTHER:
 

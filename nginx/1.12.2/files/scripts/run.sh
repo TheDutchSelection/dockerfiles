@@ -41,15 +41,11 @@ read -r -d '' assets_server_base << EOM || true
     root ##root##;
 
     ##redirects##
-    
-    location ^~ /assets/ {
-      ##basic_auth##
-      gzip_static on;
-      expires max;
-      ##location_options##
-      add_header Access-Control-Allow-Origin "*";
-      add_header Cache-Control public;
-    }
+
+    gzip_static on;
+    expires max;
+    add_header Access-Control-Allow-Origin "*";
+    add_header Cache-Control public;
 
     try_files \$uri =404;
   }
@@ -94,14 +90,12 @@ read -r -d '' standard_server_base << EOM || true
 
     ##redirects##
 
-    location ^~ /static/ {
-      ##basic_auth##
-      gzip_static on;
-      expires max;
-      ##location_options##
-      add_header Access-Control-Allow-Origin "*";
-      add_header Cache-Control public;
-    }
+    ##basic_auth##
+    gzip_static on;
+    expires max;
+    ##location_options##
+    add_header Access-Control-Allow-Origin "*";
+    add_header Cache-Control public;
 
     try_files \$uri/index.html \$uri =404;
   }

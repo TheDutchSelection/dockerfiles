@@ -23,4 +23,3 @@ RUN \
   apt-get install -yq oracle-java8-installer && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-  

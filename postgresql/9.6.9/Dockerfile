@@ -88,10 +88,10 @@ RUN \
   apt-get install -yq python-software-properties && \
   apt-get install -yq software-properties-common && \
   useradd -m -u 5432 postgres && \
-  apt-get install -yq postgresql-9.6=9.6.9-1.pgdg80+1 && \
-  apt-get install -yq postgresql-client-9.6=9.6.9-1.pgdg80+1 && \
-  apt-get install -yq postgresql-contrib-9.6=9.6.9-1.pgdg80+1 && \
-  apt-get install -yq postgresql-server-dev-9.6=9.6.9-1.pgdg80+1 && \
+  apt-get install -yq postgresql-9.6=9.6.9-2.pgdg80+1 && \
+  apt-get install -yq postgresql-client-9.6=9.6.9-2.pgdg80+1 && \
+  apt-get install -yq postgresql-contrib-9.6=9.6.9-2.pgdg80+1 && \
+  apt-get install -yq postgresql-server-dev-9.6=9.6.9-2.pgdg80+1 && \
   apt-get install -yq curl && \
   apt-get install -yq lzop && \
   apt-get install -yq pv && \

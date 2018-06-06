@@ -21,7 +21,7 @@ defaults
   option http-server-close
   timeout connect 10s
   timeout client 1m
-  timeout server 1m
+  timeout server 10m
   timeout queue 1m
   timeout http-request 10s
   timeout http-keep-alive 10s

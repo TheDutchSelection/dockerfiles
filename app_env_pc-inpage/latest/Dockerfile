@@ -16,3 +16,10 @@ RUN \
   apk add bash && \
   apk add nodejs-npm && \
   apk add yarn
+
+WORKDIR /tmp
+
+ADD files/packages/package.json /tmp/package.json
+ADD files/packages/yarn.lock /tmp/yarn.lock
+
+RUN yarn install --network-timeout 1000000 --pure-lockfile

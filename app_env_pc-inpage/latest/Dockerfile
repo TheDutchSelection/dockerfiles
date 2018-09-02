@@ -22,4 +22,8 @@ WORKDIR /tmp
 ADD files/packages/package.json /tmp/package.json
 ADD files/packages/yarn.lock /tmp/yarn.lock
 
+USER appmaster
+
 RUN yarn install --network-timeout 1000000 --pure-lockfile
+
+USER root

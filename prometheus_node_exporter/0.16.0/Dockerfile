@@ -16,7 +16,7 @@ RUN \
   apk add bash && \
   rm /var/cache/apk/*
 
-ADD https://github.com/prometheus/node_exporter/releases/download/0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz /tmp/
+ADD https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz /tmp/
 
 WORKDIR /tmp
 

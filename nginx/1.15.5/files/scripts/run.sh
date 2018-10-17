@@ -27,7 +27,7 @@ http {
   gzip_vary on;
   gzip_min_length 10240;
   gzip_proxied any;
-  gzip_types application/atom+xml application/javascript application/json application/x-javascript application/rdf+xml application/rss+xml application/xml text/css text/html text/javascript text/plain text/xml;
+  gzip_types application/atom+xml application/javascript application/json application/x-javascript application/rdf+xml application/rss+xml application/xml text/css text/javascript text/plain text/xml;
 
   client_max_body_size 20M;
   large_client_header_buffers 4 32k;

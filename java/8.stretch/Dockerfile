@@ -8,7 +8,7 @@
 #
 # USAGE EXAMPLE: docker run thedutchselection/java
 
-FROM thedutchselection/debian:9.3
+FROM thedutchselection/debian:9.5
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

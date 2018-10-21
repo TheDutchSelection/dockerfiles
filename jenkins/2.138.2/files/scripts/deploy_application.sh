@@ -18,7 +18,7 @@ if [[ -z "$APP_ID" || -z "$APP_ENV" || -z "$DOCKER_IMAGE_NAME" || -z "$DOCKER_IM
   exit 1
 fi
 
-result=$(curl http://"$CAPTAIN_HOST_PUBLIC_IP":"$CAPTAIN_HOST_PORT"/update/?env="$APP_ENV"&app="$APP_ID"&docker_image_name="$DOCKER_IMAGE_NAME"&docker_image_tag="$DOCKER_IMAGE_TAG"&probe_path="$PROBE_PATH")
+result=$(curl 'http://'"$CAPTAIN_HOST_PUBLIC_IP"':'"$CAPTAIN_HOST_PORT"'/update/?env='"$APP_ENV"'&app='"$APP_ID"'&docker_image_name='"$DOCKER_IMAGE_NAME"'&docker_image_tag='"$DOCKER_IMAGE_TAG"'&probe_path='"$PROBE_PATH")
 
 if [[ "$result" == *"\"status\": \"200\""* ]]; then
   echo "$APP_ID deployed in $APP_ENV"

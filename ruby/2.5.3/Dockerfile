@@ -37,5 +37,4 @@ RUN \
 
 RUN \
   gem install rubygems-update --no-ri --no-rdoc && \
-  update_rubygems && \
-  gem install bundler --no-ri --no-rdoc
+  update_rubygems

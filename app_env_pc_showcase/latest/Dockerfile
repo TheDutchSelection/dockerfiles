@@ -10,7 +10,7 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/ruby:2.4.1
+FROM thedutchselection/ruby:2.5.3
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
@@ -18,7 +18,7 @@ RUN \
   apt-get install -yq curl && \
   curl -sL https://deb.nodesource.com/setup | bash - && \
   apt-get install -yq nodejs && \
-  apt-get install -yq libpq-dev && \
+  apt-get install -yq libsqlite3-dev && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \
   apt-get clean && \

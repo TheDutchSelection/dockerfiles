@@ -17,6 +17,7 @@ RUN \
   apt-get update && \
   apt-get install -yq curl && \
   curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+  apt-get install -yq nodejs && \
   apt-get install -yq libsqlite3-dev && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \

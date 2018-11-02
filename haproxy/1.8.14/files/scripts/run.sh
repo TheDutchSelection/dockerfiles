@@ -75,7 +75,11 @@ frontend_http_filters () {
             local source=$(echo "$frontend_domain_redirect" | awk -F'\#\#\!\!' '{print $1}')
             local destination=$(echo "$frontend_domain_redirect" | awk -F'\#\#\!\!' '{print $2}')
 
-            local redirect_list="$redirect_list"$'\n'"  redirect prefix http://$destination code 301 if { hdr_beg(host) -i $source }"
+            if [[ "$frontend_domain_force_ssl" == "1" ]]; then
+              local redirect_list="$redirect_list"$'\n'"  redirect prefix https://$destination code 301 if { hdr_beg(host) -i $source }"
+            else
+              local redirect_list="$redirect_list"$'\n'"  redirect prefix http://$destination code 301 if { hdr_beg(host) -i $source }"
+            fi
           done
         fi
 

@@ -1,9 +1,9 @@
-# NAME: Environment for application Insights
+# NAME: Environment for application PC History
 #
-# DESCRIPTION: Base for other the Insights images. The gemfiles are a copy of the insights apps actual gemfiles. When
-# the files are updated in the insights app, you can update them here.
-# The more up to date they are, the faster the building process of the insights app, but nothing
-# will break when they are not up to date. The insights dockerfile will always run bundle install
+# DESCRIPTION: Base for other the PC History images. The gemfiles are a copy of the PC History apps actual gemfiles. When
+# the files are updated in the PC History app, you can update them here.
+# The more up to date they are, the faster the building process of the PC History app, but nothing
+# will break when they are not up to date. The PC History dockerfile will always run bundle install
 # on the latest files.
 #
 # REQUIRED ENVS:

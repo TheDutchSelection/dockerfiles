@@ -34,7 +34,7 @@ RUN \
 
 WORKDIR /home/prometheus
 
-ADD files/prometheus_template.rules.yml /etc/prometheus/prometheus.rules.yml
+ADD files/prometheus_template.rules.yml /etc/prometheus/prometheus_template.rules.yml
 ADD files/scripts /usr/local/bin
 
 RUN \

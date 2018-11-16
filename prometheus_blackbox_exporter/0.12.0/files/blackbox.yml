@@ -2,7 +2,7 @@ modules:
   http_price_comparator_nl_telecom:
     prober: http
     timeout: 30s
-    https:
+    http:
       valid_status_codes: []  # Defaults to 2xx
       method: GET
       no_follow_redirects: false

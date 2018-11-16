@@ -38,7 +38,7 @@ ADD files/prometheus_template.rules.yml /etc/prometheus/prometheus_template.rule
 ADD files/scripts /usr/local/bin
 
 RUN \
-  chmod 640 /etc/prometheus/prometheus.rules.yml && \
+  chmod 640 /etc/prometheus/prometheus_template.rules.yml && \
   chmod +x /usr/local/bin/run.sh && \
   chown -R prometheus:prometheus /etc/prometheus && \
   chown -R prometheus:prometheus /usr/local/bin/*

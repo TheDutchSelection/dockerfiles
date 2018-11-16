@@ -1,0 +1,53 @@
+groups:
+- name: prometheus.rules
+  rules:
+  - alert: NodeDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: page
+    annotations:
+      description: '{{$labels.node}} has been down for more than 1 minute.'
+      summary: Node {{$labels.node}} down
+  - alert: NodeLowMemory
+    expr: (node_memory_MemAvailable / node_memory_MemTotal * 100) < 5
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      description: '{{$labels.node}} has less than 5% memory available for more than
+        2 minutes.'
+      summary: Node {{$labels.node}} memory low
+  - alert: NodeLowDisk
+    expr: (node_filesystem_free{filesystem="/"} / node_filesystem_size{filesystem="/"}
+      * 100) < 10
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      description: '{{$labels.node}} has less than 10% free disk space available for
+        more than 2 minutes.'
+      summary: Node {{$labels.node}} disk space low
+  - alert: HighLoad
+    expr: node_load1 > 20
+    for: 1m
+    labels:
+      severity: page
+    annotations:
+      description: '{{$labels.node}} has a load of over 20 for more than 2 minutes.'
+      summary: Node {{$labels.node}} high load
+  - alert: EndpointUnavailable
+    expr: probe_success == 0
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      description: Endpoint {{$labels.target_name}} has been unavailable for more
+        than 2 minutes.
+      summary: Endpoint {{$labels.target_name}} unavailable
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - ##alertmanager_host##:##alertmanager_port##

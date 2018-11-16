@@ -45,9 +45,3 @@ groups:
       description: Endpoint {{$labels.target_name}} has been unavailable for more
         than 2 minutes.
       summary: Endpoint {{$labels.target_name}} unavailable
-
-alerting:
-  alertmanagers:
-  - static_configs:
-    - targets:
-      - ##alertmanager_host##:##alertmanager_port##

@@ -12,6 +12,12 @@ global:
 rule_files:
 - "/etc/prometheus/prometheus.rules.yml"
 
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - ##alertmanager_host##:##alertmanager_port##
+
 scrape_configs:
 EOM
 
@@ -118,6 +124,9 @@ create_config_file () {
 
   cat /dev/null > "$prometheus_conf_file"
 
+  local prometheus_base=${prometheus_base//\#\#alertmanager_host\#\#/"$ALERTMANAGER_HOST"}
+  local prometheus_base=${prometheus_base//\#\#alertmanager_port\#\#/"$ALERTMANAGER_PORT"}
+
   local jobs=$(create_jobs)
 
   echo "$prometheus_base"$'\n' >> "$prometheus_conf_file"
@@ -129,10 +138,6 @@ mkdir -p "$DATA_DIRECTORY"
 
 echo "copy conf file.."
 cp -p /etc/prometheus/prometheus_template.rules.yml /etc/prometheus/prometheus.rules.yml
-
-echo "set values to prometheus.rules.yml..."
-sed -i "s/##alertmanager_host##/$ALERTMANAGER_HOST/g" /etc/prometheus/prometheus.rules.yml
-sed -i "s/##alertmanager_port##/$ALERTMANAGER_PORT/g" /etc/prometheus/prometheus.rules.yml
 
 echo "creating $prometheus_conf_file..."
 prometheus_conf_file="/etc/prometheus/prometheus.yml"

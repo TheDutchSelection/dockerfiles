@@ -11,5 +11,5 @@ sed -i "s/##prometheus_alertmanager_pushover_group_key##/$PUSHOVER_GROUP_KEY/g" 
 
 echo "starting prometheus alert manager..."
 exec /usr/local/bin/alertmanager \
-  -config.file=/etc/alertmanager/alertmanager.yml \
-  -storage.path="$DATA_DIRECTORY"
+  --config.file=/etc/alertmanager/alertmanager.yml \
+  --storage.path="$DATA_DIRECTORY"

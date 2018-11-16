@@ -1,4 +1,4 @@
-# NAME: Prometheus Blackbox Exporter 0.1.0
+# NAME: Prometheus Blackbox Exporter 0.12.0
 #
 # DESCRIPTION: Prometheus Blackbox Exporter.
 #
@@ -8,7 +8,7 @@
 #
 # OTHER:
 
-FROM thedutchselection/alpine:3.2
+FROM thedutchselection/alpine:3.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
@@ -16,13 +16,13 @@ RUN \
   apk add bash && \
   rm /var/cache/apk/*
 
-ADD https://github.com/prometheus/blackbox_exporter/releases/download/0.1.0/blackbox_exporter-0.1.0.linux-amd64.tar.gz /tmp/
+ADD https://github.com/prometheus/blackbox_exporter/releases/download/v0.12.0/blackbox_exporter-0.12.0.linux-amd64.tar.gz /tmp/
 
 WORKDIR /tmp
 
 RUN \
-  tar -xzf blackbox_exporter-0.1.0.linux-amd64.tar.gz && \
-  mv blackbox_exporter /usr/local/bin/ && \
+  tar -xzf blackbox_exporter-0.12.0.linux-amd64.tar.gz && \
+  mv /tmp/blackbox_exporter-0.12.0.linux-amd64/blackbox_exporter /usr/local/bin/ && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home

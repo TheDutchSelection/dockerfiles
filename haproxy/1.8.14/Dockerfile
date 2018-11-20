@@ -8,7 +8,7 @@
 # [APP]_[APP_ID]_HOST_HEALTH_CHECK_PATH (ie. "/health_check", health check path for app)
 # CRT_DIRECTORY (ie. /etc/ssl/domains/)
 # DEFAULT_BACKEND (ie. [APP])
-# FRONTEND_[APP]_DOMAIN (ie. "backend.thedutchselection.com assets.thedutchselection.com", frontend for app)
+# FRONTEND_[APP]_DOMAIN (ie. "backend.thedutchselection.com assets.thedutchselection.com", frontend for app, not required for default backend)
 #
 # OPTIONAL ENVS:
 # [APP]_[APP_ID]_HOST_IS_BACKUP (ie. "1", marks host as backup backend)

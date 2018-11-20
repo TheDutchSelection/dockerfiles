@@ -154,7 +154,7 @@ create_backends () {
         fi
 
         if [[ ! -z "$app_health_check_path" ]]; then
-          local backend=="$backend"$'\n'"  option httpchk GET $app_health_check_path"
+          local backend="$backend"$'\n'"  option httpchk GET $app_health_check_path"
         fi
       fi
       local backend="$backend"$'\n'"  server $app_id $host:$port check inter 2000 rise 2 fall 2$backup_text"

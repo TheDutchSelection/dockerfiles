@@ -5,7 +5,9 @@
 # REQUIRED ENVS:
 # [APP]_[APP_ID]_HOST_PUBLIC_IP (ie. "81.192.5.1", backend for app)
 # [APP]_[APP_ID]_HOST_PORT (ie. "1001", backend for app)
+# [APP]_[APP_ID]_HOST_HEALTH_CHECK_PATH (ie. "/health_check", health check path for app)
 # CRT_DIRECTORY (ie. /etc/ssl/domains/)
+# DEFAULT_BACKEND (ie. [APP])
 # FRONTEND_[APP]_DOMAIN (ie. "backend.thedutchselection.com assets.thedutchselection.com", frontend for app)
 #
 # OPTIONAL ENVS:

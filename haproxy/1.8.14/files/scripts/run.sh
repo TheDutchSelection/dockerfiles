@@ -14,6 +14,7 @@ global
 defaults
   mode http
   balance roundrobin
+  default_backend ##default_backend##
   retries 3
   maxconn 3064
   option redispatch
@@ -134,6 +135,8 @@ create_backends () {
       eval port=\$$port_var
       local is_backup_var=${host_var/_PUBLIC_IP/_IS_BACKUP}
       eval is_backup=\$$is_backup_var
+      local app_health_check_path_var=${host_var/_PUBLIC_IP/_HEALTH_CHECK_PATH}
+      eval app_health_check_path=\$$app_health_check_path_var
 
       if [[ "$is_backup" == "1" ]]; then
         local backup_text=" backup"
@@ -149,8 +152,12 @@ create_backends () {
         else
           local backend=$'\n'$'\n'"backend $app"
         fi
+
+        if [[ ! -z "$app_health_check_path" ]]; then
+          local backend==""$'\n'"  option httpchk GET $app_health_check_path"
+        fi
       fi
-      local backend="$backend"$'\n'"  server $app_$app_id $host:$port check inter 2000 rise 2 fall 2$backup_text"
+      local backend="$backend"$'\n'"  server $app_id $host:$port check inter 2000 rise 2 fall 2$backup_text"
     fi
   done <<< "$envs"
 
@@ -170,6 +177,7 @@ create_config_file () {
 
   local backends=$(create_backends)
   local frontend=$(create_frontend "$haproxy_frontend_http" "$haproxy_frontend_https" "$backends")
+  local haproxy_base=${haproxy_base//\#\#default_backend\#\#/"$DEFAULT_BACKEND"}
 
   echo "$haproxy_base"$'\n' >> "$haproxy_cnf_file"
   echo "$frontend" >> "$haproxy_cnf_file"

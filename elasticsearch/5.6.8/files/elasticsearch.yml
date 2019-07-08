@@ -42,6 +42,10 @@ node.ingest: ${NODE_INGEST}
 #
 node.max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES}
 #
+# Add by GM custom disk type
+#
+node.attr.disk: ${NODE_DISK_TYPE}
+#
 # ----------------------------------- Paths ------------------------------------
 #
 # Path to directory where to store the data (separate multiple locations by comma):

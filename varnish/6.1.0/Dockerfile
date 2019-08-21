@@ -11,6 +11,7 @@
 # STORAGE_SIZE (ie. "20G", size varnish can use on disk)
 #
 # OPTIONAL ENVS:
+# [APP]_IS_DEFAULT (ie. "1", for the default backend)
 #
 # OTHER:
 # Some commands:

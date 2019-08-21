@@ -146,9 +146,16 @@ create_backends () {
       # [APP]_PROBE_PATH
       local probe_path_var="$app_upper""_PROBE_PATH"
       eval probe_path=\$$probe_path_var
+      # [APP]_IS_DEFAULT
+      local is_default_var="$app_upper""_IS_DEFAULT"
+      eval is_default=\$$is_default_var
 
       # put backend together
-      local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
+      if [[ "$is_default" == "1" ]]; then
+        local backend=${backend//\#\#backend_name\#\#/default}
+      else
+        local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
+      fi
       local backend=${backend//\#\#host_ip\#\#/"$host"}
       local backend=${backend//\#\#host_port\#\#/"$port"}
       local backend=${backend//\#\#probe_url\#\#/"$probe_path"}

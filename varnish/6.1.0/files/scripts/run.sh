@@ -159,8 +159,8 @@ create_backends () {
 
       local backends="$backends"$'\n'"$backend"$'\n'
 
-
       if [[ "$is_default" == "1" && "$set_default" == false ]]; then
+        local backend="$varnish_backend_base"
         local backend=${backend//\#\#backend_name\#\#/default}
         local backend=${backend//\#\#host_ip\#\#/"$host"}
         local backend=${backend//\#\#host_port\#\#/"$port"}

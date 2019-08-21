@@ -109,6 +109,7 @@ create_backends () {
   set -e
   local envs=$(env)
   local envs=$(echo "$envs" | sort)
+  local set_default=false
 
   local backends=""
   while read -r env; do
@@ -151,8 +152,9 @@ create_backends () {
       eval is_default=\$$is_default_var
 
       # put backend together
-      if [[ "$is_default" == "1" ]]; then
+      if [[ "$is_default" == "1" && "$set_default" == false ]]; then
         local backend=${backend//\#\#backend_name\#\#/default}
+        set_default=true
       else
         local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
       fi

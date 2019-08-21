@@ -152,17 +152,24 @@ create_backends () {
       eval is_default=\$$is_default_var
 
       # put backend together
-      if [[ "$is_default" == "1" && "$set_default" == false ]]; then
-        local backend=${backend//\#\#backend_name\#\#/default}
-        set_default=true
-      else
-        local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
-      fi
+      local backend=${backend//\#\#backend_name\#\#/"$app""_""$app_id"}
       local backend=${backend//\#\#host_ip\#\#/"$host"}
       local backend=${backend//\#\#host_port\#\#/"$port"}
       local backend=${backend//\#\#probe_url\#\#/"$probe_path"}
 
       local backends="$backends"$'\n'"$backend"$'\n'
+
+
+      if [[ "$is_default" == "1" && "$set_default" == false ]]; then
+        local backend=${backend//\#\#backend_name\#\#/default}
+        local backend=${backend//\#\#host_ip\#\#/"$host"}
+        local backend=${backend//\#\#host_port\#\#/"$port"}
+        local backend=${backend//\#\#probe_url\#\#/"$probe_path"}
+
+        local backends="$backends"$'\n'"$backend"$'\n'
+
+        local set_default=true
+      fi
     fi
   done <<< "$envs"
 
@@ -178,8 +185,8 @@ create_vcl_init () {
   local vcl_init="sub vcl_init {"
   local last_app=""
   while read -r backend; do
-    # we want the "backend [app]_[app_id] {" ones
-    if [[ "$backend" == "backend "* && "$backend" == *"{"* ]]; then
+    # we want the "backend [app]_[app_id] {" ones, but not the default
+    if [[ "$backend" == "backend "* && "$backend" == *"{"* && "$backend" != *"default"* ]]; then
       local backend_name=$(echo "$backend" | awk -F' ' '{print $2}')
       # remove app_id from app_app_id, ie. nginx_price_comparator_nl_telecom_portal_doa3wrkprd006
       local app=$(echo "$backend_name" | awk -F'_' '{for(i = 1; i <= NF - 1; i++) printf "%s%s", $i, i == NF -1 ? "" : "_" }')

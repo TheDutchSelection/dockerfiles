@@ -49,7 +49,7 @@ sub vcl_backend_response {
   }
 
   # we want a mechanism to easy never cache an url
-  if (beresp.http.location !~ "nocache") {
+  if (beresp.http.location ~ "nocache") {
     set beresp.ttl = 0s;
     set beresp.http.Cache-Control = "private, max-age=0, no-cache";
   }

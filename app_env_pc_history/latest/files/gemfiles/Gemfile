@@ -21,7 +21,7 @@ gem 'paperclip', '6.0.0'
 gem 'paperclip-compression', '1.0.1'
 gem 'pg', '1.0.0'
 gem 'puma', '3.11.4'
-gem 'rack-cors', '1.0.2', require: 'rack/cors'
+gem 'rack-cors', '1.0.6', require: 'rack/cors'
 gem 'redis', '3.3.5', require: ["redis", "redis/connection/hiredis"]
 gem 'resque', '1.27.4'
 gem 'resque-pool', '0.6.0'

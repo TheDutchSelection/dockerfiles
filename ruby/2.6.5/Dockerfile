@@ -36,5 +36,5 @@ RUN \
   rm -f ruby-2.6.5.tar.gz
 
 RUN \
-  gem install rubygems-update --no-ri --no-rdoc && \
+  gem install rubygems-update --no-document && \
   update_rubygems

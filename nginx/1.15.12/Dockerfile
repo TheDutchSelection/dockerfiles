@@ -31,7 +31,7 @@ RUN \
   apk add zlib-dev && \
   apk add openssl-dev && \
   apk add musl && \
-  apk add libcrypto1.0 && \
+  apk add libressl && \
   apk add g++ && \
   apk add apache2-utils && \
   rm /var/cache/apk/* && \

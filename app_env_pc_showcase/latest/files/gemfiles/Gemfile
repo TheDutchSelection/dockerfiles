@@ -11,7 +11,7 @@ gem 'faraday', '0.15.4'
 gem 'figaro', '1.1.1'
 gem 'hiredis', '0.6.3'
 gem 'maxmind-db', '1.0.0'
-gem 'puma', '3.12.1'
+gem 'puma', '3.12.3'
 gem 'redis', '4.1.0', require: ["redis", "redis/connection/hiredis"]
 gem 'resque', '2.0.0'
 gem 'resque-pool', git: 'https://github.com/nevans/resque-pool.git', branch: 'master' # we need version after 0.6.0

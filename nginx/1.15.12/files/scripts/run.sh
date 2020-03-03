@@ -33,6 +33,7 @@ http {
   large_client_header_buffers 4 32k;
   proxy_buffers 8 16k;
   proxy_buffer_size 32k;
+  proxy_read_timeout 1800
 EOM
 
 read -r -d '' reverse_proxy_server_base << EOM || true

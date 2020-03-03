@@ -10,12 +10,12 @@ EOM
 
 read -r -d '' varnish_backend_base << EOM || true
 backend ##backend_name## {
+  .first_byte_timeout = 1800s;
   .host = "##host_ip##";
   .port = "##host_port##";
   .probe = {
       .url = "##probe_url##";
       .timeout = 3s;
-      .first_byte_timeout = 1800s;
       .interval = 10s;
       .window = 5;
       .threshold = 3;

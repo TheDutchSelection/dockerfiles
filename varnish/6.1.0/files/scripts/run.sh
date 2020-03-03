@@ -15,6 +15,7 @@ backend ##backend_name## {
   .probe = {
       .url = "##probe_url##";
       .timeout = 3s;
+      .first_byte_timeout = 1800s;
       .interval = 10s;
       .window = 5;
       .threshold = 3;

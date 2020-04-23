@@ -262,7 +262,7 @@ GEM
       slop (~> 3.0)
     public_suffix (3.0.2)
     puma (3.11.4)
-    rack (2.0.5)
+    rack (2.2.2)
     rack-cors (1.0.2)
     rack-livereload (0.3.17)
       rack

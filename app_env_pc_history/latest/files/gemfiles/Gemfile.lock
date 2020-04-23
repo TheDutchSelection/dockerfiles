@@ -261,7 +261,8 @@ GEM
       pry (~> 0.9)
       slop (~> 3.0)
     public_suffix (3.0.2)
-    puma (3.11.4)
+    puma (4.3.3)
+      nio4r (~> 2.0)
     rack (2.0.5)
     rack-cors (1.0.2)
     rack-livereload (0.3.17)
@@ -439,7 +440,7 @@ DEPENDENCIES
   poltergeist
   pry
   pry-remote
-  puma (= 3.11.4)
+  puma (= 4.3.3)
   rack-cors (= 1.0.2)
   rack-livereload
   rack_session_access

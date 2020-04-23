@@ -30,7 +30,7 @@ gem 'image_processing', '1.7.1'
 gem 'jquery-rails', '4.3.3'
 gem 'kaminari', '1.1.1'
 gem 'mini_magick', '4.9.2'
-gem 'nokogiri', '1.9.1'
+gem 'nokogiri', '1.10.8'
 gem 'octicons_helper', '3.0.1'
 gem 'paperclip', '6.1.0' # deprecated, move to action storage
 gem 'paperclip-compression', '1.0.1' # deprecated, move to action storage

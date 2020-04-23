@@ -150,7 +150,7 @@ GEM
       pry (~> 0.9)
       slop (~> 3.0)
     public_suffix (3.1.1)
-    puma (3.12.1)
+    puma (3.12.4)
     raabro (1.1.6)
     rack (2.0.7)
     rack-protection (2.0.5)
@@ -289,7 +289,7 @@ DEPENDENCIES
   poltergeist (= 1.18.1)
   pry
   pry-remote
-  puma (= 3.12.1)
+  puma (= 3.12.4)
   rack_session_access
   rails (= 5.2.3)
   redis (= 4.1.0)

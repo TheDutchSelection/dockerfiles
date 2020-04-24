@@ -56,6 +56,8 @@ ADD files/packages/yarn.lock /tmp/yarn.lock
 
 USER appmaster
 
-RUN yarn install --network-timeout 1000000 --pure-lockfile
+RUN \
+  yarn install --network-timeout 1000000 --pure-lockfile && \
+  rm -rf /home/appmaster/.cache
 
 USER root

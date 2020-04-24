@@ -58,6 +58,6 @@ USER appmaster
 
 RUN \
   yarn install --network-timeout 1000000 --pure-lockfile && \
-  rm -rf /home/appmaster/.cache
+  mv /home/appmaster/.cache /tmp/.yarncache
 
 USER root

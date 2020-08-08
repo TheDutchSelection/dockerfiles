@@ -3,11 +3,8 @@ set -e
 
 trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres;" SIGTERM
 
-read -r -d '' recovery_conf_base << EOM || true
-primary_conninfo = 'host=##master_host_ip## port=##master_host_port## user=##replicator_user## password=##replicator_password##'
-trigger_file = '##data_directory##failover'
-standby_mode = 'on'
-EOM
+AWS_S3_BACKUP_ENDPOINT="s3://""$AWS_S3_WALG_BUCKET_NAME""/""$HOST_IP"
+AWS_S3_BACKUP_HOST_BACKUP_ENDPOINT="s3://""$AWS_S3_WALG_BUCKET_NAME""/""$BACKUP_HOST_IP"
 
 read -r -d '' authentication_setting_base << EOM || true
 ##type##  ##database##  ##user##  ##address## ##auth_method##
@@ -53,23 +50,11 @@ create_authentication_settings () {
   echo "$authentication_settings"
 }
 
-create_wale_prefix () {
-  set -e
-
-  if [[ -z "$AWS_S3_WALE_BUCKET_BASE_PATH" || "$AWS_S3_WALE_BUCKET_BASE_PATH" == "/" ]]; then
-    local wale_s3_prefix="s3://""$AWS_S3_WALE_BUCKET_NAME""/""$HOST_IP"
-  else
-    local wale_s3_prefix"s3://""$AWS_S3_WALE_BUCKET_NAME""/""$AWS_S3_WALE_BUCKET_BASE_PATH""$HOST_IP"
-  fi
-
-  echo "$wale_s3_prefix"
-}
-
 create_postgresql_conf () {
   set -e
 
   local escaped_data_directory=$(escape_string "$DATA_DIRECTORY")
-  local archive_dummy_directory="$DATA_DIRECTORY""pg_xlog/dummy_archive/"
+  local escaped_promote_trigger_file=$(escape_string "$DATA_DIRECTORY""failover.signal")
 
   if [[ -z "$MAX_CONNECTIONS" ]]; then
     local calculated_max_connections="500"
@@ -95,44 +80,37 @@ create_postgresql_conf () {
     local calculated_shared_buffers="$SHARED_BUFFERS"
   fi
 
-  sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##max_connections##/$calculated_max_connections/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##max_replication_slots##/$calculated_max_replication_slots/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##max_wal_senders##/$calculated_max_wal_senders/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##shared_buffers##/$calculated_shared_buffers/g" /etc/postgresql/postgresql.conf
 
-  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" ]]; then
-    local wale_s3_prefix=$(create_wale_prefix)
-
+  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" ]]; then
     local archive_mode="on"
-    local archive_command="wal-e --s3-prefix=""$wale_s3_prefix"" wal-push %p"
+    local archive_command="wal-g wal-push %p --pghost=/var/run/postgresql --aws-access-key-id ""$AWS_ACCESS_KEY_ID"" --aws-secret-access-key ""$AWS_SECRET_ACCESS_KEY"" --aws-region ""$AWS_REGION"" --aws-endpoint ""$AWS_S3_BACKUP_ENDPOINT"
+    local primary_conninfo="host=""$MASTER_HOST_IP"" port=""$MASTER_HOST_PORT"" user=""$REPLICATOR_USER"" password=""$REPLICATOR_PASSWORD"
+    local recovery_target_time="$RECOVERY_TARGET_TIME"
+    local restore_command="wal-g wal-fetch %f %p --pghost=/var/run/postgresql --aws-access-key-id ""$AWS_ACCESS_KEY_ID"" --aws-secret-access-key ""$AWS_SECRET_ACCESS_KEY"" --aws-region ""$AWS_REGION"" --aws-endpoint ""$AWS_S3_BACKUP_HOST_BACKUP_ENDPOINT"
   else
     local archive_mode="off"
     local archive_command=""
+    local primary_conninfo=""
+    local recovery_target_time=""
+    local restore_command=""
   fi
 
   escaped_archive_command=$(escape_string "$archive_command")
+  escaped_primary_conninfo=$(escape_string "$primary_conninfo")
+  escaped_recovery_target_time=$(escape_string "$recovery_target_time")
+  escaped_restore_command=$(escape_string "$restore_command")
 
-  sed -i "s/##archive_mode##/$archive_mode/g" /etc/postgresql/postgresql.conf
-  sed -i "s/##archive_command##/$escaped_archive_command/g" /etc/postgresql/postgresql.conf
-}
-
-# $1: recovery_conf_base
-# $2: recovery_conf file
-create_recovery_conf () {
-  set -e
-  local recovery_conf_base="$1"
-  local recovery_conf_file="$2"
-
-  cat /dev/null > "$recovery_conf_file"
-
-  local recovery_conf=${recovery_conf_base/\#\#master_host_ip\#\#/"$MASTER_HOST_IP"}
-  local recovery_conf=${recovery_conf/\#\#master_host_port\#\#/"$MASTER_HOST_PORT"}
-  local recovery_conf=${recovery_conf/\#\#replicator_user\#\#/"$REPLICATOR_USER"}
-  local recovery_conf=${recovery_conf/\#\#replicator_password\#\#/"$REPLICATOR_PASSWORD"}
-  local recovery_conf=${recovery_conf/\#\#data_directory\#\#/"$DATA_DIRECTORY"}
-
-  echo "$recovery_conf" >> "$recovery_conf_file"
+  sed -i "s/##archive_command##/$escaped_archive_command/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##archive_mode##/$archive_mode/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##data_directory##/$escaped_data_directory/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##max_connections##/$calculated_max_connections/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##max_replication_slots##/$calculated_max_replication_slots/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##max_wal_senders##/$calculated_max_wal_senders/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##primary_conninfo##/$escaped_primary_conninfo/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##promote_trigger_file##/$escaped_promote_trigger_file/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##recovery_target_time##/$escaped_recovery_target_time/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##restore_command##/$escaped_restore_command/g" /etc/postgresql/12/main/postgresql.conf
+  sed -i "s/##shared_buffers##/$calculated_shared_buffers/g" /etc/postgresql/12/main/postgresql.conf
 }
 
 # description: init the data directory
@@ -146,12 +124,9 @@ init_data_directory() {
     export PGPASSWORD="$SUPERUSER_PASSWORD"
     pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
     unset PGPASSWORD
-
-    echo "creating recovery.conf..."
-    create_recovery_conf "$recovery_conf_base" "$DATA_DIRECTORY""recovery.conf"
   else
     echo "copying files into data directory..."
-    cp -R /var/lib/postgresql/9.6/main/* "$DATA_DIRECTORY"
+    cp -R /var/lib/postgresql/12/main/* "$DATA_DIRECTORY"
   fi
 }
 
@@ -159,7 +134,7 @@ init_data_directory() {
 create_superuser_and_template1() {
   # wait for postgresql to start
   echo "waiting for postgresql to be started..."
-  while [[ ! -e /run/postgresql/9.6-main.pid ]] ; do
+  while [[ ! -e /run/postgresql/12-main.pid ]] ; do
     inotifywait -q -e create /run/postgresql/ >> /dev/null
   done
 
@@ -192,29 +167,28 @@ EOF
 }
 
 periodically_backup () {
-  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
+  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
     while true; do
       sleep 45
 
       local current_time=$(date +"%H:%M")
       if [[ "$current_time" == "$BACKUP_EXECUTION_TIME" ]]; then
-        local wale_s3_prefix=$(create_wale_prefix)
-        wal-e --s3-prefix="$wale_s3_prefix" backup-push "$DATA_DIRECTORY"
-        wal-e --s3-prefix="$wale_s3_prefix" delete --confirm retain 30
+        wal-g backup-push "$DATA_DIRECTORY" --pghost=/var/run/postgresql --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint "$AWS_S3_BACKUP_ENDPOINT"
+        wal-g delete retain 30 --confirm --pghost=/var/run/postgresql --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint "$AWS_S3_BACKUP_ENDPOINT"
       fi
     done
   fi
 }
 
 # remove any existing postgresql pid
-rm -f /run/postgresql/*.pid
+rm -f /var/run/postgresql/*.pid
 
 # create stats_temp_directory if not exists
-mkdir -p /var/run/postgresql/9.6-main.pg_stat_tmp
+mkdir -p /var/run/postgresql/12-main.pg_stat_tmp
 
 echo "copy conf files.."
-cp -p /etc/postgresql/postgresql_template.conf /etc/postgresql/postgresql.conf
-cp -p /etc/postgresql/pg_hba_template.conf /etc/postgresql/pg_hba.conf
+cp -p /etc/postgresql/12/main/postgresql_template.conf /etc/postgresql/12/main/postgresql.conf
+cp -p /etc/postgresql/12/main/pg_hba_template.conf /etc/postgresql/12/main/pg_hba.conf
 
 echo "set values to postgresql.conf file..."
 create_postgresql_conf
@@ -222,7 +196,7 @@ create_postgresql_conf
 echo "set values to pg_hba.conf..."
 authentication_settings=$(create_authentication_settings)
 escaped_authentication_settings=$(escape_string "$authentication_settings")
-perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/pg_hba.conf
+perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/12/main/pg_hba.conf
 
 # if data directory exist, we assume the superuser is also already created
 if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
@@ -237,13 +211,13 @@ fi
 
 sleep 2
 
-if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALE_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" && "$ROLE" != "slave" ]]; then
+if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" && "$ROLE" != "slave" ]]; then
   echo "start periodically backup at $BACKUP_EXECUTION_TIME""h..."
   periodically_backup &
 fi
 
 echo "starting postgresql..."
-/usr/lib/postgresql/9.6/bin/postgres -c config_file=/etc/postgresql/postgresql.conf &
+/usr/lib/postgresql/12/bin/postgres &
 
 # wait for the pid of this file to end
 wait $!

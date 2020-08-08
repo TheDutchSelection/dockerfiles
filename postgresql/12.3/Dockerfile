@@ -6,18 +6,19 @@
 # DATA_DIRECTORY (ie. "/home/postgres/data/")
 #
 # OPTIONAL ENVS:
-# AWS_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3", needed if WAL-E is used)
-# AWS_REGION (ie. "eu-west-1", region of the backup bucket, needed if WAL-E is used)
-# AWS_S3_WALE_BUCKET_NAME (ie. "tds-app-backup", needed if WAL-E is used)
-# AWS_S3_WALE_BUCKET_BASE_PATH (ie. "postgresql/" ending with a slash), needed if WAL-E is used
-# AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23", needed if WAL-E is used)
-# BACKUP_EXECUTION_TIME (ie. "02:00", time is in UTC and for backups to succeed, WALE needs to be setup)
-# HOST_IP (ie. "123.123.123.1", ip of the host this is running on, needed if WAL-E is used)
+# AWS_ACCESS_KEY_ID (ie. "FDEDFD3FDFD3AKHR3", needed if Wal-G is used)
+# AWS_REGION (ie. "eu-west-1", region of the backup bucket, needed if Wal-G is used)
+# AWS_S3_WALG_BUCKET_NAME (ie. "tds-app-backup", needed if Wal-G is used)
+# AWS_SECRET_ACCESS_KEY (ie. "yrthxdt45678oestwgsdf5es4trgd23", needed if Wal-G is used)
+# BACKUP_EXECUTION_TIME (ie. "02:00", time is in UTC and for backups to succeed, Wal-G needs to be setup)
+# BACKUP_HOST_IP (ie. "123.123.123.1", ip of the "other" (slave if this is master and vice versa) host, needed if Wal-G is used)
+# HOST_IP (ie. "123.123.123.1", ip of the host this is running on, needed if Wal-G is used)
 # MASTER_HOST_IP (ie. "123.123.123.1", ip of the master, needed if ROLE=slave)
 # MASTER_HOST_PORT (ie. "5432", port of the master, needed if ROLE=slave)
 # MAX_CONNECTIONS (ie. "100", defaults to 500)
 # MAX_REPLICATION_SLOTS (ie. "5", defaults to 0, needed if you want replication)
 # MAX_WAL_SENDERS (ie. "5", defaults to 0, no replication, needed if you want replication)
+# RECOVERY_TARGET_TIME (ie. "2016-02-19 15:50:00 GMT", only needed if you're doing a recovery)
 # REPLICATOR_PASSWORD (ie. "rep", replicator password, needed if ROLE=slave)
 # REPLICATOR_USER (ie. "rep", replicator user, needed if ROLE=slave)
 # ROLE (ie. "master", master or slave, default is master)
@@ -27,28 +28,29 @@
 # SUPERUSER_PASSWORD (ie. "abcdabcd1234")
 #
 # OTHER:
-# The WAL-E variables activate archiving to S3 (archiving will otherwise be off)
+# The Wal-G variables activate archiving to S3 (archiving will otherwise be off)
 #
-# Promoting a slave to master:
+#
+# PROMOTING A SLAVE TO MASTER
 # - Set the failover ip to the server of the slave you want to promote to master
 # - Ssh to the slave server you want to promote "docker exec -it postgresql_slave bash"
-# - "touch [data-directory]/failover"
+# - Run "touch "$DATA_DIRECTORY""failover.signal""
 # - This slave is now accepting write connections and acting as the master, it will not try to connect to the previous master
 #
 #
-# After promoting a slave and when the previous master is back up:
+# REINSTATING THE PREVIOUS MASTER
 # - Set the failover ip to the master server
 # - Go to the slave server and do "docker exec -it postgresql_slave bash"
-# - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-push "$DATA_DIRECTORY""
+# - Run "wal-g backup-push "$DATA_DIRECTORY" --pghost="/var/run/postgresql" --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint s3://tds-database-backups/"$HOST_IP" "
 # - Shutdown the PostgreSQL slave
-# - Go to the master server and follow the instructions for recovery using wal-e
+# - Go to the master server and follow the instructions for recovery using wal-g
 # - When everything is up and running, throw away the slave (data) containers and redeploy them
 # - Everything is back to normal
 #
 #
-# Instructions for recovery using wal-e:
+# DATA RECOVERY USING WAL-G (NOG NIET GESCHREVEN)
 # - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
-# - Throw away current data container "docker rm -v postgresql_master_data"
+# - Throw away current data directory "rm -rf /var/lib/data/container_data/postgresql_master/data/*"
 # - Create new data container "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master"
 # - Stop PostgreSQL again "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
 # - Start a container to execute backup commands:
@@ -56,27 +58,33 @@
 #     -it --rm \
 #     -e "AWS_ACCESS_KEY_ID=[access key]" \
 #     -e "AWS_REGION=[region]" \
-#     -e "AWS_S3_WALE_BUCKET_NAME=[bucket name]" \
-#     -e "AWS_S3_WALE_BUCKET_BASE_PATH=[path]" \
+#     -e "AWS_S3_WALG_BUCKET_NAME=[bucket name]" \
 #     -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
 #     -e "DATA_DIRECTORY=[data-directory]" \
 #     -e "HOST_IP=[current master host ip, not this server]" \
 #     --volumes-from postgresql_master_data \
 #     --entrypoint=bash \
 #     thedutchselection/postgresql:9.6.9
-# - Run "wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
-# - Run "echo "restore_command = 'wal-e --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
+# - Run "wal-g --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
+# - Run "echo "restore_command = 'wal-g --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
+# - Run "touch "$DATA_DIRECTORY""recovery.signal""
 # - If you want to restore to a specific point in time (else latest will be used) do "echo "recovery_target_time = '2016-02-19 15:50:00 GMT'" >> "$DATA_DIRECTORY""recovery.conf""
 # - Exit this container.
-# - Remove S3 wal-e data for this PostgreSQL.
+# - Remove S3 wal-g data for this PostgreSQL.
 # - Start PostgreSQL "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master" and everything should run fine.
 #
 #
-# Show status of replication on the slave server:
+# REPLICATION STATUS ON THE SLAVE SERVER
 # - Do "docker exec -it postgresql_slave bash"
 # - Do "psql"
 # - Execute the query "select now() - pg_last_xact_replay_timestamp() AS replication_delay;"
 # This gives the replication delay. If there are no wirtes to the master, this might be bigger without any problems.
+#
+#
+# SLAVE SERVER THAT IS OUT OF SYNC
+# - Make sure PostgreSQL slave container is not running, "sudo systemctl disable postgresql_slave", "sudo systemctl stop postgresql_slave"
+# - Throw away current data directory "rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
+# - Start the PostgreSQL slave container again "sudo systemctl enable [path-to]/postgresql_slave", "sudo systemctl start postgresql_slaver"
 
 FROM thedutchselection/debian:10.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
@@ -104,17 +112,17 @@ RUN \
   rm wal-g.linux-amd64.tar.gz && \
   mv wal-g /usr/local/bin/ && \
   chown -R postgres:postgres /usr/local/bin/wal-g && \
-  chmod 640 /usr/local/bin/wal-g
+  chmod 740 /usr/local/bin/wal-g
 
-ADD files/pg_hba_template.conf /etc/postgresql/
-ADD files/postgresql_template.conf /etc/postgresql/
+ADD files/pg_hba_template.conf /etc/postgresql/12/main/
+ADD files/postgresql_template.conf /etc/postgresql/12/main/
 ADD files/scripts /usr/local/bin
 
 RUN \
-  chmod 640 /etc/postgresql/pg_hba_template.conf && \
-  chmod 644 /etc/postgresql/postgresql_template.conf && \
+  chmod 640 /etc/postgresql/12/main/pg_hba_template.conf && \
+  chmod 644 /etc/postgresql/12/main/postgresql_template.conf && \
   chmod +x /usr/local/bin/run.sh && \
-  chown -R postgres:postgres /etc/postgresql && \
+  chown -R postgres:postgres /etc/postgresql/12/main && \
   chown postgres:postgres /usr/local/bin/*
 
 EXPOSE 5432

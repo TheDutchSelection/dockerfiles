@@ -1,4 +1,4 @@
-# NAME: PostgreSQL 12.3
+# NAME: PostgreSQL 12.4
 #
 # DESCRIPTION: PostgreSQL image.
 #
@@ -95,9 +95,9 @@ RUN \
   apt-get update && \
   apt-get install -yq software-properties-common && \
   useradd -m -u 5432 postgres && \
-  apt-get install -yq postgresql-12=12.3-1.pgdg100+1 && \
-  apt-get install -yq postgresql-client-12=12.3-1.pgdg100+1 && \
-  apt-get install -yq postgresql-server-dev-12=12.3-1.pgdg100+1 && \
+  apt-get install -yq postgresql-12=12.4-1.pgdg100+1 && \
+  apt-get install -yq postgresql-client-12=12.4-1.pgdg100+1 && \
+  apt-get install -yq postgresql-server-dev-12=12.4-1.pgdg100+1 && \
   apt-get install -yq curl && \
   apt-get install -yq lzop && \
   apt-get install -yq pv && \

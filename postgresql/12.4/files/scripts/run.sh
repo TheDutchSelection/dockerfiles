@@ -3,9 +3,6 @@ set -e
 
 trap "echo \"Sending SIGTERM to processes\"; killall -s SIGTERM -w postgres;" SIGTERM
 
-AWS_S3_BACKUP_ENDPOINT="s3://""$AWS_S3_WALG_BUCKET_NAME""/""$HOST_IP"
-AWS_S3_BACKUP_HOST_BACKUP_ENDPOINT="s3://""$AWS_S3_WALG_BUCKET_NAME""/""$BACKUP_HOST_IP"
-
 read -r -d '' authentication_setting_base << EOM || true
 ##type##  ##database##  ##user##  ##address## ##auth_method##
 EOM
@@ -83,10 +80,10 @@ create_postgresql_conf () {
 
   if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" ]]; then
     local archive_mode="on"
-    local archive_command="wal-g wal-push %p --pghost=/var/run/postgresql --aws-access-key-id ""$AWS_ACCESS_KEY_ID"" --aws-secret-access-key ""$AWS_SECRET_ACCESS_KEY"" --aws-region ""$AWS_REGION"" --aws-endpoint ""$AWS_S3_BACKUP_ENDPOINT"
+    local archive_command="wal-g wal-push %p --pghost=/var/run/postgresql/"
     local primary_conninfo="host=""$MASTER_HOST_IP"" port=""$MASTER_HOST_PORT"" user=""$REPLICATOR_USER"" password=""$REPLICATOR_PASSWORD"
     local recovery_target_time="$RECOVERY_TARGET_TIME"
-    local restore_command="wal-g wal-fetch %f %p --pghost=/var/run/postgresql --aws-access-key-id ""$AWS_ACCESS_KEY_ID"" --aws-secret-access-key ""$AWS_SECRET_ACCESS_KEY"" --aws-region ""$AWS_REGION"" --aws-endpoint ""$AWS_S3_BACKUP_HOST_BACKUP_ENDPOINT"
+    local restore_command="wal-g wal-fetch %f %p --pghost=/var/run/postgresql/ --walg-s3-prefix s3://""$AWS_S3_WALG_BUCKET_NAME""/""$BACKUP_HOST_IP"
   else
     local archive_mode="off"
     local archive_command=""
@@ -111,6 +108,14 @@ create_postgresql_conf () {
   sed -i "s/##recovery_target_time##/$escaped_recovery_target_time/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##restore_command##/$escaped_restore_command/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##shared_buffers##/$calculated_shared_buffers/g" /etc/postgresql/12/main/postgresql.conf
+}
+
+set_environment_variables_wal_g() {
+  echo "AWS_ACCESS_KEY_ID=""$AWS_ACCESS_KEY_ID"
+  echo "AWS_SECRET_ACCESS_KEY=""$AWS_SECRET_ACCESS_KEY"
+  echo "AWS_REGION=""$AWS_REGION"
+  export WALG_S3_PREFIX="s3://""$AWS_S3_WALG_BUCKET_NAME""/""$HOST_IP"
+  echo "WALG_S3_PREFIX=""$WALG_S3_PREFIX"
 }
 
 # description: init the data directory
@@ -166,18 +171,16 @@ EOF
 EOF
 }
 
-periodically_backup () {
-  if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS_SECRET_ACCESS_KEY" && ! -z "$BACKUP_EXECUTION_TIME" ]]; then
-    while true; do
-      sleep 45
+periodically_backup() {
+  while true; do
+    sleep 45
 
-      local current_time=$(date +"%H:%M")
-      if [[ "$current_time" == "$BACKUP_EXECUTION_TIME" ]]; then
-        wal-g backup-push "$DATA_DIRECTORY" --pghost=/var/run/postgresql --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint "$AWS_S3_BACKUP_ENDPOINT"
-        wal-g delete retain 30 --confirm --pghost=/var/run/postgresql --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint "$AWS_S3_BACKUP_ENDPOINT"
-      fi
-    done
-  fi
+    local current_time=$(date +"%H:%M")
+    if [[ "$current_time" == "$BACKUP_EXECUTION_TIME" ]]; then
+      wal-g backup-push "$DATA_DIRECTORY" --pghost=/var/run/postgresql/
+      wal-g delete retain 30 --confirm --pghost=/var/run/postgresql/
+    fi
+  done
 }
 
 # remove any existing postgresql pid
@@ -198,6 +201,9 @@ authentication_settings=$(create_authentication_settings)
 escaped_authentication_settings=$(escape_string "$authentication_settings")
 perl -i -pe 's/##authentication_settings##/'"${escaped_authentication_settings}"'/g' /etc/postgresql/12/main/pg_hba.conf
 
+echo "set environment variables for wal-g..."
+set_environment_variables_wal_g
+
 # if data directory exist, we assume the superuser is also already created
 if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
   echo "creating the data directory..."
@@ -217,7 +223,7 @@ if [[ ! -z "$AWS_ACCESS_KEY_ID" && ! -z "$AWS_S3_WALG_BUCKET_NAME" && ! -z "$AWS
 fi
 
 echo "starting postgresql..."
-/usr/lib/postgresql/12/bin/postgres &
+/usr/lib/postgresql/12/bin/postgres --config-file=etc/postgresql/12/main/postgresql.conf &
 
 # wait for the pid of this file to end
 wait $!

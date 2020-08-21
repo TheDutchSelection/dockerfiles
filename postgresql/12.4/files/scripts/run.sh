@@ -127,7 +127,7 @@ init_data_directory() {
   if [[ "$ROLE" == "slave" ]]; then
     echo "import base backup..."
     export PGPASSWORD="$SUPERUSER_PASSWORD"
-    pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v -x
+    pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v
     unset PGPASSWORD
   else
     echo "copying files into data directory..."

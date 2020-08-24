@@ -50,7 +50,7 @@
 #
 # DATA RECOVERY USING WAL-G (NOG NIET GESCHREVEN)
 # - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
-# - Throw away current data directory "rm -rf /var/lib/data/container_data/postgresql_master/data/*"
+# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
 # - Create new data container "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master"
 # - Stop PostgreSQL again "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
 # - Start a container to execute backup commands:
@@ -71,7 +71,7 @@
 # - If you want to restore to a specific point in time (else latest will be used) do "echo "recovery_target_time = '2016-02-19 15:50:00 GMT'" >> "$DATA_DIRECTORY""recovery.conf""
 # - Exit this container.
 # - Remove S3 wal-g data for this PostgreSQL.
-# - Start PostgreSQL "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master" and everything should run fine.
+# - Start PostgreSQL "sudo systemctl enable /etc/systemd/user/postgresql_master.service", "sudo systemctl start postgresql_master" and everything should run fine.
 #
 #
 # REPLICATION STATUS ON THE SLAVE SERVER
@@ -83,8 +83,8 @@
 #
 # SLAVE SERVER THAT IS OUT OF SYNC
 # - Make sure PostgreSQL slave container is not running, "sudo systemctl disable postgresql_slave", "sudo systemctl stop postgresql_slave"
-# - Throw away current data directory "rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
-# - Start the PostgreSQL slave container again "sudo systemctl enable [path-to]/postgresql_slave", "sudo systemctl start postgresql_slaver"
+# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
+# - Start the PostgreSQL slave container again "sudo systemctl enable /etc/systemd/user/postgresql_slave.service", "sudo systemctl start postgresql_slave"
 
 FROM thedutchselection/debian:10.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

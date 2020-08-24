@@ -129,6 +129,7 @@ init_data_directory() {
     export PGPASSWORD="$SUPERUSER_PASSWORD"
     pg_basebackup -h "$MASTER_HOST_IP" -p "$MASTER_HOST_PORT" -D "$DATA_DIRECTORY" -U "$SUPERUSER_USERNAME" -v
     unset PGPASSWORD
+    touch "$DATA_DIRECTORY""standby.signal"
   else
     echo "copying files into data directory..."
     cp -R /var/lib/postgresql/12/main/* "$DATA_DIRECTORY"

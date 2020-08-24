@@ -18,7 +18,6 @@
 # MAX_CONNECTIONS (ie. "100", defaults to 500)
 # MAX_REPLICATION_SLOTS (ie. "5", defaults to 0, needed if you want replication)
 # MAX_WAL_SENDERS (ie. "5", defaults to 0, no replication, needed if you want replication)
-# RECOVERY_TARGET_TIME (ie. "2016-02-19 15:50:00 GMT", only needed if you're doing a recovery)
 # REPLICATOR_PASSWORD (ie. "rep", replicator password, needed if ROLE=slave)
 # REPLICATOR_USER (ie. "rep", replicator user, needed if ROLE=slave)
 # ROLE (ie. "master", master or slave, default is master)
@@ -41,49 +40,60 @@
 # REINSTATING THE PREVIOUS MASTER
 # - Set the failover ip to the master server
 # - Go to the slave server and do "docker exec -it postgresql_slave bash"
-# - Run "wal-g backup-push "$DATA_DIRECTORY" --pghost="/var/run/postgresql" --aws-access-key-id "$AWS_ACCESS_KEY_ID" --aws-secret-access-key "$AWS_SECRET_ACCESS_KEY" --aws-region "$AWS_REGION" --aws-endpoint s3://tds-database-backups/"$HOST_IP" "
-# - Shutdown the PostgreSQL slave
-# - Go to the master server and follow the instructions for recovery using wal-g
-# - When everything is up and running, throw away the slave (data) containers and redeploy them
+# - Run "wal-g backup-push "$DATA_DIRECTORY" --pghost="/var/run/postgresql" --walg-s3-prefix=s3://tds-database-backups/"$HOST_IP""
+# - "sudo systemctl disable postgresql_slave && sudo systemctl stop postgresql_slave"
+# - Go to the master server and follow "DATA RECOVERY USING WAL-G"
+# - When everything is up and running follow "SLAVE SERVER THAT IS OUT OF SYNC" to reinstate the slave server
 # - Everything is back to normal
 #
 #
-# DATA RECOVERY USING WAL-G (NOG NIET GESCHREVEN)
-# - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
-# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
-# - Create new data container "sudo systemctl enable [path-to]/postgresql_master", "sudo systemctl start postgresql_master"
-# - Stop PostgreSQL again "sudo systemctl disable postgresql_master", "sudo systemctl stop postgresql_master"
+# DATA RECOVERY USING WAL-G (WRITTEN FOR MASTER)
+# - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master && sudo systemctl stop postgresql_master"
+# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_master/data"
+# - Create the data directory again "sudo mkdir -m 700 /var/lib/data/container_data/postgresql_master/data"
+# - Give the data directory the right ownership and permissions "sudo chown -R 5432:5432 /var/lib/data/container_data/postgresql_master/data"
 # - Start a container to execute backup commands:
-#     /usr/bin/docker run \
-#     -it --rm \
-#     -e "AWS_ACCESS_KEY_ID=[access key]" \
-#     -e "AWS_REGION=[region]" \
-#     -e "AWS_S3_WALG_BUCKET_NAME=[bucket name]" \
-#     -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
-#     -e "DATA_DIRECTORY=[data-directory]" \
-#     -e "HOST_IP=[current master host ip, not this server]" \
-#     --volumes-from postgresql_master_data \
-#     --entrypoint=bash \
-#     thedutchselection/postgresql:9.6.9
-# - Run "wal-g --s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
-# - Run "echo "restore_command = 'wal-g --s3-prefix=s3://tds-database-backups/"$HOST_IP" wal-fetch %f %p'" > "$DATA_DIRECTORY""recovery.conf""
+#    /usr/bin/docker run \
+#    -it --rm \
+#    -e "AWS_ACCESS_KEY_ID=[access key]" \
+#    -e "AWS_REGION=[region]" \
+#    -e "AWS_S3_WALG_BUCKET_NAME=[bucket name]" \
+#    -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
+#    -e "BACKUP_HOST_IP=[slave host ip]" \
+#    -e "DATA_DIRECTORY=/home/postgres/data/" \
+#    -e "HOST_IP=[host ip]" \
+#    -e "MAX_CONNECTIONS=500" \
+#    -e "MAX_REPLICATION_SLOTS=3" \
+#    -e "MAX_WAL_SENDERS=5" \
+#    -e "ROLE=master" \
+#    -e "SHARED_BUFFERS=16" \
+#    -v /var/lib/data/container_data/postgresql_master/data:/home/postgres/data/ \
+#    --entrypoint=bash \
+#    thedutchselection/postgresql:12.4
+# If recovering from slave:
+# - Run "wal-g --walg-s3-prefix=s3://tds-database-backups/"$BACKUP_HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
+# If recovering from master:
+# - Run "wal-g --walg-s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
+# - Now edit /etc/postgresql/12/main/postgresql.conf
 # - Run "touch "$DATA_DIRECTORY""recovery.signal""
 # - If you want to restore to a specific point in time (else latest will be used) do "echo "recovery_target_time = '2016-02-19 15:50:00 GMT'" >> "$DATA_DIRECTORY""recovery.conf""
 # - Exit this container.
 # - Remove S3 wal-g data for this PostgreSQL.
-# - Start PostgreSQL "sudo systemctl enable /etc/systemd/user/postgresql_master.service", "sudo systemctl start postgresql_master" and everything should run fine.
+# - Start PostgreSQL "sudo systemctl enable /etc/systemd/user/postgresql_master.service && sudo systemctl start postgresql_master" and everything should run fine.
 #
 #
 # REPLICATION STATUS ON THE SLAVE SERVER
 # - Do "docker exec -it postgresql_slave bash"
 # - Do "psql"
 # - Execute the query "select now() - pg_last_xact_replay_timestamp() AS replication_delay;"
-# This gives the replication delay. If there are no wirtes to the master, this might be bigger without any problems.
+# This gives the replication delay. If there are no writes to the master, this might be bigger without any problems.
 #
 #
 # SLAVE SERVER THAT IS OUT OF SYNC
 # - Make sure PostgreSQL slave container is not running, "sudo systemctl disable postgresql_slave", "sudo systemctl stop postgresql_slave"
-# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data/*"
+# - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data"
+# - Create the data directory again "sudo mkdir -m 700 /var/lib/data/container_data/postgresql_slave/data"
+# - Give the data directory the right ownership and permissions "sudo chown -R 5432:5432 /var/lib/data/container_data/postgresql_slave/data"
 # - Start the PostgreSQL slave container again "sudo systemctl enable /etc/systemd/user/postgresql_slave.service", "sudo systemctl start postgresql_slave"
 
 FROM thedutchselection/debian:10.4
@@ -103,6 +113,7 @@ RUN \
   apt-get install -yq pv && \
   apt-get install -yq inotify-tools && \
   apt-get install -yq psmisc && \
+  apt-get install -yq nano && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

@@ -82,19 +82,16 @@ create_postgresql_conf () {
     local archive_mode="on"
     local archive_command="wal-g wal-push %p --pghost=/var/run/postgresql/"
     local primary_conninfo="host=""$MASTER_HOST_IP"" port=""$MASTER_HOST_PORT"" user=""$REPLICATOR_USER"" password=""$REPLICATOR_PASSWORD"
-    local recovery_target_time="$RECOVERY_TARGET_TIME"
     local restore_command="wal-g wal-fetch %f %p --pghost=/var/run/postgresql/ --walg-s3-prefix s3://""$AWS_S3_WALG_BUCKET_NAME""/""$BACKUP_HOST_IP"
   else
     local archive_mode="off"
     local archive_command=""
     local primary_conninfo=""
-    local recovery_target_time=""
     local restore_command=""
   fi
 
   escaped_archive_command=$(escape_string "$archive_command")
   escaped_primary_conninfo=$(escape_string "$primary_conninfo")
-  escaped_recovery_target_time=$(escape_string "$recovery_target_time")
   escaped_restore_command=$(escape_string "$restore_command")
 
   sed -i "s/##archive_command##/$escaped_archive_command/g" /etc/postgresql/12/main/postgresql.conf
@@ -105,7 +102,6 @@ create_postgresql_conf () {
   sed -i "s/##max_wal_senders##/$calculated_max_wal_senders/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##primary_conninfo##/$escaped_primary_conninfo/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##promote_trigger_file##/$escaped_promote_trigger_file/g" /etc/postgresql/12/main/postgresql.conf
-  sed -i "s/##recovery_target_time##/$escaped_recovery_target_time/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##restore_command##/$escaped_restore_command/g" /etc/postgresql/12/main/postgresql.conf
   sed -i "s/##shared_buffers##/$calculated_shared_buffers/g" /etc/postgresql/12/main/postgresql.conf
 }

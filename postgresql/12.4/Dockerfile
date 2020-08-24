@@ -41,44 +41,57 @@
 # - Set the failover ip to the master server
 # - Go to the slave server and do "docker exec -it postgresql_slave bash"
 # - Run "wal-g backup-push "$DATA_DIRECTORY" --pghost="/var/run/postgresql" --walg-s3-prefix=s3://tds-database-backups/"$HOST_IP""
-# - "sudo systemctl disable postgresql_slave && sudo systemctl stop postgresql_slave"
+# - Run "sudo systemctl disable postgresql_slave && sudo systemctl stop postgresql_slave && docker rm -v postgresql_slave"
 # - Go to the master server and follow "DATA RECOVERY USING WAL-G"
 # - When everything is up and running follow "SLAVE SERVER THAT IS OUT OF SYNC" to reinstate the slave server
+# - Remove S3 wal-g data from S3 for the slave server.
 # - Everything is back to normal
 #
 #
 # DATA RECOVERY USING WAL-G (WRITTEN FOR MASTER)
-# - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master && sudo systemctl stop postgresql_master"
+# - Make sure PostgreSQL container is not running, "sudo systemctl disable postgresql_master && sudo systemctl stop postgresql_master && docker rm -v postgresql_master"
 # - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_master/data"
 # - Create the data directory again "sudo mkdir -m 700 /var/lib/data/container_data/postgresql_master/data"
 # - Give the data directory the right ownership and permissions "sudo chown -R 5432:5432 /var/lib/data/container_data/postgresql_master/data"
 # - Start a container to execute backup commands:
-#    /usr/bin/docker run \
-#    -it --rm \
-#    -e "AWS_ACCESS_KEY_ID=[access key]" \
-#    -e "AWS_REGION=[region]" \
-#    -e "AWS_S3_WALG_BUCKET_NAME=[bucket name]" \
-#    -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
-#    -e "BACKUP_HOST_IP=[slave host ip]" \
-#    -e "DATA_DIRECTORY=/home/postgres/data/" \
-#    -e "HOST_IP=[host ip]" \
-#    -e "MAX_CONNECTIONS=500" \
-#    -e "MAX_REPLICATION_SLOTS=3" \
-#    -e "MAX_WAL_SENDERS=5" \
-#    -e "ROLE=master" \
-#    -e "SHARED_BUFFERS=16" \
-#    -v /var/lib/data/container_data/postgresql_master/data:/home/postgres/data/ \
-#    --entrypoint=bash \
-#    thedutchselection/postgresql:12.4
+#     /usr/bin/docker run \
+#     -it --rm \
+#     -e "AWS_ACCESS_KEY_ID=[access key]" \
+#     -e "AWS_REGION=[region]" \
+#     -e "AWS_S3_WALG_BUCKET_NAME=[bucket name]" \
+#     -e "AWS_SECRET_ACCESS_KEY=[aws secret access key]" \
+#     -e "BACKUP_HOST_IP=[slave host ip]" \
+#     -e "DATA_DIRECTORY=/home/postgres/data/" \
+#     -e "HOST_IP=[host ip]" \
+#     -e "ROLE=master" \
+#     -v /var/lib/data/container_data/postgresql_master/data:/home/postgres/data/ \
+#     --entrypoint=bash \
+#     thedutchselection/postgresql:12.4
 # If recovering from slave:
 # - Run "wal-g --walg-s3-prefix=s3://tds-database-backups/"$BACKUP_HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
 # If recovering from master:
 # - Run "wal-g --walg-s3-prefix=s3://tds-database-backups/"$HOST_IP" backup-fetch "$DATA_DIRECTORY" LATEST" (you can also change LATEST to a backup name ie. base_0000000200000001000000FF_00000040)
-# - Now edit /etc/postgresql/12/main/postgresql.conf
+# - Copy the postgresql_template.conf to postgresql.conf "cp -p /etc/postgresql/12/main/postgresql_template.conf /etc/postgresql/12/main/postgresql.conf"
+# - Edit this file with nano and replace all ## value:
+#     data_directory = '/home/postgres/data/'
+#     max_connections = 500
+#     shared_buffers = 16GB
+#     archive_mode = off
+#     # archive_command
+#     restore_command = 'wal-g wal-fetch %f %p --pghost=/var/run/postgresql/ --walg-s3-prefix s3://[bucket name]/[ip of the host you want to restore from]'
+#     recovery_target = 'immediate'
+#     recovery_target_time = '' <-- only if doing a point in time recovery. Can contain something like '2016-02-19 15:50:00 GMT'
+#     # max_wal_senders
+#     # max_replication_slots
+#     # primary_conninfo
+#     # promote_trigger_file
+#     hot_standby = off
 # - Run "touch "$DATA_DIRECTORY""recovery.signal""
-# - If you want to restore to a specific point in time (else latest will be used) do "echo "recovery_target_time = '2016-02-19 15:50:00 GMT'" >> "$DATA_DIRECTORY""recovery.conf""
+# - Run "/usr/lib/postgresql/12/bin/postgres --config-file=etc/postgresql/12/main/postgresql.conf"
+# - This process should stop when recovery is done.
+# - Run "rm "$DATA_DIRECTORY""recovery.signal""
 # - Exit this container.
-# - Remove S3 wal-g data for this PostgreSQL.
+# - Remove S3 wal-g data from S3 for this PostgreSQL.
 # - Start PostgreSQL "sudo systemctl enable /etc/systemd/user/postgresql_master.service && sudo systemctl start postgresql_master" and everything should run fine.
 #
 #
@@ -90,11 +103,11 @@
 #
 #
 # SLAVE SERVER THAT IS OUT OF SYNC
-# - Make sure PostgreSQL slave container is not running, "sudo systemctl disable postgresql_slave", "sudo systemctl stop postgresql_slave"
+# - Make sure PostgreSQL slave container is not running, "sudo systemctl disable postgresql_slave && sudo systemctl stop postgresql_slave && docker rm -v postgresql_slave"
 # - Throw away current data directory "sudo rm -rf /var/lib/data/container_data/postgresql_slave/data"
 # - Create the data directory again "sudo mkdir -m 700 /var/lib/data/container_data/postgresql_slave/data"
 # - Give the data directory the right ownership and permissions "sudo chown -R 5432:5432 /var/lib/data/container_data/postgresql_slave/data"
-# - Start the PostgreSQL slave container again "sudo systemctl enable /etc/systemd/user/postgresql_slave.service", "sudo systemctl start postgresql_slave"
+# - Start the PostgreSQL slave container again "sudo systemctl enable /etc/systemd/user/postgresql_slave.service && sudo systemctl start postgresql_slave"
 
 FROM thedutchselection/debian:10.4
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

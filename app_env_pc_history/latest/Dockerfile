@@ -25,7 +25,7 @@ RUN \
   apt-get install -yq libfontconfig && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \
-  apt-get install -yq postgresql-client-9.6 && \
+  apt-get install -yq postgresql-client-12 && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster

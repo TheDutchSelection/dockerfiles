@@ -1,10 +1,6 @@
-# NAME: Environment for application Beladvies.nl
+# NAME: Environment for application TDS Info Sites
 #
-# DESCRIPTION: Base for other the Beladvies.nl images. The gemfiles are a copy of the beladvies.nl
-# apps actual gemfiles. When the files are updated in the beladvies.nl app, you can update them here.
-# The more up to date they are, the faster the building process of the beladvies.nl app, but nothing
-# will break when they are not up to date. The beladvies.nl dockerfile will always run bundle install
-# on the latest files.
+# DESCRIPTION: B
 #
 # REQUIRED ENVS:
 #

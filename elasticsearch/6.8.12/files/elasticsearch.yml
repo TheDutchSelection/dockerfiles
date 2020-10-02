@@ -133,5 +133,5 @@ gateway.recover_after_time: 5m
 #
 # No automatic index creation
 #
-action.auto_create_index: false
+action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*"
 

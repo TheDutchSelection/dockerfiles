@@ -31,7 +31,7 @@
 FROM thedutchselection/java:15
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-ENV JAVA_HOME /usr/bin/
+ENV JAVA_HOME /usr/lib/jvm/jdk-15/bin/
 
 RUN \
   wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
@@ -53,6 +53,7 @@ RUN \
   chmod 660 /etc/elasticsearch/jvm.options && \
   chmod 660 /etc/elasticsearch/log4j2.properties && \
   chmod +x /usr/local/bin/run.sh && \
+  chown elasticsearch:elasticsearch /etc/elasticsearch && \
   chown root:elasticsearch /etc/elasticsearch/* && \
   chown elasticsearch:elasticsearch /usr/local/bin/*
 

@@ -27,12 +27,6 @@
 # ES_JAVA_OPTS (ie. "-Xms2g -Xmx2g", to set heap size to 2GB, max heap size on a node is roughly 50% of all memory, but never larger than 30.5g)
 #
 # OTHER:
-# To upgrade nodes, first disable shard reallocation:
-# curl -XPUT localhost:9200/_cluster/settings -d '{"transient":{"cluster.routing.allocation.enable":"none"}}'
-# Then shutdown node, upgrade, confirm it joins the cluster, reenable shard reallocation:
-# curl -XPUT localhost:9200/_cluster/settings -d '{"transient":{"cluster.routing.allocation.enable":"all"}}'
-# Observe that all shards are properly allocated on all nodes. Balancing may take some time. Repeat this process for all
-# remaining nodes.
 
 FROM thedutchselection/java:15
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
@@ -45,21 +39,23 @@ RUN \
   apt-get update && \
   apt-get install -yq apt-transport-https && \
   useradd -m -u 9200 elasticsearch && \
-  apt-get install -yq elasticsearch
+  apt-get install -yq elasticsearch=6.8.12 && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD files/elasticsearch.yml /usr/local/bin/elasticsearch/config/
-ADD files/jvm.options /usr/local/bin/elasticsearch/config/
-ADD files/log4j2.properties /usr/local/bin/elasticsearch/config/
+ADD files/elasticsearch.yml /etc/elasticsearch/
+ADD files/jvm.options /etc/elasticsearch/
+ADD files/log4j2.properties /etc/elasticsearch/
 ADD files/scripts /usr/local/bin
 
 RUN \
-  chmod 640 /usr/local/bin/elasticsearch/config/elasticsearch.yml && \
-  chmod 640 /usr/local/bin/elasticsearch/config/jvm.options && \
-  chmod 640 /usr/local/bin/elasticsearch/config/log4j2.properties && \
+  chmod 660 /etc/elasticsearch/elasticsearch.yml && \
+  chmod 660 /etc/elasticsearch/jvm.options && \
+  chmod 660 /etc/elasticsearch/log4j2.properties && \
   chmod +x /usr/local/bin/run.sh && \
-  chown -R elastic:elastic /usr/local/bin/elasticsearch && \
-  chown elastic:elastic /usr/local/bin/*
+  chown root:elasticsearch /etc/elasticsearch/* && \
+  chown elasticsearch:elasticsearch /usr/local/bin/*
 
-USER elastic
+USER elasticsearch
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run.sh"]

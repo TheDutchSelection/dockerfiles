@@ -52,7 +52,7 @@ create_config_file () {
   sed -i "s/##unicast_hosts##/$unicast_hosts/g" "$elasticsearch_config_file"
 }
 
-elasticsearch_config_file="/usr/local/bin/elasticsearch/config/elasticsearch.yml"
+elasticsearch_config_file="/etc/elasticsearch/elasticsearch.yml"
 
 echo "creating persistant directories..."
 mkdir -p "$PATH_DATA"

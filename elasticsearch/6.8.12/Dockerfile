@@ -31,7 +31,7 @@
 FROM thedutchselection/java:15
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-ENV JAVA_HOME /usr/lib/jvm/jdk-15/bin/
+ENV JAVA_HOME /usr/lib/jvm/jdk-15
 
 RUN \
   wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \

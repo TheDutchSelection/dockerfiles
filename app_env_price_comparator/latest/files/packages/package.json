@@ -12,16 +12,13 @@
     "jquery": "3.5.1",
     "popper.js": "1.16.1",
     "query-string": "6.13.6",
-    "spectrum-colorpicker": "1.8.1",
-    "spinkit": "1.2.5"
+    "spectrum-colorpicker": "1.8.1"
   },
   "version": "0.1.0",
   "devDependencies": {
     "webpack-dev-server": "^3.11.0"
   },
   "comments": {
-    "dependencies": {
-
-    }
+    "dependencies": {}
   }
 }

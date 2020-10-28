@@ -33,6 +33,13 @@ RUN \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
+RUN \
+  wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+  apt update && \
+  apt install -yq google-chrome-stable && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  
 WORKDIR /tmp
 
 ADD files/gemfiles/Gemfile /tmp/Gemfile

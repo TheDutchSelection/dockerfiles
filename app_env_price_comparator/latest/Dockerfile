@@ -29,8 +29,6 @@ RUN \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   useradd -m -u 6666 appmaster
 
 WORKDIR /tmp
@@ -38,7 +36,8 @@ WORKDIR /tmp
 RUN \
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
   apt install ./google-chrome-stable_current_amd64.deb && \
-  rm -rf /tmp/*
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ADD files/gemfiles/Gemfile /tmp/Gemfile
 ADD files/gemfiles/Gemfile.lock /tmp/Gemfile.lock

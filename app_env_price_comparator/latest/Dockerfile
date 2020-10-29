@@ -29,7 +29,9 @@ RUN \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
-  useradd -m -u 6666 appmaster
+  useradd -m -u 6666 appmaster && \
+  mkdir /home/appmaster/application && \
+  chown -R appmaster:appmaster /home/appmaster/application
 
 WORKDIR /tmp
 
@@ -39,13 +41,15 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD files/gemfiles/Gemfile /tmp/Gemfile
-ADD files/gemfiles/Gemfile.lock /tmp/Gemfile.lock
+WORKDIR /home/appmaster/application
+
+ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/application/Gemfile
+ADD --chown=appmaster:appmaster files/gemfiles/Gemfile.lock /home/appmaster/application/Gemfile.lock
 
 RUN bundle install
 
-ADD files/packages/package.json /tmp/package.json
-ADD files/packages/yarn.lock /tmp/yarn.lock
+ADD --chown=appmaster:appmaster files/packages/package.json /home/appmaster/application/package.json
+ADD --chown=appmaster:appmaster files/packages/yarn.lock /home/appmaster/application/yarn.lock
 
 USER appmaster
 

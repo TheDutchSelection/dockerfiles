@@ -15,12 +15,14 @@ RUN \
   apk update && \
   apk add bash && \
   apk add nodejs && \
-  apk add yarn
+  apk add yarn && \
+  mkdir /home/appmaster/application && \
+  chown -R appmaster:appmaster /home/appmaster/application
 
-WORKDIR /tmp
+WORKDIR /home/appmaster/application
 
-ADD files/packages/package.json /tmp/package.json
-ADD files/packages/yarn.lock /tmp/yarn.lock
+ADD --chown=appmaster:appmaster files/packages/package.json /home/appmaster/application/package.json
+ADD --chown=appmaster:appmaster files/packages/yarn.lock /home/appmaster/application/yarn.lock
 
 USER appmaster
 

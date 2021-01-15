@@ -1,0 +1,17 @@
+{
+  "name": "wr_core",
+  "private": true,
+  "dependencies": {
+    "tds-common-lib": "git+https://github.com/TheDutchSelection/tds_common_lib.git"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.1"
+  },
+  "comments": {
+    "dependencies": {
+      "tds-common-lib-development": "file:../tds_common_lib",
+      "tds-common-lib-production": "git+https://github.com/TheDutchSelection/tds_common_lib.git"
+    }
+  }
+}

@@ -40,6 +40,7 @@ RUN \
 WORKDIR /home/appmaster/application
 
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/application/Gemfile
+ADD --chown=appmaster:appmaster files/gemfiles/tds_common_lib.gemspec /home/appmaster/application/tds_common_lib.gemspec
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile.lock /home/appmaster/application/Gemfile.lock
 
 RUN bundle install

@@ -26,7 +26,7 @@ RUN \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
   useradd -m -u 6666 appmaster && \
-  mkdir -p /home/appmaster/application/tds_common_lib && \
+  mkdir -p /home/appmaster/application/lib/tds_common_lib && \
   chown -R appmaster:appmaster /home/appmaster/application
 
 WORKDIR /tmp
@@ -41,7 +41,7 @@ WORKDIR /home/appmaster/application
 
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/application/Gemfile
 ADD --chown=appmaster:appmaster files/gemfiles/tds_common_lib.gemspec /home/appmaster/application/tds_common_lib.gemspec
-ADD --chown=appmaster:appmaster files/gemfiles/version.rb /home/appmaster/application/tds_common_lib/version.rb
+ADD --chown=appmaster:appmaster files/gemfiles/version.rb /home/appmaster/application/lib/tds_common_lib/version.rb
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile.lock /home/appmaster/application/Gemfile.lock
 
 RUN bundle install

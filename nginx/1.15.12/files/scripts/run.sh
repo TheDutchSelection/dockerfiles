@@ -50,6 +50,15 @@ read -r -d '' reverse_proxy_server_base << EOM || true
       add_header Cache-Control public;
     }
 
+    location ^~ /cable {
+      proxy_pass http://##app##;
+      proxy_http_version 1.1;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+    }
+
     ##redirects##
 
     try_files \$uri/index.html \$uri @##app##;

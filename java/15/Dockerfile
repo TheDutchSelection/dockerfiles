@@ -1,4 +1,4 @@
-# NAME: Java 9
+# NAME: Java 15
 #
 # DESCRIPTION: Base for other images using Java.
 #

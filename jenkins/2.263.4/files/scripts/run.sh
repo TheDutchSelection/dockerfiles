@@ -23,5 +23,5 @@ groupmod -g "$host_docker_gid" docker
 
 
 echo "starting jenkins..."
-su jenkins -c "java -jar /opt/jenkins/jenkins.war --httpPort=8080 --enable-future-java" &
+su jenkins -c "java -jar /opt/jenkins/jenkins.war --httpPort=8080" &
 wait

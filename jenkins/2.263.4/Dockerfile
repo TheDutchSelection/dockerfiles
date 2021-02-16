@@ -16,7 +16,7 @@
 # mount the docker.sock from the host into this container for jenkins to be able to run docker commands, ie.
 # -v /var/run/docker.sock:/var/run/docker.sock.
 
-FROM thedutchselection/java:11
+FROM thedutchselection/java:8.stretch
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
@@ -24,7 +24,6 @@ RUN \
   useradd -g docker -m -u 900 docker
 
 RUN \
-  echo "deb http://http.debian.net/debian buster-backports main" > /etc/apt/sources.list.d/backports.list && \
   apt-get update && \
   apt-get install -yq apt-transport-https && \
   apt-get install -yq ca-certificates && \
@@ -34,7 +33,7 @@ RUN \
   curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
   add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
   apt-get update && \
-  apt-get install -yq docker-ce=5:20.10.3~3-0~debian-buster && \
+  apt-get install -yq docker-ce=5:19.03.15~3-0~debian-stretch && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

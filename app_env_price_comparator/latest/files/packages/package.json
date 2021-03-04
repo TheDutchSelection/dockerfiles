@@ -2,23 +2,16 @@
   "name": "price_comparator",
   "private": true,
   "dependencies": {
-    "@rails/activestorage": "^6.0.0",
-    "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "5.2.1",
-    "bootstrap": "4.5.3",
-    "bootstrap-select": "1.13.18",
-    "codemirror": "5.58.1",
-    "flag-icon-css": "3.5.0",
-    "jquery": "3.5.1",
-    "popper.js": "1.16.1",
-    "query-string": "6.13.6",
-    "spectrum-colorpicker": "1.8.1"
+    "tds-common-lib": "git+https://github.com/TheDutchSelection/tds_common_lib.git"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.1"
   },
   "comments": {
-    "dependencies": {}
+    "dependencies": {
+      "tds-common-lib-development": "file:../tds_common_lib",
+      "tds-common-lib-production": "git+https://github.com/TheDutchSelection/tds_common_lib.git"
+    }
   }
 }

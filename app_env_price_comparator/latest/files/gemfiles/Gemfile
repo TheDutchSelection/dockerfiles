@@ -3,62 +3,98 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.1'
 
-gem 'rails', '6.0.3.4'
+gem 'rails', '6.1.3'
+gem 'tzinfo-data', '>= 1.2020.6'  # Don't rely on OSX/Linux timezone data
 
-gem 'abanalyzer', '1.0.0'
-gem 'active_model_serializers', '0.10.10'
-gem 'active_scheduler', '0.7.0'
-gem 'autoprefixer-rails', '10.0.1.0'
-gem 'aws-sdk-s3', '1.83.0'
-gem 'babel-transpiler', '0.7.0'
-gem 'bootstrap_form', '4.5.0'
-gem 'bootstrap4-kaminari-views', '1.0.1'
-# gem 'bootstrap-sass', '3.1.1.0' # should be removed when iframe is completely gone
-gem 'bourbon', '4.3.4' # should be removed when iframe is completely gone
-gem 'breadcrumbs_on_rails', '4.0.0'
-gem 'coffee-rails', '5.0.0'
-gem 'devise', '4.7.3'
+# Drivers
 gem 'elasticsearch', '6.8.2'
-gem 'faraday', '1.0.1'
-gem 'figaro', '1.2.0'
-gem 'fog-aws', '3.6.7'
 gem 'hiredis', '0.6.3'
 gem 'image_processing', '1.12.0'
-gem 'jquery-rails', '4.4.0'
-gem 'kaminari', '1.2.1'
 gem 'mini_magick', '4.10.1'
-gem 'nokogiri', '1.10.10'
-gem 'octicons_helper', '3.0.1' # should be removed when iframe is completely gone
-gem 'paperclip', '6.1.0' # deprecated, move to action storage
-gem 'paperclip-compression', '1.1.1' # deprecated, move to action storage
 gem 'pg', '1.2.3'
-gem 'puma', '5.0.2'
-gem 'rack-cors', '1.1.1', :require => 'rack/cors'
-gem 'redis', '4.2.2', require: ["redis", "redis/connection/hiredis"]
-gem 'resque', '1.27.4'
-gem 'resque-pool', '0.7.1'
-gem 'resque-scheduler', '4.4.0'
-gem 'sass-rails', '6.0.0'
-gem 'savon', '2.12.1'
+gem 'redis', '4.2.5', require: ['redis', 'redis/connection/hiredis']
 gem 'typhoeus', '1.4.0'
-gem 'uglifier', '4.2.0'
+
+# JavaScript and assets
+gem 'autoprefixer-rails', '10.2.0.0'
+gem 'bootstrap_form', '4.5.0'
+gem 'bootstrap4-kaminari-views', '1.0.1'
+gem 'sass-rails', '6.0.0'
 gem 'webpacker', '5.2.1'
 
+# Jobs
+gem 'active_scheduler', '0.7.0'
+gem 'resque', '2.0.0'
+gem 'resque-pool', github: 'nevans/resque-pool'
+gem 'resque-scheduler', '4.4.0'
+gem 'resque-web', require: 'resque_web'
+gem 'sinatra', github: 'sinatra/sinatra'
+
+# Logging/instrumentation
+# gem 'full_request_logger', github: 'basecamp/full_request_logger'
+
+# Monitoring
+gem 'easymon', '1.4.2'
+# gem 'sentry-raven', '3.1.1'
+
+# Profiling/troubleshooting
+gem 'rbtrace', '0.4.14'
+gem 'stackprof', '0.2.16'
+gem 'rack-mini-profiler', '2.3.0', require: false
+gem 'flamegraph', '0.9.5'
+
+# Security
+gem 'devise', '4.7.3'
+# gem 'rack-ratelimit', github: 'jeremy/rack-ratelimit'
+# gem 'rotp' <= 2FA
+gem 'webauthn'
+
+# Storage
+gem 'aws-sdk-s3', '1.83.0'
+gem 'carrierwave', '2.1.1'
+gem 'fog-aws', '3.6.7'
+gem 'paperclip', '6.1.0' # deprecated, move to other solution
+gem 'paperclip-compression', '1.1.1' # deprecated, move to other solution
+
+# Webserver
+gem 'puma', '5.0.2'
+
+# Other
+gem 'abanalyzer', '1.0.0'
+gem 'active_model_serializers', '0.10.12'
+gem 'breadcrumbs_on_rails', '4.0.0'
+gem 'faraday', '1.3.0'
+gem 'figaro', '1.2.0'
+gem 'hotwire-rails', '0.1.3'
+gem 'kaminari', '1.2.1'
+gem 'nokogiri', '1.11.1'
+gem 'rack-cors', '1.1.1', :require => 'rack/cors'
+gem 'savon', '2.12.1'
+# gem 'tds_common_lib', path: '../tds_common_lib'
+gem 'tds_common_lib', github: 'TheDutchSelection/tds_common_lib'
+# Need to pin this to 3.5.0 because savon doesn't work with any higher.
+# Should start working again when this issue is solved:
+# https://github.com/savonrb/savon/issues/935
+# After that remove this wasabi line.
+gem 'wasabi', '3.5.0'
+
 group :development, :test do
-  gem 'debase'
-  gem 'pry'
-  gem 'pry-remote'
-  # gem 'rack-mini-profiler', require: false
-  gem 'rack_session_access'
-  gem 'rubocop'
-  gem 'ruby-debug-ide'
-  gem 'ruby-prof'
+  gem 'byebug'
+  gem 'break'
+
+  # Code critics
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'scss_lint', require: false
+  gem 'brakeman', require: false
+  gem 'benchmark-ips', require: false
 end
 
 group :development do
-  gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'listen', '~> 3.1.5'
+  gem 'faker'
+  gem 'listen'
+  gem 'web-console'
 end
 
 group :test do
@@ -68,7 +104,8 @@ group :test do
   gem 'cuprite'
   gem 'rails-controller-testing'
   gem 'rubocop-rspec'
-  gem 'rspec-rails', '4.0.1'
+  gem 'rspec-rails', '4.0.2'
+  gem 'rspec-retry', '0.6.2'
   gem 'rspec-wait'
   gem 'simplecov', :require => false
   gem 'timecop'

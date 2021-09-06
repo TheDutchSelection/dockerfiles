@@ -46,7 +46,9 @@ WORKDIR /tmp
 ADD files/gemfiles/Gemfile /tmp/Gemfile
 ADD files/gemfiles/Gemfile.lock /tmp/Gemfile.lock
 
-RUN bundle install
+RUN \
+  gem install bundler:2.1.4 && \
+  bundle install
 
 ADD files/packages/package.json /tmp/package.json
 ADD files/packages/yarn.lock /tmp/yarn.lock

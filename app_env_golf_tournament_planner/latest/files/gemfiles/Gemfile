@@ -27,14 +27,6 @@ gem 'resque-scheduler', '4.4.0'
 gem 'sass-rails', '6.0.0'
 gem 'webpacker', '4.2.2'
 
-group :development, :test do
-  gem 'debase'
-  gem 'pry'
-  gem 'pry-remote'
-  gem 'rack_session_access'
-  gem 'ruby-debug-ide'
-end
-
 group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'

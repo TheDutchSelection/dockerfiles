@@ -19,10 +19,12 @@ RUN \
   curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
   apt-get install -yq nodejs && \
   apt-get install -yq libcairo2-dev && \
+  apt-get install -yq libgirepository1.0-dev && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq imagemagick && \
   apt-get install -yq libfontconfig && \
   apt-get install -yq libcurl4-gnutls-dev && \
+  apt-get install -yq libpoppler-glib-dev && \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \

@@ -25,6 +25,7 @@ RUN \
   apt-get install -yq libfontconfig && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq libpoppler-glib-dev && \
+  apt-get install -yq install mupdf-tools && \
   apt-get install -yq procps && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \

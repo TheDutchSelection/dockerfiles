@@ -9,24 +9,26 @@
 FROM thedutchselection/ruby:2.7.1
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
-RUN  wget --no-check-certificate -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-      echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
-      wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-      echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-      apt-get update && \
-      apt-get install -yq curl && \
-      curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
-      apt-get install -yq nodejs && \
-      apt-get install -yq libpq-dev && \
-      apt-get install -yq imagemagick && \
-      apt-get install -yq libfontconfig && \
-      apt-get install -yq libcurl4-gnutls-dev && \
-      apt-get install -yq procps && \
-      apt-get install -yq postgresql-client-12 && \
-      apt-get install -yq yarn && \
-      useradd -m -u 6666 appmaster && \
-      mkdir /home/appmaster/application && \
-      chown -R appmaster:appmaster /home/appmaster/application
+RUN \
+  wget --no-check-certificate -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+  echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+  wget --no-check-certificate -qO - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
+  apt-get update && \
+  apt-get install -yq libgnutls30 && \
+  apt-get install -yq curl && \
+  curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+  apt-get install -yq nodejs && \
+  apt-get install -yq libpq-dev && \
+  apt-get install -yq imagemagick && \
+  apt-get install -yq libfontconfig && \
+  apt-get install -yq libcurl4-gnutls-dev && \
+  apt-get install -yq procps && \
+  apt-get install -yq postgresql-client-12 && \
+  apt-get install -yq yarn && \
+  useradd -m -u 6666 appmaster && \
+  mkdir /home/appmaster/application && \
+  chown -R appmaster:appmaster /home/appmaster/application
 
 WORKDIR /tmp
 

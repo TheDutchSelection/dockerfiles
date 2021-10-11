@@ -1,6 +1,30 @@
 #!/bin/bash
 set -e
 
+create_initial_master_nodes () {
+  local envs=$(env)
+  local envs=$(echo "$envs" | sort)
+
+  local initial_master_nodes="["
+  while read -r env; do
+    local node_name=""
+    if [[ "$env" == "ELASTICSEARCH_MASTER_"* && "$env" == *"_NODE_NAME="* ]]; then
+      local node_name=$(echo "$env" | awk -F'=' '{print $2}')
+    fi
+
+    if [[ ! -z "$node_name" ]]; then
+      if [[ "$initial_master_nodes" == "[" ]]; then
+        local initial_master_nodes="$initial_master_nodes\"$node_name\""
+      else
+        local initial_master_nodes="$initial_master_nodes, \"$node_name\""
+      fi
+    fi
+
+  done <<< "$envs"
+
+  echo "$initial_master_nodes""]"
+}
+
 create_unicast_hosts () {
   local envs=$(env)
   local envs=$(echo "$envs" | sort)
@@ -48,11 +72,13 @@ create_config_file () {
   local elasticsearch_config_file="$1"
 
   local unicast_hosts=$(create_unicast_hosts)
+  local initial_master_nodes=$(create_initial_master_nodes)
 
   sed -i "s/##unicast_hosts##/$unicast_hosts/g" "$elasticsearch_config_file"
+  sed -i "s/##initial_master_nodes##/$initial_master_nodes/g" "$elasticsearch_config_file"
 }
 
-elasticsearch_config_file="/usr/local/bin/elasticsearch/config/elasticsearch.yml"
+elasticsearch_config_file="/etc/elasticsearch/elasticsearch.yml"
 
 echo "creating persistant directories..."
 mkdir -p "$PATH_DATA"
@@ -62,4 +88,4 @@ echo "creating $elasticsearch_config_file..."
 create_config_file "$elasticsearch_config_file"
 
 echo "starting elasticsearch..."
-exec /usr/local/bin/elasticsearch/bin/elasticsearch
+exec /usr/share/elasticsearch/bin/elasticsearch

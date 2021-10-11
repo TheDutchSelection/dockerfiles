@@ -74,7 +74,8 @@ bootstrap.memory_lock: true
 #
 # ---------------------------------- Network -----------------------------------
 #
-# Set the bind address to a specific IP (IPv4 or IPv6):
+# By default Elasticsearch is only accessible on localhost. Set a different
+# address here to expose this node on the network:
 #
 network.host: ${HOST}
 #
@@ -83,7 +84,8 @@ network.host: ${HOST}
 #
 network.publish_host: ${PUBLISH_HOST}
 #
-# Set a custom port for HTTP:
+# By default Elasticsearch listens for HTTP traffic on the first free port it
+# finds starting at 9200. Set a specific HTTP port here:
 #
 http.port: ${HTTP_PORT}
 #
@@ -98,14 +100,14 @@ transport.tcp.port: ${TRANSPORT_PORT}
 #
 # --------------------------------- Discovery ----------------------------------
 #
-# Pass an initial list of hosts to perform discovery when new node is started:
+# Pass an initial list of hosts to perform discovery when this node is started:
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
-discovery.zen.ping.unicast.hosts: ##unicast_hosts##
+discovery.seed_hosts: ##unicast_hosts##
 #
-# Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
+# Bootstrap the cluster using an initial set of master-eligible nodes:
 #
-discovery.zen.minimum_master_nodes: ${MINIMUM_MASTER_NODES}
+cluster.initial_master_nodes::  ##initial_master_nodes##
 #
 # For more information, consult the zen discovery module documentation.
 #
@@ -129,9 +131,14 @@ gateway.recover_after_time: 5m
 #
 # Require explicit names when deleting indices:
 #
-#action.destructive_requires_name: true
+action.destructive_requires_name: ${REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES}
 #
 # No automatic index creation
 #
-action.auto_create_index: false
+action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*"
+#
+# Added by GM, default is 10000, which can be problematic
+#
+search.max_buckets: 999999999
+#
 

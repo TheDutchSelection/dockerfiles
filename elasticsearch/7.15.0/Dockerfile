@@ -4,14 +4,12 @@
 #
 # REQUIRED ENVS:
 # CLUSTER_NAME (ie. "tds_nl")
-# EXPECTED_NUMBER_OF_NODES (ie. "6")
 # HOST (ie. "10.0.4.3")
 # NODE_DATA (true or false)
 # NODE_INGEST (true or false)
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_MASTER (true or false)
 # MAX_LOCAL_STORAGE_NODES (ie. "1")
-# MINIMUM_NUMBER_OF_NODES (ie. "4")
 # PATH_DATA (ie. "/home/elastic/data/data")
 # PATH_LOGS (ie. "/home/elastic/data/logs")
 # PATH_REPO (ie. "/home/elastic/data/backups")

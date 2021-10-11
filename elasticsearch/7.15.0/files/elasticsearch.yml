@@ -94,7 +94,7 @@ http.max_content_length: 1gb
 #
 # Set a custom port for the node to node communication (9300 by default):
 #
-transport.tcp.port: ${TRANSPORT_PORT}
+transport.port: ${TRANSPORT_PORT}
 #
 # For more information, consult the network module documentation.
 #
@@ -107,19 +107,11 @@ discovery.seed_hosts: ##unicast_hosts##
 #
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
-cluster.initial_master_nodes::  ##initial_master_nodes##
+cluster.initial_master_nodes:  ##initial_master_nodes##
 #
 # For more information, consult the zen discovery module documentation.
 #
 # ---------------------------------- Gateway -----------------------------------
-#
-# Block initial recovery after a full cluster restart until N nodes are started:
-#
-gateway.recover_after_nodes: ${MINIMUM_NUMBER_OF_NODES}
-#
-# Expected number of nodes for the cluster
-#
-gateway.expected_nodes: ${EXPECTED_NUMBER_OF_NODES}
 #
 # Waiting time before starting recovery
 #

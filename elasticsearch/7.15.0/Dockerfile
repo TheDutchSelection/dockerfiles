@@ -14,6 +14,7 @@
 # PATH_LOGS (ie. "/home/elastic/data/logs")
 # PATH_REPO (ie. "/home/elastic/data/backups")
 # PUBLISH_HOST (ie. "10.0.4.3")
+# RECOVERY_AFTER_TIME (ie. "5m")
 # REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES (ie. true, false for testing)
 # TRANSPORT_PORT (ie. "9300")
 # HTTP_PORT  (ie. "9200")

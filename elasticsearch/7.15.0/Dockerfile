@@ -4,6 +4,7 @@
 #
 # REQUIRED ENVS:
 # CLUSTER_NAME (ie. "tds_nl")
+# DISCOVERY_TYPE (single-node or multiple-node)
 # HOST (ie. "10.0.4.3")
 # NODE_DATA (true or false)
 # NODE_INGEST (true or false)
@@ -16,6 +17,7 @@
 # PUBLISH_HOST (ie. "10.0.4.3")
 # RECOVERY_AFTER_TIME (ie. "5m")
 # REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES (ie. true, false for testing)
+# SECURITY_TRANSPORT_SSL_ENABLED (true or false, must be true in production)
 # TRANSPORT_PORT (ie. "9300")
 # HTTP_PORT  (ie. "9200")
 #
@@ -25,6 +27,8 @@
 # ELASTICSEARCH_MASTER_[APP_ID]_HOST_PORT_PEER (ie. "9300")
 # ELASTICSEARCH_MASTER_[APP_ID]_NODE_NAME (ie. "doa3wrkprd004_master")
 # ES_JAVA_OPTS (ie. "-Xms2g -Xmx2g", to set heap size to 2GB, max heap size on a node is roughly 50% of all memory, but never larger than 30.5g)
+# SECURITY_TRANSPORT_SSL_KEYSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled)
+# SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled)
 #
 # OTHER:
 

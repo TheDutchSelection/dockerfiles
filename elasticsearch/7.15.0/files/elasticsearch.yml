@@ -105,6 +105,10 @@ transport.port: ${TRANSPORT_PORT}
 #
 discovery.seed_hosts: ##unicast_hosts##
 #
+# Discovery type
+#
+discovery.type: ${DISCOVERY_TYPE}
+#
 # Bootstrap the cluster using an initial set of master-eligible nodes:
 #
 cluster.initial_master_nodes:  ##initial_master_nodes##
@@ -119,6 +123,19 @@ gateway.recover_after_time: ${RECOVERY_AFTER_TIME}
 #
 # For more information, consult the gateway module documentation.
 #
+#
+# ---------------------------------- Security ----------------------------------
+#
+# Security needs to be enabled
+#
+xpack.security.enabled: true
+#
+xpack.security.transport.ssl.enabled: ${SECURITY_TRANSPORT_SSL_ENABLED}
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: ${SECURITY_TRANSPORT_SSL_KEYSTORE_PATH}
+xpack.security.transport.ssl.truststore.path: ${SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH}
+
 # ---------------------------------- Various -----------------------------------
 #
 # Require explicit names when deleting indices:
@@ -132,5 +149,3 @@ action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*"
 # Added by GM, default is 10000, which can be problematic
 #
 search.max_buckets: 999999999
-#
-

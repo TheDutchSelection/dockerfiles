@@ -2,27 +2,29 @@
 set -e
 
 create_initial_master_nodes () {
-  local envs=$(env)
-  local envs=$(echo "$envs" | sort)
+  if [[ "$DISCOVERY_TYPE" != "single-node" ]]; then
+    local envs=$(env)
+    local envs=$(echo "$envs" | sort)
 
-  local initial_master_nodes="["
-  while read -r env; do
-    local node_name=""
-    if [[ "$env" == "ELASTICSEARCH_MASTER_"* && "$env" == *"_NODE_NAME="* ]]; then
-      local node_name=$(echo "$env" | awk -F'=' '{print $2}')
-    fi
-
-    if [[ ! -z "$node_name" ]]; then
-      if [[ "$initial_master_nodes" == "[" ]]; then
-        local initial_master_nodes="$initial_master_nodes\"$node_name\""
-      else
-        local initial_master_nodes="$initial_master_nodes, \"$node_name\""
+    local initial_master_nodes="cluster.initial_master_nodes: ["
+    while read -r env; do
+      local node_name=""
+      if [[ "$env" == "ELASTICSEARCH_MASTER_"* && "$env" == *"_NODE_NAME="* ]]; then
+        local node_name=$(echo "$env" | awk -F'=' '{print $2}')
       fi
-    fi
 
-  done <<< "$envs"
+      if [[ ! -z "$node_name" ]]; then
+        if [[ "$initial_master_nodes" == "[" ]]; then
+          local initial_master_nodes="$initial_master_nodes\"$node_name\""
+        else
+          local initial_master_nodes="$initial_master_nodes, \"$node_name\""
+        fi
+      fi
 
-  echo "$initial_master_nodes""]"
+    done <<< "$envs"
+
+    echo "$initial_master_nodes""]"
+  fi
 }
 
 create_unicast_hosts () {
@@ -78,6 +80,27 @@ create_config_file () {
   sed -i "s/##initial_master_nodes##/$initial_master_nodes/g" "$elasticsearch_config_file"
 }
 
+create_superuser () {
+  set -e
+
+  local user_list=$(/usr/share/elasticsearch/bin/elasticsearch-users list)
+
+  if [[ ! -z "$SUPERUSER_USERNAME" && $user_list == "No users found" ]]; then
+    echo "creating superuser $SUPERUSER_USERNAME..."
+    /usr/share/elasticsearch/bin/elasticsearch-users useradd "$SUPERUSER_USERNAME" -p "$SUPERUSER_PASSWORD" -r "superuser"
+  fi
+}
+
+add_keys_to_keystore () {
+  set -e
+
+  if [[ ! -z "$TRANSPORT_PRIVATE_KEY_PASSWORD" ]]; then
+      echo "add transport private key password to keystore..."
+      echo "$TRANSPORT_PRIVATE_KEY_PASSWORD" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f -x xpack.security.transport.ssl.keystore.secure_password
+      echo "$TRANSPORT_PRIVATE_KEY_PASSWORD" | /usr/share/elasticsearch/bin/elasticsearch-keystore add -f -x xpack.security.transport.ssl.truststore.secure_password
+    fi
+}
+
 elasticsearch_config_file="/etc/elasticsearch/elasticsearch.yml"
 
 echo "creating persistant directories..."
@@ -86,6 +109,10 @@ mkdir -p "$PATH_LOGS"
 
 echo "creating $elasticsearch_config_file..."
 create_config_file "$elasticsearch_config_file"
+
+create_superuser
+
+add_keys_to_keystore
 
 echo "starting elasticsearch..."
 exec /usr/share/elasticsearch/bin/elasticsearch

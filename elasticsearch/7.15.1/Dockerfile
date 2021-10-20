@@ -18,6 +18,8 @@
 # RECOVERY_AFTER_TIME (ie. "5m")
 # REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES (ie. true, false for testing)
 # SECURITY_TRANSPORT_SSL_ENABLED (true or false, must be true in production)
+# SECURITY_TRANSPORT_SSL_KEYSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled, but must be "" otherwise)
+# SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled, but must be "" otherwise)
 # SUPERUSER_USERNAME (ie. "superuser")
 # SUPERUSER_PASSWORD (ie. "abcdabcd1234")
 # TRANSPORT_PORT (ie. "9300")

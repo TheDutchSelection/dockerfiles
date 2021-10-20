@@ -137,8 +137,8 @@ xpack.security.authc.realms.file.file1.order: 0
 xpack.security.transport.ssl.enabled: ${SECURITY_TRANSPORT_SSL_ENABLED}
 xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.client_authentication: required
-xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
-xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+xpack.security.transport.ssl.keystore.path: ${SECURITY_TRANSPORT_SSL_KEYSTORE_PATH}
+xpack.security.transport.ssl.truststore.path: ${SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH}
 
 # ---------------------------------- Various -----------------------------------
 #

@@ -26,17 +26,9 @@ node.name: ${NODE_NAME}
 #
 # node.rack: r1
 #
-# Allow this node to be eligible as a master node (enabled by default):
+# Node roles:
 #
-node.master: ${NODE_MASTER}
-#
-# Allow this node to store data (enabled by default):
-#
-node.data: ${NODE_DATA}
-#
-# Allow this node to apply an ingest pipeline (enabled by default):
-#
-node.ingest: ${NODE_INGEST}
+node.roles: ${NODE_ROLES}
 #
 # Disable starting multiple nodes on a single system:
 #

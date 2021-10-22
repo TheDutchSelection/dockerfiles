@@ -14,7 +14,7 @@ create_initial_master_nodes () {
       fi
 
       if [[ ! -z "$node_name" ]]; then
-        if [[ "$initial_master_nodes" == "[" ]]; then
+        if [[ "$initial_master_nodes" == "cluster.initial_master_nodes: [" ]]; then
           local initial_master_nodes="$initial_master_nodes\"$node_name\""
         else
           local initial_master_nodes="$initial_master_nodes, \"$node_name\""

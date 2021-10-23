@@ -150,6 +150,10 @@ ingest.geoip.downloader.enabled: false
 #
 search.max_buckets: 999999999
 #
+# Default is 500, which can be problematic
+#
+search.max_open_scroll_context: 999999999
+#
 # Set license, otherwise can run in trial
 #
 xpack.license.self_generated.type: basic

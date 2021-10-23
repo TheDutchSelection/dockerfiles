@@ -146,10 +146,6 @@ action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*"
 #
 ingest.geoip.downloader.enabled: false
 #
-# Default is 65536, which can be problematic
-#
-index.max_terms_count: 999999999
-#
 # Default is 10000, which can be problematic
 #
 search.max_buckets: 999999999

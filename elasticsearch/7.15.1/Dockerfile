@@ -4,7 +4,7 @@
 #
 # REQUIRED ENVS:
 # CLUSTER_NAME (ie. "tds_nl")
-# DISCOVERY_TYPE (single-node or multiple-node)
+# DISCOVERY_TYPE ("single-node" or empty)
 # HOST (ie. "10.0.4.3")
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_ROLES (ie. "[master]" or "[data, ingest]")

@@ -14,8 +14,6 @@ RUN \
   echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
   wget --no-check-certificate -qO - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-  wget --no-check-certificate -qO - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
   apt-get update && \
   apt-get install -yq libgnutls30 && \
   apt-get install -yq curl && \
@@ -33,12 +31,17 @@ RUN \
   apt-get install -yq poppler-utils && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
-  apt-get install -yq  google-chrome-stable && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-  useradd -m -u 6666 appmaster
+  useradd -m -u 6666 appmaster && \
+  mkdir /home/appmaster/application && \
+  chown -R appmaster:appmaster /home/appmaster/application
 
 WORKDIR /tmp
+
+RUN \
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+  apt install -yq ./google-chrome-stable_current_amd64.deb && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /home/appmaster/application
 

@@ -2,18 +2,11 @@
   "name": "golf_tournament_planner",
   "private": true,
   "dependencies": {
-    "@rails/activestorage": "^6.0.0",
-    "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "^4.2.2",
-    "bootstrap": "4.4.1",
-    "bootstrap-select": "1.13.12",
-    "chosen-js": "1.8.7",
-    "copy-to-clipboard": "3.3.1",
-    "jquery": "3.4.1",
-    "popper.js": "1.16.0"
+    "tds-common-lib": "git+https://github.com/TheDutchSelection/tds_common_lib.git",
+    "copy-to-clipboard": "3.3.1"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.1"
   }
 }

@@ -37,26 +37,21 @@ RUN \
 
 WORKDIR /tmp
 
-ADD https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 /usr/local/share/
-
 RUN \
-  cd /usr/local/share && \
-  tar -xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-  rm /usr/local/share/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
-  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs && \
-  ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+  apt install -yq ./google-chrome-stable_current_amd64.deb && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /tmp
+WORKDIR /home/appmaster/application
 
-ADD files/gemfiles/Gemfile /tmp/Gemfile
-ADD files/gemfiles/Gemfile.lock /tmp/Gemfile.lock
+ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/application/Gemfile
+ADD --chown=appmaster:appmaster files/gemfiles/Gemfile.lock /home/appmaster/application/Gemfile.lock
 
-RUN \
-  gem install bundler:2.1.4 && \
-  bundle install
+RUN bundle install
 
-ADD files/packages/package.json /tmp/package.json
-ADD files/packages/yarn.lock /tmp/yarn.lock
+ADD --chown=appmaster:appmaster files/packages/package.json /home/appmaster/application/package.json
+ADD --chown=appmaster:appmaster files/packages/yarn.lock /home/appmaster/application/yarn.lock
 
 USER appmaster
 

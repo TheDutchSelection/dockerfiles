@@ -36,7 +36,7 @@ RUN \
   apk add zlib-dev && \
   apk add openssl-dev && \
   apk add musl && \
-  apk add libcrypto1.0 && \
+  apk add libcrypto1.1 && \
   apk add g++ && \
   apk add busybox && \
   rm /var/cache/apk/* && \

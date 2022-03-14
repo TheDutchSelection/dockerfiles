@@ -38,6 +38,7 @@ RUN \
   apk add musl && \
   apk add libcrypto1.1 && \
   apk add g++ && \
+  apk add libexecinfo-dev && \
   apk add busybox && \
   rm /var/cache/apk/* && \
   adduser -D -u 8080 haproxy

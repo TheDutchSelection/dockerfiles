@@ -167,7 +167,7 @@ create_backends () {
       eval app_health_check_path=\$$app_health_check_path_var
       local app_maxconn_var=${host_var/_PUBLIC_IP/_MAXCONN}
       eval app_maxconn=\$$app_maxconn_var
-      local app_user_list_var=${host_var/_PUBLIC_IP/}
+      local app_user_list_var=${host_var/_PUBLIC_IP/_USER_LIST}
       eval app_user_list=\$$app_user_list_var
 
       if [[ "$is_backup" == "1" ]]; then

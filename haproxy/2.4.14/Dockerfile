@@ -50,7 +50,7 @@ WORKDIR /tmp
 RUN \
   tar xvzf haproxy-2.4.14.tar.gz && \
   cd haproxy-2.4.14 && \
-  make TARGET=linux-glibc USE_PCRE=1 CPU=native USE_GETADDRINFO=1 USE_OPENSSL=1 USE_ZLIB=1 && \
+  make TARGET=linux-glibc USE_PCRE=1 CPU=native USE_BACKTRACE=0 USE_GETADDRINFO=1 USE_OPENSSL=1 USE_ZLIB=1 && \
   make install && \
   mkdir -p /var/run/haproxy && \
   rm -f /tmp/haproxy-2.4.14.tar.gz && \

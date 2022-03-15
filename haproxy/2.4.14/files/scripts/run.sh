@@ -224,7 +224,7 @@ create_user_lists () {
       # remove last 5 parts for NAME, ie. SPLASH_USER_LIST_USER_NAME_1
       local list_name=$(echo "$user_name_var" | awk -F'_' '{for(i = 1; i <= NF - 5; i++) printf "%s%s", $i, i == NF -5 ? "" : "_" }')
       local list_name=$(echo "$list_name" | awk '{print tolower($0)}')
-      local password_var=${user_name_var/_USER_NAME/_PASSWORD}
+      local password_var=${user_name_var/_USER_NAME/_USER_PASSWORD}
       eval password=\$$password_var
 
       # this works because the envs are alphabetically sorted

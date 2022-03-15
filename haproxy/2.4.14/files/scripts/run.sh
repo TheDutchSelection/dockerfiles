@@ -130,13 +130,15 @@ create_frontend () {
   set -e
   local haproxy_frontend_http="$1"
   local haproxy_frontend_https="$2"
-  local haproxy_frontend_internal_https="$3"
-  local haproxy_backends="$4"
+  local haproxy_frontend_internal_http="$3"
+  local haproxy_frontend_internal_https="$4"
+  local haproxy_backends="$5"
 
   local frontend_https_filters=$(frontend_http_filters "1" "WEB" "$haproxy_backends")
   local frontend_http_filters=$(frontend_http_filters "0" "WEB" "$haproxy_backends")
   local frontend_internal_https_filters=$(frontend_http_filters "1" "INTERNAL" "$haproxy_backends")
-  local frontend=$'\n'"$haproxy_frontend_http""$frontend_http_filters"$'\n'$'\n'"$haproxy_frontend_https""$frontend_https_filters"$'\n'$'\n'"$haproxy_frontend_internal_https""$frontend_internal_https_filters"
+  local frontend_internal_http_filters=$(frontend_http_filters "0" "INTERNAL" "$haproxy_backends")
+  local frontend=$'\n'"$haproxy_frontend_http""$frontend_http_filters"$'\n'$'\n'"$haproxy_frontend_https""$frontend_https_filters"$'\n'$'\n'"$haproxy_frontend_internal_http""$frontend_internal_http_filters"$'\n'$'\n'"$haproxy_frontend_internal_https""$frontend_internal_https_filters"
 
   echo "$frontend"
 }
@@ -255,7 +257,7 @@ create_config_file () {
   cat /dev/null > "$haproxy_cnf_file"
 
   local backends=$(create_backends)
-  local frontend=$(create_frontend "$haproxy_frontend_http" "$haproxy_frontend_https" "$haproxy_frontend_internal_https" "$backends")
+  local frontend=$(create_frontend "$haproxy_frontend_http" "$haproxy_frontend_https" "$haproxy_frontend_internal_http" "$haproxy_frontend_internal_https" "$backends")
   local haproxy_base=${haproxy_base//\#\#default_backend\#\#/"$DEFAULT_BACKEND"}
   local user_lists=$(create_user_lists)
 

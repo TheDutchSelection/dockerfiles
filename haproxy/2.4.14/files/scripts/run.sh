@@ -55,7 +55,7 @@ frontend web-https
 EOM
 
 read -r -d '' haproxy_frontend_internal_http << EOM || true
-frontend web-http
+frontend internal-http
   bind *:18080
   monitor-uri /haproxy_test
   http-request add-header X-Forwarded-Proto http

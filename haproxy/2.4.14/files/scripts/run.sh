@@ -14,7 +14,6 @@ global
 
 defaults
   mode http
-
   balance roundrobin
   default_backend ##default_backend##
   maxconn 3064
@@ -31,8 +30,9 @@ defaults
   timeout http-keep-alive 10s
   timeout check 10s
 
-listen stats :8036
+listen stats
     mode http
+    bind *::8036
     stats enable
     stats hide-version
     stats uri /admin?stats
@@ -86,7 +86,7 @@ frontend_http_filters () {
       local frontend_domain_var=$(echo "$env" | awk -F'=' '{print $1}')
       local domains=$(echo "$env" | awk -F'=' '{print $2}')
       local app=${frontend_domain_var/FRONTEND_/}
-      local app=${app/"$type"_DOMAIN/}
+      local app=${app/_"$type"_DOMAIN/}
       local app=$(echo "$app" | awk '{print tolower($0)}')
       local acl_name="$app"
       local frontend_domain_force_ssl_var=${frontend_domain_var/_DOMAIN/_DOMAIN_FORCE_SSL}
@@ -136,7 +136,7 @@ create_frontend () {
   local frontend_https_filters=$(frontend_http_filters "1" "WEB" "$haproxy_backends")
   local frontend_http_filters=$(frontend_http_filters "0" "WEB" "$haproxy_backends")
   local frontend_internal_https_filters=$(frontend_http_filters "1" "INTERNAL" "$haproxy_backends")
-  local frontend="$haproxy_frontend_http""$frontend_http_filters"$'\n'$'\n'"$haproxy_frontend_https""$frontend_https_filters"$'\n'$'\n'"$haproxy_frontend_internal_https""$frontend_internal_https_filters"
+  local frontend=$'\n'"$haproxy_frontend_http""$frontend_http_filters"$'\n'$'\n'"$haproxy_frontend_https""$frontend_https_filters"$'\n'$'\n'"$haproxy_frontend_internal_https""$frontend_internal_https_filters"
 
   echo "$frontend"
 }
@@ -224,7 +224,7 @@ create_user_lists () {
       # remove last 5 parts for NAME, ie. SPLASH_USER_LIST_USER_NAME_1
       local list_name=$(echo "$user_name_var" | awk -F'_' '{for(i = 1; i <= NF - 5; i++) printf "%s%s", $i, i == NF -5 ? "" : "_" }')
       local list_name=$(echo "$list_name" | awk '{print tolower($0)}')
-      local password_var=${host_var/_USER_NAME/_PASSWORD}
+      local password_var=${user_name_var/_USER_NAME/_PASSWORD}
       eval password=\$$password_var
 
       # this works because the envs are alphabetically sorted
@@ -259,7 +259,7 @@ create_config_file () {
   local haproxy_base=${haproxy_base//\#\#default_backend\#\#/"$DEFAULT_BACKEND"}
   local user_lists=$(create_user_lists)
 
-  echo "$haproxy_base"$'\n' >> "$haproxy_cnf_file"
+  echo "$haproxy_base" >> "$haproxy_cnf_file"
   echo "$user_lists" >> "$haproxy_cnf_file"
   echo "$frontend" >> "$haproxy_cnf_file"
   echo "$backends" >> "$haproxy_cnf_file"

@@ -45,26 +45,26 @@ read -r -d '' haproxy_frontend_http << EOM || true
 frontend web-http
   bind *:8080
   monitor-uri /haproxy_test
-  http-request add-header X-Forwarded-Proto:\ http
+  http-request add-header X-Forwarded-Proto http
 EOM
 
 read -r -d '' haproxy_frontend_https << EOM || true
 frontend web-https
   bind *:8443 ssl crt $CRT_DIRECTORY
-  http-request add-header X-Forwarded-Proto:\ https
+  http-request add-header X-Forwarded-Proto https
 EOM
 
 read -r -d '' haproxy_frontend_internal_http << EOM || true
 frontend web-http
   bind *:18080
   monitor-uri /haproxy_test
-  http-request add-header X-Forwarded-Proto:\ http
+  http-request add-header X-Forwarded-Proto http
 EOM
 
 read -r -d '' haproxy_frontend_internal_https << EOM || true
 frontend internal-https
   bind *:18443 ssl crt $CRT_DIRECTORY
-  http-request add-header X-Forwarded-Proto:\ https
+  http-request add-header X-Forwarded-Proto https
 EOM
 
 # $1: https_filters

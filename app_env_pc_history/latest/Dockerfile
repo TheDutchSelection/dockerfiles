@@ -10,15 +10,16 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/ruby:2.4.1
+FROM thedutchselection/ruby:2.6.5
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
-  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-  echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+  wget --no-check-certificate -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+  echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
   apt-get update && \
+  apt-get install -yq libgnutls30 && \
   apt-get install -yq curl && \
-  curl -sL https://deb.nodesource.com/setup | bash - && \
+  curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
   apt-get install -yq nodejs && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq imagemagick && \

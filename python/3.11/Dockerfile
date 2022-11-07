@@ -23,9 +23,7 @@ RUN \
   apt-get install -yq libffi-dev && \
   apt-get install -yq libsqlite3-dev && \
   apt-get install -yq wget && \
-  apt-get install -yq libbz2-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  apt-get install -yq libbz2-dev
 
 ADD https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz /tmp/
 
@@ -40,3 +38,9 @@ RUN \
   cd .. && \
   rm -rf Python-3.11.* && \
   rm -f Python-3.11.*.tgz
+
+RUN \
+  apt-get update && \
+  apt-get install -yq python3-pip && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -54,6 +54,7 @@ gem 'webauthn', '2.5.2'
 gem 'aws-sdk-s3', '1.115.0'
 gem 'carrierwave', '2.2.2'
 gem 'fog-aws', '3.15.0'
+gem 'google-ads-googleads', '19.0.0'
 gem 'google-apis-drive_v3', '0.30.0'
 gem 'net-sftp', '3.0.0'
 gem 'paperclip', '6.1.0' # deprecated, move to carrierwave
@@ -63,7 +64,6 @@ gem 'paperclip-compression', '1.1.1' # deprecated, move to carrierwave
 gem 'puma', '5.6.5'
 
 # Other
-gem 'abanalyzer', '1.0.0'
 gem 'active_model_serializers', '0.10.12'
 gem 'awesome_print', '1.9.2'
 gem 'breadcrumbs_on_rails', '4.1.0'

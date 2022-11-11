@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/TheDutchSelection/tds_common_lib.git
-  revision: 1df7006660bfad152cd564fb58ea6a4b294df03e
+  revision: eb76854a59a7aed942a3d5ebca22e51fb13e62fb
   specs:
     tds_common_lib (0.1.5)
       autoprefixer-rails (>= 10.3.3.0)
@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: https://github.com/sinatra/sinatra.git
-  revision: 8ff496bd4877520599e1479d6efead39304edceb
+  revision: edaca03b50c24c4a2afb5979fb687adf7e67feab
   specs:
     rack-protection (3.0.2)
       rack
@@ -36,8 +36,6 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    abanalyzer (1.0.0)
-      statistics2 (= 0.54)
     actioncable (6.1.7)
       actionpack (= 6.1.7)
       activesupport (= 6.1.7)
@@ -117,7 +115,7 @@ GEM
     awesome_print (1.9.2)
     awrence (1.2.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.652.0)
+    aws-partitions (1.654.0)
     aws-sdk-core (3.166.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
@@ -134,7 +132,7 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     bcrypt (3.1.18)
     benchmark-ips (2.10.0)
-    bindata (2.4.13)
+    bindata (2.4.14)
     bindex (0.8.1)
     bootstrap4-kaminari-views (1.0.1)
       kaminari (>= 0.13)
@@ -170,7 +168,7 @@ GEM
     cbor (0.5.9.6)
     climate_control (0.2.0)
     concurrent-ruby (1.1.10)
-    cose (1.2.1)
+    cose (1.3.0)
       cbor (~> 0.5.9)
       openssl-signature_algorithm (~> 1.0)
     crack (0.4.5)
@@ -216,7 +214,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faker (2.23.0)
+    faker (3.0.0)
       i18n (>= 1.8.11, < 2)
     faraday (1.10.2)
       faraday-em_http (~> 1.0)
@@ -269,8 +267,19 @@ GEM
     fugit (1.7.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
+    gapic-common (0.13.0)
+      faraday (>= 1.9, < 3.a)
+      faraday-retry (>= 1.0, < 3.a)
+      google-protobuf (~> 3.14)
+      googleapis-common-protos (>= 1.3.12, < 2.a)
+      googleapis-common-protos-types (>= 1.3.1, < 2.a)
+      googleauth (~> 1.0)
+      grpc (~> 1.36)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    google-ads-googleads (19.0.0)
+      gapic-common (~> 0.6)
+      google-protobuf (>= 3.19.4, < 4.0)
     google-apis-core (0.9.1)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (>= 0.16.2, < 2.a)
@@ -282,6 +291,13 @@ GEM
       webrick
     google-apis-drive_v3 (0.30.0)
       google-apis-core (>= 0.9.0, < 2.a)
+    google-protobuf (3.21.9)
+    googleapis-common-protos (1.3.12)
+      google-protobuf (~> 3.14)
+      googleapis-common-protos-types (~> 1.2)
+      grpc (~> 1.27)
+    googleapis-common-protos-types (1.4.0)
+      google-protobuf (~> 3.14)
     googleauth (1.3.0)
       faraday (>= 0.17.3, < 3.a)
       jwt (>= 1.4, < 3.0)
@@ -289,6 +305,9 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
+    grpc (1.50.0)
+      google-protobuf (~> 3.21)
+      googleapis-common-protos-types (~> 1.0)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
@@ -480,7 +499,7 @@ GEM
     rspec-support (3.12.0)
     rspec-wait (0.0.9)
       rspec (>= 3, < 4)
-    rubocop (1.37.1)
+    rubocop (1.38.0)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.2.1)
@@ -550,7 +569,6 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.1.1)
     stackprof (0.2.22)
-    statistics2 (0.54)
     stimulus-rails (1.1.0)
       railties (>= 6.0.0)
     telephone_number (1.4.9)
@@ -572,7 +590,7 @@ GEM
       ethon (>= 0.9.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2022.5)
+    tzinfo-data (1.2022.6)
       tzinfo (>= 1.0.0)
     uber (0.1.0)
     unicode-display_width (2.3.0)
@@ -615,13 +633,12 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.1)
+    zeitwerk (2.6.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  abanalyzer (= 1.0.0)
   active_model_serializers (= 0.10.12)
   active_scheduler (= 0.7.0)
   autoprefixer-rails (= 10.4.7.0)
@@ -648,6 +665,7 @@ DEPENDENCIES
   figaro (= 1.2.0)
   flamegraph (= 0.9.5)
   fog-aws (= 3.15.0)
+  google-ads-googleads (= 19.0.0)
   google-apis-drive_v3 (= 0.30.0)
   googleauth (= 1.3.0)
   hiredis (= 0.6.3)

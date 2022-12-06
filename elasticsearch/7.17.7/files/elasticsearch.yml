@@ -1,0 +1,159 @@
+# ======================== Elasticsearch Configuration =========================
+#
+# NOTE: Elasticsearch comes with reasonable defaults for most settings.
+#       Before you set out to tweak and tune the configuration, make sure you
+#       understand what are you trying to accomplish and the consequences.
+#
+# The primary way of configuring a node is via this file. This template lists
+# the most important settings you may want to configure for a production cluster.
+#
+# Please consult the documentation for further information on configuration options:
+# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
+#
+# ---------------------------------- Cluster -----------------------------------
+#
+# Use a descriptive name for your cluster:
+#
+cluster.name: ${CLUSTER_NAME}
+#
+# ------------------------------------ Node ------------------------------------
+#
+# Use a descriptive name for the node:
+#
+node.name: ${NODE_NAME}
+#
+# Add custom attributes to the node:
+#
+# node.rack: r1
+#
+# Node roles:
+#
+node.roles: ${NODE_ROLES}
+#
+# Disable starting multiple nodes on a single system:
+#
+node.max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES}
+#
+# Custom disk type
+#
+node.attr.disk: ${NODE_DISK_TYPE}
+#
+# ----------------------------------- Paths ------------------------------------
+#
+# Path to directory where to store the data (separate multiple locations by comma):
+#
+path.data: ${PATH_DATA}
+#
+# Path to log files:
+#
+path.logs: ${PATH_LOGS}
+#
+# Path to snapshots:
+#
+path.repo: ${PATH_REPO}
+#
+# ----------------------------------- Memory -----------------------------------
+#
+# Lock the memory on startup:
+#
+bootstrap.memory_lock: true
+#
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+#
+# Elasticsearch performs poorly when the system is swapping the memory.
+#
+# ---------------------------------- Network -----------------------------------
+#
+# By default Elasticsearch is only accessible on localhost. Set a different
+# address here to expose this node on the network:
+#
+network.host: ${HOST}
+#
+# Set the address other nodes will use to communicate with this node. If not
+# set, it is automatically derived. It must point to an actual IP address.
+#
+network.publish_host: ${PUBLISH_HOST}
+#
+# By default Elasticsearch listens for HTTP traffic on the first free port it
+# finds starting at 9200. Set a specific HTTP port here:
+#
+http.port: ${HTTP_PORT}
+#
+# TDS custom
+http.max_content_length: 1gb
+#
+# Set a custom port for the node to node communication (9300 by default):
+#
+transport.port: ${TRANSPORT_PORT}
+#
+# For more information, consult the network module documentation.
+#
+# --------------------------------- Discovery ----------------------------------
+#
+# Pass an initial list of hosts to perform discovery when this node is started:
+# The default list of hosts is ["127.0.0.1", "[::1]"]
+#
+discovery.seed_hosts: ##unicast_hosts##
+#
+# Discovery type
+#
+discovery.type: ${DISCOVERY_TYPE}
+#
+# Bootstrap the cluster using an initial set of master-eligible nodes, cannot be defined when type is single-node:
+#
+##initial_master_nodes##
+#
+# For more information, consult the zen discovery module documentation.
+#
+# ---------------------------------- Gateway -----------------------------------
+#
+# Waiting time before starting recovery
+#
+gateway.recover_after_time: ${RECOVERY_AFTER_TIME}
+#
+# For more information, consult the gateway module documentation.
+#
+#
+# ---------------------------------- Security ----------------------------------
+#
+# Security needs to be enabled
+#
+xpack.security.enabled: true
+#
+# We only want to use the file realm
+#
+xpack.security.authc.realms.file.file1.order: 0
+
+xpack.security.transport.ssl.enabled: ${SECURITY_TRANSPORT_SSL_ENABLED}
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: ${SECURITY_TRANSPORT_SSL_KEYSTORE_PATH}
+xpack.security.transport.ssl.truststore.path: ${SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH}
+
+# ---------------------------------- Various -----------------------------------
+#
+# Require explicit names when deleting indices:
+#
+action.destructive_requires_name: ${REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES}
+#
+# No automatic index creation
+#
+action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*"
+#
+# No GeoIP
+#
+ingest.geoip.downloader.enabled: false
+#
+# Default is 10000, which can be problematic
+#
+search.max_buckets: 999999999
+#
+# Default is 500, which can be problematic
+#
+search.max_open_scroll_context: 999999999
+#
+# Set license, otherwise can run in trial
+#
+xpack.license.self_generated.type: basic

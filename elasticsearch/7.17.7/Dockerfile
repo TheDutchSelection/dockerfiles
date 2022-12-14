@@ -32,6 +32,8 @@
 # TRANSPORT_PRIVATE_KEY_PASSWORD (ie. "abcdabcd", only when SECURITY_TRANSPORT_SSL_ENABLED=true)
 #
 # OTHER:
+# The ssl transport layer is encrypted using the following instructions
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html
 
 FROM thedutchselection/java:17
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>

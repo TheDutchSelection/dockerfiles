@@ -20,6 +20,7 @@ RUN \
   apt-get install -yq libreadline-dev && \
   apt-get install -yq libffi-dev && \
   apt-get install -yq libsqlite3-dev && \
+  apt-get install -yq poppler-utils && \
   apt-get install -yq wget && \
   apt-get install -yq libbz2-dev
 

@@ -44,7 +44,7 @@ RUN \
 
 # Add the required language training data
 # Find them here https://github.com/tesseract-ocr/tessdata_best
-ADD https://github.com/tesseract-ocr/tessdata_best/raw/main/osd.traineddata /usr/local/share/tessdata/
-ADD https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata /usr/local/share/tessdata/
+ADD --chmod=666 https://github.com/tesseract-ocr/tessdata_best/raw/main/osd.traineddata /usr/local/share/tessdata/
+ADD --chmod=666 https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata /usr/local/share/tessdata/
 
 WORKDIR /tmp

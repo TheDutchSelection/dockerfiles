@@ -5,8 +5,6 @@
 # REQUIRED ENVS:
 #
 # OPTIONAL ENVS:
-# PASSWORD (ie. "abcdabcd1234")
-# MAX_MEMORY_IN_BYTES (ie. "1073741824", best is to keep 10% of memory for overhead)
 #
 # OTHER:
 
@@ -44,7 +42,11 @@ RUN \
 
 # Add the required language training data
 # Find them here https://github.com/tesseract-ocr/tessdata_best
-ADD --chmod=666 https://github.com/tesseract-ocr/tessdata_best/raw/main/osd.traineddata /usr/local/share/tessdata/
-ADD --chmod=666 https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata /usr/local/share/tessdata/
+ADD https://github.com/tesseract-ocr/tessdata_best/raw/main/osd.traineddata /usr/local/share/tessdata/
+ADD https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata /usr/local/share/tessdata/
+
+RUN \
+   chmod 0666 /usr/local/share/tessdata/osd.traineddata && \
+   chmod 0666 /usr/local/share/tessdata/eng.traineddata
 
 WORKDIR /tmp

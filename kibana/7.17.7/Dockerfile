@@ -5,11 +5,9 @@
 # REQUIRED ENVS
 # ELASTICSEARCH_[APP_ID]_HOST_ENDPOINT (ie. "http://10.0.4.3:9200")
 # ENCRYPTION_KEY (ie. "jfuwyf74ksnchjf84hjfkd984jfbhsh48fjffdm34q", 32 characters minimum)
-# HOST (ie. "10.0.4.3")
 # PATH_DATA (ie. "/home/kibana/data/data")
-# PORT (ie. "5601")
 # SERVER_NAME (ie. "kibana.tds")
-# SSL_ENABLED (true or false, must be true in production)
+# SSL_ENABLED (true or false)
 # SSL_CERT (ie "/path/to/cert.pem" only needed when SSL enabled, but must be "" otherwise)
 # SSL_KEY (ie "/path/to/key" only needed when SSL enabled, but must be "" otherwise)
 #
@@ -39,6 +37,8 @@ RUN \
   chown kibana:kibana /etc/kibana && \
   chown root:kibana /etc/kibana/* && \
   chown kibana:kibana /usr/local/bin/*
+
+EXPOSE 5601
 
 USER kibana
 

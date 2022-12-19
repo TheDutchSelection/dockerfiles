@@ -30,10 +30,6 @@ node.name: ${NODE_NAME}
 #
 node.roles: ${NODE_ROLES}
 #
-# Disable starting multiple nodes on a single system:
-#
-node.max_local_storage_nodes: ${MAX_LOCAL_STORAGE_NODES}
-#
 # Custom disk type
 #
 node.attr.disk: ${NODE_DISK_TYPE}

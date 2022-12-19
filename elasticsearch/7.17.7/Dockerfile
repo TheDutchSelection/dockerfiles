@@ -8,7 +8,6 @@
 # HOST (ie. "10.0.4.3")
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_ROLES (ie. "[master]" or "[data, ingest]")
-# MAX_LOCAL_STORAGE_NODES (ie. "1")
 # PATH_DATA (ie. "/home/elastic/data/data")
 # PATH_LOGS (ie. "/home/elastic/data/logs")
 # PATH_REPO (ie. "/home/elastic/data/backups")

@@ -116,6 +116,7 @@ server.ssl.key: ${SSL_KEY}
 
 # Various
 path.data: ${PATH_DATA}
+server.publicBaseUrl: ${PUBLIC_BASE_URL}
 server.securityResponseHeaders.disableEmbedding: true
 xpack.reporting.encryptionKey: ${ENCRYPTION_KEY}
 xpack.security.encryptionKey: ${ENCRYPTION_KEY}

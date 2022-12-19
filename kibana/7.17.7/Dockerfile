@@ -6,6 +6,7 @@
 # ELASTICSEARCH_[APP_ID]_HOST_ENDPOINT (ie. "http://10.0.4.3:9200")
 # ENCRYPTION_KEY (ie. "jfuwyf74ksnchjf84hjfkd984jfbhsh48fjffdm34q", 32 characters minimum)
 # PATH_DATA (ie. "/home/kibana/data/data")
+# PUBLIC_BASE_URL (ie. "https://kibana.something.com", cannot end in a slash)
 # SERVER_NAME (ie. "kibana.tds")
 # SSL_ENABLED (true or false)
 # SSL_CERT (ie "/path/to/cert.pem" only needed when SSL enabled, but must be "" otherwise)

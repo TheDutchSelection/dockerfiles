@@ -46,8 +46,6 @@ create_config_file () {
 
   local elasticsearch_hosts=$(create_elasticsearch_hosts)
 
-  echo "$elasticsearch_hosts"
-
   sed -i "s/##elasticsearch_hosts##/$elasticsearch_hosts/g" "$elasticsearch_config_file"
 }
 

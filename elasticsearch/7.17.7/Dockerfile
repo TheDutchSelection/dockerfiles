@@ -6,8 +6,6 @@
 # CLUSTER_NAME (ie. "tds_nl")
 # DISCOVERY_TYPE ("single-node" or empty)
 # HOST (ie. "10.0.4.3")
-# KIBANA_SYSTEM_USER_USERNAME (ie. "kibana_su")
-# KIBANA_SYSTEM_USER_PASSWORD (ie. "abcdabcd1234")
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_ROLES (ie. "[master]" or "[data, ingest]")
 # MAX_LOCAL_STORAGE_NODES (ie. "1")
@@ -31,6 +29,8 @@
 # ELASTICSEARCH_MASTER_[APP_ID]_HOST_PORT_PEER (ie. "9300")
 # ELASTICSEARCH_MASTER_[APP_ID]_NODE_NAME (ie. "doa3wrkprd004_master")
 # ES_JAVA_OPTS (ie. "-Xms2g -Xmx2g", to set heap size to 2GB, max heap size on a node is roughly 50% of all memory, but never larger than 30.5g)
+# KIBANA_SYSTEM_USER_USERNAME (ie. "kibana_su")
+# KIBANA_SYSTEM_USER_PASSWORD (ie. "abcdabcd1234")
 # TRANSPORT_PRIVATE_KEY_PASSWORD (ie. "abcdabcd", only when SECURITY_TRANSPORT_SSL_ENABLED=true)
 #
 # OTHER:

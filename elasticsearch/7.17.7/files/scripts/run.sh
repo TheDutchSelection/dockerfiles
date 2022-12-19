@@ -85,12 +85,16 @@ create_users () {
 
   local user_list=$(/usr/share/elasticsearch/bin/elasticsearch-users list)
 
-  if [[ ! -z "$SUPERUSER_USERNAME" && $user_list == "No users found" ]]; then
-    echo "creating superuser $SUPERUSER_USERNAME..."
-    /usr/share/elasticsearch/bin/elasticsearch-users useradd "$SUPERUSER_USERNAME" -p "$SUPERUSER_PASSWORD" -r "superuser"
+  if [[ $user_list == "No users found" ]]; then
+    if [[ ! -z "$SUPERUSER_USERNAME" ]]; then
+      echo "creating superuser $SUPERUSER_USERNAME..."
+      /usr/share/elasticsearch/bin/elasticsearch-users useradd "$SUPERUSER_USERNAME" -p "$SUPERUSER_PASSWORD" -r "superuser"
+    fi
 
-    echo "creating kibana system user $KIBANA_SYSTEM_USER_USERNAME..."
-    /usr/share/elasticsearch/bin/elasticsearch-users useradd "$KIBANA_SYSTEM_USER_USERNAME" -p "$KIBANA_SYSTEM_USER_PASSWORD" -r "kibana_system"
+    if [[ ! -z "$KIBANA_SYSTEM_USER_USERNAME" ]]; then
+      echo "creating kibana system user $KIBANA_SYSTEM_USER_USERNAME..."
+      /usr/share/elasticsearch/bin/elasticsearch-users useradd "$KIBANA_SYSTEM_USER_USERNAME" -p "$KIBANA_SYSTEM_USER_PASSWORD" -r "kibana_system"
+    fi
   fi
 }
 

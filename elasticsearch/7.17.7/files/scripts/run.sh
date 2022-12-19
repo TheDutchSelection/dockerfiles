@@ -80,7 +80,7 @@ create_config_file () {
   sed -i "s/##initial_master_nodes##/$initial_master_nodes/g" "$elasticsearch_config_file"
 }
 
-create_superuser () {
+create_users () {
   set -e
 
   local user_list=$(/usr/share/elasticsearch/bin/elasticsearch-users list)
@@ -88,6 +88,9 @@ create_superuser () {
   if [[ ! -z "$SUPERUSER_USERNAME" && $user_list == "No users found" ]]; then
     echo "creating superuser $SUPERUSER_USERNAME..."
     /usr/share/elasticsearch/bin/elasticsearch-users useradd "$SUPERUSER_USERNAME" -p "$SUPERUSER_PASSWORD" -r "superuser"
+
+    echo "creating kibana system user $KIBANA_SYSTEM_USER_USERNAME..."
+    /usr/share/elasticsearch/bin/elasticsearch-users useradd "$KIBANA_SYSTEM_USER_USERNAME" -p "$KIBANA_SYSTEM_USER_PASSWORD" -r "kibana_system"
   fi
 }
 
@@ -110,7 +113,7 @@ mkdir -p "$PATH_LOGS"
 echo "creating $elasticsearch_config_file..."
 create_config_file "$elasticsearch_config_file"
 
-create_superuser
+create_users
 
 add_keys_to_keystore
 

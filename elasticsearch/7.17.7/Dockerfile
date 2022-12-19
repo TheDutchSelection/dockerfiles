@@ -6,6 +6,8 @@
 # CLUSTER_NAME (ie. "tds_nl")
 # DISCOVERY_TYPE ("single-node" or empty)
 # HOST (ie. "10.0.4.3")
+# KIBANA_SYSTEM_USER_USERNAME (ie. "kibana_su")
+# KIBANA_SYSTEM_USER_PASSWORD (ie. "abcdabcd1234")
 # NODE_NAME (ie. "doa3wrkprd004_master")
 # NODE_ROLES (ie. "[master]" or "[data, ingest]")
 # MAX_LOCAL_STORAGE_NODES (ie. "1")

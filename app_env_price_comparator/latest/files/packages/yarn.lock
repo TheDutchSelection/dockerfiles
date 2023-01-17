@@ -6632,9 +6632,8 @@ tar@^6.0.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-"tds-common-lib@git+https://github.com/TheDutchSelection/tds_common_lib.git":
+"tds-common-lib@file:../tds_common_lib":
   version "0.1.7"
-  resolved "git+https://github.com/TheDutchSelection/tds_common_lib.git#1df7006660bfad152cd564fb58ea6a4b294df03e"
   dependencies:
     "@hotwired/stimulus" "3.1.0"
     "@hotwired/turbo-rails" "7.2.4"

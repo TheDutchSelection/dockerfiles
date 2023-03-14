@@ -22,6 +22,8 @@ ADD --chown=appmaster:appmaster files/requirements/requirements.txt /home/appmas
 
 RUN pip install -r requirements.txt
 
+USER appmaster
+
 RUN playwright install
 
 USER root

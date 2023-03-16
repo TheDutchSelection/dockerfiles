@@ -20,7 +20,7 @@ gem 'typhoeus', '1.4.0'
 # JavaScript and assets
 gem 'autoprefixer-rails', '10.4.7.0'
 gem 'bootstrap_form', '5.1.0'
-gem 'bootstrap4-kaminari-views', '1.0.1'
+gem 'bootstrap5-kaminari-views', '0.0.1'
 gem 'sass-rails', '6.0.0'
 gem 'webpacker', '5.4.3'
 
@@ -54,8 +54,8 @@ gem 'webauthn', '2.5.2'
 gem 'aws-sdk-s3', '1.115.0'
 gem 'carrierwave', '2.2.2'
 gem 'fog-aws', '3.15.0'
-gem 'google-ads-googleads', '19.0.0'
-gem 'google-apis-drive_v3', '0.30.0'
+gem 'google-ads-googleads', '21.0.0'
+gem 'google-apis-drive_v3', '0.37.0'
 gem 'net-sftp', '4.0.0'
 
 # Webserver

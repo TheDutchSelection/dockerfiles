@@ -24,10 +24,15 @@ RUN \
   curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
   apt-get install -yq nodejs && \
   apt-get install -yq libpq-dev && \
+  apt-get install -yq git && \
   apt-get install -yq imagemagick && \
   apt-get install -yq libfontconfig && \
   apt-get install -yq libcurl4-gnutls-dev && \
   apt-get install -yq procps && \
+  apt-get install -yq autoconf && \
+  apt-get install -yq automake && \
+  apt-get install -yq libtool && \
+  apt-get install -yq pkg-config && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
   useradd -m -u 6666 appmaster && \
@@ -41,6 +46,14 @@ RUN \
   apt install -yq ./google-chrome-stable_current_amd64.deb && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN \
+    git clone https://github.com/openvenues/libpostal && \
+    cd libpostal && \
+    ./bootstrap.sh && \
+    ./configure  && \
+    make && \
+    make install
 
 WORKDIR /home/appmaster/application
 

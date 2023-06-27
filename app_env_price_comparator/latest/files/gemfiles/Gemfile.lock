@@ -119,6 +119,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.165.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
+    aws-sdk-textract (1.45.0)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
     bcrypt (3.1.18)
@@ -174,6 +177,7 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.3.3)
+    date_parser (0.1.51)
     declarative (0.0.20)
     devise (4.9.2)
       bcrypt (~> 3.0)
@@ -359,6 +363,7 @@ GEM
     multipart-post (2.3.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
+    namae (1.1.1)
     net-imap (0.3.4)
       date
       net-protocol
@@ -516,6 +521,7 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
+    ruby_postal (1.0.0)
     rufus-scheduler (3.8.2)
       fugit (~> 1.1, >= 1.1.6)
     safety_net_attestation (0.4.0)
@@ -635,6 +641,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.4.13.0)
   awesome_print (= 1.9.2)
   aws-sdk-s3 (= 1.121.0)
+  aws-sdk-textract (= 1.45.0)
   benchmark-ips
   bootstrap5-kaminari-views (= 0.0.1)
   bootstrap_form (= 5.1.0)
@@ -647,6 +654,7 @@ DEPENDENCIES
   cuprite
   database_cleaner
   database_cleaner-active_record (= 2.0.0)
+  date_parser (= 0.1.51)
   devise (= 4.9.2)
   easymon (= 1.6.2)
   elasticsearch (= 7.17.7)
@@ -664,6 +672,7 @@ DEPENDENCIES
   kaminari (= 1.2.2)
   listen
   mini_magick (= 4.11.0)
+  namae (= 1.1.1)
   net-sftp (= 4.0.0)
   nokogiri (= 1.14.3)
   pg (= 1.5.3)
@@ -684,6 +693,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  ruby_postal (= 1.0.0)
   sass-rails (= 6.0.0)
   savon (= 2.14.0)
   simplecov

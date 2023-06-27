@@ -51,7 +51,6 @@ gem 'devise', '4.9.2'
 gem 'webauthn', '2.5.2'
 
 # Storage
-gem 'aws-sdk-s3', '1.121.0'
 gem 'carrierwave', '2.2.3'
 gem 'fog-aws', '3.18.0'
 gem 'google-apis-drive_v3', '0.39.0'
@@ -60,18 +59,25 @@ gem 'net-sftp', '4.0.0'
 # Webserver
 gem 'puma', '6.2.2'
 
+# AWS
+gem 'aws-sdk-s3', '1.121.0'
+gem 'aws-sdk-textract', '1.45.0'
+
 # Other
 gem 'active_model_serializers', '0.10.13'
 gem 'awesome_print', '1.9.2'
 gem 'breadcrumbs_on_rails', '4.1.0'
+gem 'date_parser', '0.1.51'
 gem 'faraday', '1.10.3'
 gem 'figaro', '1.2.0'
 gem 'googleauth', '1.5.2'
 gem 'google-ads-googleads', '22.1.0'
 gem 'jbuilder', '2.11.5'
 gem 'kaminari', '1.2.2'
+gem 'namae', '1.1.1'
 gem 'nokogiri', '1.14.3'
-gem 'rack-cors', '1.1.1', :require => 'rack/cors'
+gem 'rack-cors', '1.1.1', require: 'rack/cors'
+gem 'ruby_postal', '1.0.0', require: false
 gem 'savon', '2.14.0'
 gem 'stimulus-rails', '1.2.1'
 gem 'telephone_number', '1.4.20'
@@ -84,6 +90,7 @@ gem 'validates_zipcode', '0.5.2'
 group :development, :test do
   gem 'byebug'
   gem 'break'
+  gem 'faker'
 
   # Code critics
   gem 'rubocop', require: false
@@ -94,7 +101,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'faker'
   gem 'listen'
   gem 'web-console'
 end
@@ -112,7 +118,7 @@ group :test do
   gem 'rspec-rails', '5.0.1'
   gem 'rspec-retry', '0.6.2'
   gem 'rspec-wait'
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
   gem 'timecop'
   gem 'vcr'
   gem 'webmock'

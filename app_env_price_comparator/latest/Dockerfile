@@ -23,6 +23,7 @@ RUN \
   apt-get install -yq curl && \
   curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
   apt-get install -yq nodejs && \
+  apt-get install -yq libpq5 && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq git && \
   apt-get install -yq imagemagick && \

@@ -364,6 +364,9 @@ GEM
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     namae (1.1.1)
+    net-ftp (0.2.0)
+      net-protocol
+      time
     net-imap (0.3.4)
       date
       net-protocol
@@ -574,6 +577,8 @@ GEM
     telephone_number (1.4.20)
     thor (1.2.1)
     tilt (2.1.0)
+    time (0.2.2)
+      date
     timecop (0.9.6)
     timeout (0.3.2)
     tpm-key_attestation (0.11.0)
@@ -676,6 +681,7 @@ DEPENDENCIES
   listen
   mini_magick (= 4.11.0)
   namae (= 1.1.1)
+  net-ftp (= 0.2.0)
   net-sftp (= 4.0.0)
   nokogiri (= 1.14.3)
   pg (= 1.5.3)
@@ -717,7 +723,7 @@ DEPENDENCIES
   webpacker (= 5.4.4)
 
 RUBY VERSION
-   ruby 2.7.1p83
+   ruby 3.2.2p53
 
 BUNDLED WITH
    2.3.24

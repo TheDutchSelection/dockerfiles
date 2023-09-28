@@ -61,13 +61,3 @@ ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/applicati
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile.lock /home/appmaster/application/Gemfile.lock
 
 RUN bundle install
-
-ADD --chown=appmaster:appmaster files/packages/package.json /home/appmaster/application/package.json
-ADD --chown=appmaster:appmaster files/packages/yarn.lock /home/appmaster/application/yarn.lock
-
-USER appmaster
-
-RUN \
-  yarn install --network-timeout 1000000 --pure-lockfile
-
-USER root

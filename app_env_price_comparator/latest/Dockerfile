@@ -10,18 +10,21 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/ruby:2.7.1
+FROM thedutchselection/ruby:3.2.2
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \
   wget --no-check-certificate -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-  echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+  echo "deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
   wget --no-check-certificate -qO - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
   echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
   apt-get update && \
   apt-get install -yq libgnutls30 && \
   apt-get install -yq curl && \
-  curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+  apt-get install -yq gnupg && \
+  mkdir -p /etc/apt/keyrings && \
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg - && \
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
   apt-get install -yq nodejs && \
   apt-get install -yq libpq-dev && \
   apt-get install -yq git && \

@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.2'
 
-gem 'rails', '7.0.4.3'
+gem 'rails', '7.0.8'
 gem 'tzinfo-data', '>= 1.2023.3'  # Don't rely on OSX/Linux timezone data
 
 # Drivers
@@ -18,9 +18,9 @@ gem 'redis', '4.7.1', require: ['redis', 'redis/connection/hiredis']
 gem 'typhoeus', '1.4.0'
 
 # CSS and Assets
-gem 'autoprefixer-rails', '10.4.13.0'
-gem 'bootstrap', '5.1.3'
-gem 'bootstrap_form', '5.1.0'
+gem 'autoprefixer-rails', '10.4.15.0'
+gem 'bootstrap', '5.3.1'
+gem 'bootstrap_form', '5.3.2'
 gem 'bootstrap5-kaminari-views', '0.0.1'
 gem 'importmap-rails', '1.2.1'
 gem 'sassc-rails', '2.1.2'
@@ -29,7 +29,7 @@ gem 'sprockets-rails', '3.4.2'
 # Jobs
 gem 'active_scheduler', '0.7.0'
 gem 'resque', '2.0.0'
-gem 'resque-pool', github: 'nevans/resque-pool' # once version after 0.7.1 is released, go back
+gem 'resque-pool', '0.7.1'
 gem 'resque-scheduler', '4.4.0'
 gem 'sinatra', github: 'sinatra/sinatra'
 
@@ -43,28 +43,34 @@ gem 'easymon', '1.6.2'
 # Profiling/troubleshooting
 gem 'rbtrace', '0.4.14'
 gem 'stackprof', '0.2.25'
-gem 'rack-mini-profiler', '3.1.0', require: false
+gem 'rack-mini-profiler', '3.1.1', require: false
 gem 'flamegraph', '0.9.5'
 
 # Security
-gem 'devise', '4.9.2'
+gem 'devise', '4.9.3'
 # gem 'rack-ratelimit', github: 'jeremy/rack-ratelimit'
 # gem 'rotp' <= 2FA
 gem 'webauthn', '2.5.2'
 
 # Storage
-gem 'carrierwave', '2.2.3'
-gem 'fog-aws', '3.18.0'
-gem 'google-apis-drive_v3', '0.39.0'
+gem 'carrierwave', '2.2.4'
+gem 'fog-aws', '3.21.0'
 gem 'net-ftp', '0.2.0'
 gem 'net-sftp', '4.0.0'
 
 # Webserver
-gem 'puma', '6.2.2'
+gem 'puma', '6.4.0'
 
 # AWS
-gem 'aws-sdk-s3', '1.121.0'
-gem 'aws-sdk-textract', '1.45.0'
+gem 'aws-sdk-s3', '1.136.0'
+gem 'aws-sdk-textract', '1.53.0'
+
+# Google'
+gem 'googleauth', '1.8.1'
+gem 'google-ads-googleads', '24.0.0'
+gem 'google-apis-drive_v3', '0.46.0'
+gem 'google-cloud-document_ai', '1.2.2'
+gem 'google-cloud-storage', '1.45.0'
 
 # Other
 gem 'active_model_serializers', '0.10.13'
@@ -73,19 +79,23 @@ gem 'breadcrumbs_on_rails', '4.1.0'
 gem 'date_parser', '0.1.51'
 gem 'faraday', '1.10.3'
 gem 'figaro', '1.2.0'
-gem 'googleauth', '1.5.2'
-gem 'google-ads-googleads', '22.1.0'
 gem 'jbuilder', '2.11.5'
 gem 'kaminari', '1.2.2'
+gem 'kramdown', '2.4.0'
+gem 'maxmind-db', '1.1.0'
+gem 'mimemagic', '0.4.3'
 gem 'namae', '1.1.1'
-gem 'nokogiri', '1.14.3'
+gem 'nokogiri', '1.15.4'
+gem 'postmark-rails', '0.22.1'
 gem 'rack-cors', '1.1.1', require: 'rack/cors'
+gem 'recaptcha', '5.16.0'
+gem 'restforce', '7.3.0'
 gem 'ruby-openai', '5.1'
 gem 'ruby_postal', '1.0.0', require: false
 gem 'savon', '2.14.0'
-gem 'stimulus-rails', '1.2.1'
-gem 'telephone_number', '1.4.20'
-gem 'turbo-rails', '1.4.0'
+gem 'stimulus-rails', '1.3.0'
+gem 'telephone_number', '1.4.21'
+gem 'turbo-rails', '1.5.0'
 gem 'validates_zipcode', '0.5.2'
 
 # Temp locked

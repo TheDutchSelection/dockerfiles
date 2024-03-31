@@ -16,7 +16,7 @@
 # OTHER:
 # Some commands:
 # varnishtop -i BereqURL (urls that most hit the backend)
-# varnishlog -q 'ReqURL ~ "^/foo/bar"' (request coming from the client containing /foo/bar
+# varnishlog -q 'ReqURL ~ "^/foo/bar"' (request coming from the client containing /foo/bar)
 # varnishstat (statistics about varnish)
 # varnishadm backend.list (backend status)
 

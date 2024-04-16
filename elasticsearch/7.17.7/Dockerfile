@@ -15,8 +15,6 @@
 # RECOVERY_AFTER_TIME (ie. "5m")
 # REQUIRED_EXPLICIT_DESTRUCTIVE_NAMES (ie. true, false for testing)
 # SECURITY_TRANSPORT_SSL_ENABLED (true or false, must be true in production)
-# SECURITY_TRANSPORT_SSL_KEYSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled, but must be "" otherwise)
-# SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled, but must be "" otherwise)
 # SUPERUSER_USERNAME (ie. "superuser")
 # SUPERUSER_PASSWORD (ie. "abcdabcd1234")
 # TRANSPORT_PORT (ie. "9300")
@@ -30,6 +28,8 @@
 # ES_JAVA_OPTS (ie. "-Xms2g -Xmx2g", to set heap size to 2GB, max heap size on a node is roughly 50% of all memory, but never larger than 30.5g)
 # KIBANA_SYSTEM_USER_USERNAME (ie. "kibana_su")
 # KIBANA_SYSTEM_USER_PASSWORD (ie. "abcdabcd1234")
+# SECURITY_TRANSPORT_SSL_KEYSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled)
+# SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH (ie "/path/to/elastic-certificates.p12" only needed when SSL enabled)
 # TRANSPORT_PRIVATE_KEY_PASSWORD (ie. "abcdabcd", only when SECURITY_TRANSPORT_SSL_ENABLED=true)
 #
 # OTHER:
@@ -62,6 +62,9 @@ RUN \
   chown elasticsearch:elasticsearch /etc/elasticsearch && \
   chown root:elasticsearch /etc/elasticsearch/* && \
   chown elasticsearch:elasticsearch /usr/local/bin/*
+
+ENV SECURITY_TRANSPORT_SSL_KEYSTORE_PATH=""
+ENV SECURITY_TRANSPORT_SSL_TRUSTSTORE_PATH=""
 
 USER elasticsearch
 

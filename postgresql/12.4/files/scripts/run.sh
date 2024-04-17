@@ -202,7 +202,7 @@ echo "set environment variables for wal-g..."
 set_environment_variables_wal_g
 
 # if data directory exist, we assume the superuser is also already created
-if [[ ! $(ls -A "$DATA_DIRECTORY") ]]; then
+if [[ ! $(ls -A "$DATA_DIRECTORY" 2>/dev/null) ]]; then
   echo "creating the data directory..."
   init_data_directory
 

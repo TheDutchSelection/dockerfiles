@@ -118,6 +118,7 @@ set_environment_variables_wal_g() {
 init_data_directory() {
   echo "initializing $DATA_DIRECTORY..."
   mkdir -p "$DATA_DIRECTORY"
+  chmod -R 700 "$DATA_DIRECTORY"
 
   # do slave related tasks
   if [[ "$ROLE" == "slave" ]]; then

@@ -66,11 +66,11 @@ gem 'aws-sdk-s3', '1.136.0'
 gem 'aws-sdk-textract', '1.53.0'
 
 # Google'
-gem 'googleauth', '1.8.1'
-gem 'google-ads-googleads', '24.0.0'
-gem 'google-apis-drive_v3', '0.46.0'
-gem 'google-cloud-document_ai', '1.2.2'
-gem 'google-cloud-storage', '1.45.0'
+gem 'googleauth', '1.11.0'
+gem 'google-ads-googleads', '29.0.0'
+gem 'google-apis-drive_v3', '0.51.0'
+gem 'google-cloud-document_ai', '1.4.0'
+gem 'google-cloud-storage', '1.52.0'
 
 # Other
 gem 'active_model_serializers', '0.10.13'

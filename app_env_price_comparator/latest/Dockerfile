@@ -10,7 +10,7 @@
 #
 # OPTIONAL ENVS:
 
-FROM thedutchselection/ruby:3.2.2
+FROM thedutchselection/ruby:3.3.6
 MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
 
 RUN \

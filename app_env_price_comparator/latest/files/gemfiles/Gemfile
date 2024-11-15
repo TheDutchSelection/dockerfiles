@@ -1,33 +1,34 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+ruby '3.3.6'
 
 gem 'rails', '7.0.8.4'
 gem 'tzinfo-data', '>= 1.2023.3'  # Don't rely on OSX/Linux timezone data
 
 # Drivers
 gem 'elasticsearch', '7.17.11'
-gem 'hiredis-client', '0.22.2' # for Redis > 5
+gem 'hiredis-client', '0.22.2'
 gem 'mini_magick', '4.11.0'
 gem 'pg', '1.5.3'
-# Upgrade to > 5 after Rails 7.0.4, because Actioncable requires Redis < 5 before that point.
 gem 'redis', '5.2.0'
 
 # CSS and Assets
 gem 'autoprefixer-rails', '10.4.15.0'
-gem 'bootstrap', '5.3.1'
-gem 'bootstrap_form', '5.3.2'
-gem 'bootstrap5-kaminari-views', '0.0.1'
+gem 'bootstrap', '5.3.1' # TODO moving away from bootstrap to tailwind, remove
+gem 'bootstrap_form', '5.3.2' # TODO moving away from bootstrap to tailwind, remove
+gem 'bootstrap5-kaminari-views', '0.0.1' # TODO moving away from bootstrap to tailwind, remove
 gem 'importmap-rails', '1.2.1'
-gem 'sassc-rails', '2.1.2'
+gem 'inline_svg', '1.9.0'
+gem 'sassc-rails', '2.1.2' # TODO moving away from bootstrap to tailwind, remove
 gem 'sprockets-rails', '3.4.2'
+gem 'tailwindcss-rails', '2.7.6'
 
 # Jobs
 gem 'active_scheduler', '0.7.0'
-gem 'resque', '2.0.0'
+gem 'resque', '2.6.0'
 gem 'resque-pool', '0.7.1'
-gem 'resque-scheduler', '4.4.0'
+gem 'resque-scheduler', '4.10.2'
 gem 'sinatra', github: 'sinatra/sinatra'
 
 # Logging/instrumentation
@@ -75,7 +76,8 @@ gem 'awesome_print', '1.9.2'
 gem 'breadcrumbs_on_rails', '4.1.0'
 gem 'builder', '3.3.0'
 gem 'date_parser', '0.1.51'
-gem 'faraday', '2.10.0'
+gem 'faraday', '2.11.0'
+gem 'faraday-digestauth', '0.4.1'
 gem 'faraday-typhoeus', '1.1.0' # needed for ElasticSearch
 gem 'figaro', '1.2.0'
 gem 'jbuilder', '2.11.5'
@@ -83,13 +85,14 @@ gem 'kaminari', '1.2.2'
 gem 'kramdown', '2.4.0'
 gem 'maxmind-db', '1.1.0'
 gem 'mimemagic', '0.4.3'
+gem 'mime-types', '3.5.2'
 gem 'namae', '1.1.1'
 gem 'nokogiri', '1.15.4'
 gem 'postmark-rails', '0.22.1'
 gem 'rack-cors', '1.1.1', require: 'rack/cors'
 gem 'recaptcha', '5.16.0'
-gem 'restforce', '7.4.0'
-gem 'ruby-openai', '5.1'
+gem 'restforce', '7.5.0'
+gem 'ruby-openai', '7.3.1'
 gem 'ruby_postal', '1.0.0', require: false
 gem 'savon', '2.14.0'
 gem 'stimulus-rails', '1.3.0'

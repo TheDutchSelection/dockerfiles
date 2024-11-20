@@ -6,7 +6,7 @@
 #
 # OPTIONAL ENVS:
 #
-# USAGE EXAMPLE: docker run thedutchselection/google_chrome
+# USAGE EXAMPLE:  docker run -d --shm-size=2g --rm -p 9223:9223 thedutchselection/google_chrome:2024-11-20
 
 FROM thedutchselection/debian:12.8
 LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-0 \
     libvulkan1 \
     net-tools \
+    socat \
     xdg-utils \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
@@ -41,18 +42,17 @@ ADD https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb /t
 RUN dpkg -i google-chrome-stable_current_amd64.deb || apt-get -f install -y && \
     rm google-chrome-stable_current_amd64.deb
 
-# Expose the remote debugging port
-EXPOSE 9222
-
 # Run Chrome in headless mode with remote debugging enabled
-CMD ["google-chrome-stable", \
-     "--headless", \
-     "--no-sandbox", \
-     "--disable-gpu", \
-     "--disable-dev-shm-usage", \
-     "--disable-extensions", \
-     "--disable-background-networking", \
-     "--disable-software-rasterizer", \
-     "--disable-sync", \
-     "--remote-debugging-address=0.0.0.0", \
-     "--remote-debugging-port=9222"]
+CMD ["/bin/sh", "-c", \
+    "google-chrome-stable \
+        --headless \
+        --no-sandbox \
+        --disable-gpu \
+        --disable-dev-shm-usage \
+        --disable-extensions \
+        --disable-background-networking \
+        --disable-software-rasterizer \
+        --disable-sync \
+        --remote-debugging-port=9222 & \
+    sleep 5 && \
+    socat TCP-LISTEN:9223,reuseaddr,fork TCP:127.0.0.1:9222"]

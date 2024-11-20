@@ -34,7 +34,7 @@
 # OTHER:
 
 FROM thedutchselection/java:17
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ENV ES_JAVA_HOME /usr/lib/jvm/jdk-17
 

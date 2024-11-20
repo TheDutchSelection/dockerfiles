@@ -9,7 +9,7 @@
 # USAGE EXAMPLE: docker run thedutchselection/debian
 
 FROM debian:9.3
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ENV DEBIAN_FRONTEND noninteractive
 

@@ -10,7 +10,7 @@
 # USAGE EXAMPLE: docker run thedutchselection/bitcoin_core
 
 FROM thedutchselection/debian:10.2
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apt-get update && \

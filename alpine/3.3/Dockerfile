@@ -9,7 +9,7 @@
 # OTHER:
 
 FROM alpine:3.3
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ENV ALPINE_GLIBC_URL "https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/"
 ENV GLIBC_PKG "glibc-2.21-r2.apk"

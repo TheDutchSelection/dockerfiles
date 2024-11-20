@@ -37,7 +37,7 @@
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html
 
 FROM thedutchselection/java:17
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ENV ES_JAVA_HOME /usr/lib/jvm/jdk-17
 

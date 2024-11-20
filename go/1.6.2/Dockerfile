@@ -9,7 +9,7 @@
 # OTHER:
 
 FROM thedutchselection/debian:8.4
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apt-get update && \

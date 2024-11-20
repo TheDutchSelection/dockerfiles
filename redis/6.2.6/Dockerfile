@@ -12,7 +12,7 @@
 # OTHER:
 
 FROM thedutchselection/debian:11.0
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ADD https://download.redis.io/releases/redis-6.2.6.tar.gz /tmp/
 

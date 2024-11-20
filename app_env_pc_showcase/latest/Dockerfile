@@ -11,7 +11,7 @@
 # OPTIONAL ENVS:
 
 FROM thedutchselection/ruby:2.7.1
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   wget --no-check-certificate -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \

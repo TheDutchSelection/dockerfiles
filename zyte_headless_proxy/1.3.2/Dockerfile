@@ -10,7 +10,7 @@
 # OTHER:
 
 FROM thedutchselection/alpine:3.15.0
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apk update && \

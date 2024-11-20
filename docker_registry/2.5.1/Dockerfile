@@ -13,7 +13,7 @@
 # OTHER:
 
 FROM thedutchselection/go:1.7.3
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apt-get update && \

@@ -79,7 +79,7 @@
 # This gives the replication delay. If there are no wirtes to the master, this might be bigger without any problems.
 
 FROM thedutchselection/debian:8.7
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \

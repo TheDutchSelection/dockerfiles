@@ -9,7 +9,7 @@
 # USAGE EXAMPLE: docker run thedutchselection/ruby
 
 FROM thedutchselection/debian:12.1
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apt-get update && \

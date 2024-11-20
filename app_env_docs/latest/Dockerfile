@@ -7,7 +7,7 @@
 # OPTIONAL ENVS:
 
 FROM thedutchselection/nginx:1.15.5
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 USER root
 

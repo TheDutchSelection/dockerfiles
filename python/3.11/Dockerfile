@@ -9,7 +9,7 @@
 # USAGE EXAMPLE:
 
 FROM thedutchselection/debian:11.5
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   apt-get update && \

@@ -16,7 +16,7 @@
 # -v /home/redis/db thedutchselection/data
 
 FROM busybox
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ADD files/scripts /usr/local/bin
 

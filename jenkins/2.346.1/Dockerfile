@@ -17,7 +17,7 @@
 # -v /var/run/docker.sock:/var/run/docker.sock.
 
 FROM thedutchselection/java:8.stretch
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   groupadd --gid 900 --system docker && \

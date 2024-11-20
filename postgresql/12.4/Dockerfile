@@ -110,7 +110,7 @@
 # - Start the PostgreSQL slave container again "sudo systemctl enable /etc/systemd/user/postgresql_slave.service && sudo systemctl start postgresql_slave"
 
 FROM thedutchselection/debian:10.4
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \
   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \

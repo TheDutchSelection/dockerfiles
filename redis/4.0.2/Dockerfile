@@ -12,7 +12,7 @@
 # OTHER:
 
 FROM thedutchselection/debian:8.7
-MAINTAINER Gerard Meijer <g.meijer@thedutchselection.com>
+LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ADD http://download.redis.io/releases/redis-4.0.2.tar.gz /tmp/
 

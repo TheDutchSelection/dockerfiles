@@ -35,6 +35,7 @@ RUN \
   apt-get install -yq autoconf && \
   apt-get install -yq automake && \
   apt-get install -yq libtool && \
+  apt-get install -yq default-libmysqlclient-dev build-essential && \
   apt-get install -yq pkg-config && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \

@@ -49,9 +49,10 @@ RUN \
     git clone https://github.com/openvenues/libpostal && \
     cd libpostal && \
     ./bootstrap.sh && \
-    ./configure  && \
+    ./configure MODEL=senzing && \
     make && \
-    make install
+    make install && \
+    ldconfig
 
 WORKDIR /home/appmaster/application
 

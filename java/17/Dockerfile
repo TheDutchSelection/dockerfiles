@@ -8,7 +8,7 @@
 #
 # USAGE EXAMPLE: docker run thedutchselection/java
 
-FROM thedutchselection/debian:11.0
+FROM thedutchselection/debian:12.8
 LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 RUN \

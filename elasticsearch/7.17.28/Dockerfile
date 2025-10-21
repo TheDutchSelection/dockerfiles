@@ -36,7 +36,7 @@
 # The ssl transport layer is encrypted using the following instructions
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html
 
-FROM thedutchselection/java:17
+FROM thedutchselection/java-openjdk:17
 LABEL org.opencontainers.image.authors="g.meijer@thedutchselection.com"
 
 ENV ES_JAVA_HOME /usr/lib/jvm/jdk-17

@@ -13,6 +13,9 @@ error_log stderr info;
 
 http {
   include       mime.types;
+  types {
+    application/javascript  mjs;
+  }
   default_type  application/octet-stream;
 
   sendfile on;

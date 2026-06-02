@@ -34,7 +34,7 @@ read -r -d '' prometheus_blackbox_job_base << EOM || true
   metrics_path: "/probe"
   params:
     target: ["##target_param##"]
-    module: ["##module_param##"]
+    module: ["##module_param##"]##hostname_line##
   static_configs:
 EOM
 
@@ -82,11 +82,19 @@ blackbox_jobs () {
       local target_param=$(echo "$metrics_path" | sed 's/.*target%3D//' | sed 's/\&.*//')
       local target_param=${target_param//%3D/=}
       local module_param=$(echo "$metrics_path" | sed 's/.*module%3D//' | sed 's/\&.*//')
+      # optional hostname (SNI) param: target%3D...&module%3D...&hostname%3D<sni>
+      if [[ "$metrics_path" == *"hostname%3D"* ]]; then
+        local hostname_param=$(echo "$metrics_path" | sed 's/.*hostname%3D//' | sed 's/\&.*//')
+        local hostname_line=$'\n'"    hostname: [\"""$hostname_param""\"]"
+      else
+        local hostname_line=""
+      fi
 
       local job="$prometheus_blackbox_job_base"
       local job=${job/\#\#job_name\#\#/"$job_name"}
       local job=${job/\#\#target_param\#\#/"$target_param"}
       local job=${job/\#\#module_param\#\#/"$module_param"}
+      local job=${job/\#\#hostname_line\#\#/"$hostname_line"}
 
       local target="    - ""$host_plus_port"
       local labels="    labels:"$'\n'"      target_name: \"""$target_name""\""

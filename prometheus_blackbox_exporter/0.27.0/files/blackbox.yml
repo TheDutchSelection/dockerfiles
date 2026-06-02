@@ -10,3 +10,16 @@ modules:
       fail_if_not_ssl: false
       fail_if_body_not_matches_regexp:
       - "Toestel met abonnement"
+
+  # TLS certificate-expiry probe. Used with the `hostname` query param (SNI) to
+  # check the cert a specific edge node serves. We only care that TLS completes
+  # (probe_ssl_earliest_cert_expiry is emitted from the handshake); a redirect or
+  # auth-gated response still counts as a live endpoint.
+  http_cert:
+    prober: http
+    timeout: 10s
+    http:
+      method: GET
+      follow_redirects: false
+      fail_if_not_ssl: true
+      valid_status_codes: [200, 301, 302, 303, 307, 308, 401, 403, 404]

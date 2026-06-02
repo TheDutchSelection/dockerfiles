@@ -1,0 +1,12 @@
+modules:
+  http_price_comparator_nl_telecom:
+    prober: http
+    timeout: 30s
+    http:
+      valid_status_codes: []  # Defaults to 2xx
+      method: GET
+      follow_redirects: true
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+      fail_if_body_not_matches_regexp:
+      - "Toestel met abonnement"

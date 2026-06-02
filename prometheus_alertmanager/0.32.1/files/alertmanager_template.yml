@@ -1,0 +1,14 @@
+global:
+  resolve_timeout: "5m"
+
+route:
+  repeat_interval: "2h"
+  receiver: "everybody-pushover"
+
+receivers:
+- name: 'everybody-pushover'
+  pushover_configs:
+  - user_key: "##prometheus_alertmanager_pushover_group_key##"
+    token: "##prometheus_alertmanager_pushover_application_token##"
+    retry: "5m"
+    expire: "2h"

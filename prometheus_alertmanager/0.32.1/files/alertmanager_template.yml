@@ -2,6 +2,14 @@ global:
   resolve_timeout: "5m"
 
 route:
+  # Group per (alert, target) so each affected endpoint/domain gets its own
+  # concise Pushover message. Empty group_by merges every firing alert into one
+  # notification that overruns Pushover's 1024-rune limit and gets truncated
+  # (only the first alert stays visible). target_name is the label our blackbox
+  # probe jobs set per target; node alerts fall back to grouping by alertname.
+  group_by: ['alertname', 'target_name']
+  group_wait: "30s"
+  group_interval: "5m"
   repeat_interval: "2h"
   receiver: "everybody-pushover"
 

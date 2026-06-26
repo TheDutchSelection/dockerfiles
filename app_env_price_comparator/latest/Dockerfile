@@ -37,6 +37,7 @@ RUN \
   apt-get install -yq libtool && \
   apt-get install -yq default-libmysqlclient-dev build-essential && \
   apt-get install -yq pkg-config && \
+  apt-get install -yq unzip && \
   apt-get install -yq postgresql-client-12 && \
   apt-get install -yq yarn && \
   useradd -m -u 6666 appmaster && \
@@ -53,6 +54,17 @@ RUN \
     make && \
     make install && \
     ldconfig
+
+# DuckDB CLI — DataLake::Store shells out to this static binary to compact CSV
+# into Parquet and query the data lake. Pinned so the engine that writes our
+# Parquet is the same one that reads it.
+ARG DUCKDB_VERSION=1.5.3
+RUN \
+    curl -fsSL -o /tmp/duckdb.zip "https://github.com/duckdb/duckdb/releases/download/v${DUCKDB_VERSION}/duckdb_cli-linux-amd64.zip" && \
+    unzip -o /tmp/duckdb.zip -d /usr/local/bin && \
+    rm /tmp/duckdb.zip && \
+    chmod +x /usr/local/bin/duckdb && \
+    duckdb --version
 
 WORKDIR /home/appmaster/application
 

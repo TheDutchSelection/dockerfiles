@@ -66,6 +66,20 @@ RUN \
     chmod +x /usr/local/bin/duckdb && \
     duckdb --version
 
+# Pre-install the DuckDB extensions the data lake needs (spatial for
+# point-in-polygon designation matching, httpfs for S3/HTTP reads) into an
+# app-owned, image-baked extension home. DataLake::Store points DATA_LAKE_DUCKDB_HOME
+# here and still runs `INSTALL … ; LOAD …;` per query, but with the extension
+# already cached that INSTALL is an offline no-op — so a fresh container never
+# blocks on (or fails without egress to) extensions.duckdb.org. Extensions install
+# under <home>/.duckdb/extensions/v${DUCKDB_VERSION}/…, so the same binary bakes
+# and loads them and a version bump moves both together.
+ENV DATA_LAKE_DUCKDB_HOME=/home/appmaster/.duckdb_home
+RUN \
+    mkdir -p "${DATA_LAKE_DUCKDB_HOME}" && \
+    HOME="${DATA_LAKE_DUCKDB_HOME}" duckdb -c "INSTALL spatial; INSTALL httpfs;" && \
+    chown -R appmaster:appmaster "${DATA_LAKE_DUCKDB_HOME}"
+
 WORKDIR /home/appmaster/application
 
 ADD --chown=appmaster:appmaster files/gemfiles/Gemfile /home/appmaster/application/Gemfile
